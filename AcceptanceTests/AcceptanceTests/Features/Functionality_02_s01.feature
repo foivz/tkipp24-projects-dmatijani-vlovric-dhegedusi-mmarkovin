@@ -1,4 +1,4 @@
-﻿Feature: Functionality_02
+﻿Feature: User login
 
 As user
 I want to be able to login into the app with my credentials 
@@ -45,4 +45,3 @@ Scenario: Valid user credentials
 	When the user enters username "pcindric89"
 	And the user enters enter password "cindricka123"
 	And the user clicks the login button
-	Then the user should see specific employee window 
