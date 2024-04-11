@@ -43,7 +43,7 @@ Scenario: Empty number of copies field
 
 Scenario: Non numerical entry for number of copies
 	When the employee enters all required fields and options
-	And the employee enters a non numerical or negative value into the number of pages field
+	And the employee enters a non numerical or negative value into the number of copies field
 	And the employee clicks on the Insert button
 	Then the employee should remain on the same screen
 	And the employee should see a warning message that the number of copies can only be a valid numerical value
