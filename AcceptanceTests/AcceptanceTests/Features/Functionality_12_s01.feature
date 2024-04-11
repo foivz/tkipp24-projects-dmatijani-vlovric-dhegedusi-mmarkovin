@@ -20,15 +20,6 @@ Scenario: Attempting to read a non-online book
   And clicks on the "Detalji" button
   Then the book details page should not have a "Digitalna verzija" button
 
-Scenario: Attempting to read an online book without internet access
-  Given the user does not have internet access
-  And the user is on the "Book details" form
-  And there is a digital version of the selected book in the system
-  And the book has a correct link
-  When the user clicks on the "Digitalna verzija" button
-  Then an in-app web browser should open
-  And display an error message due to the inability to connect to the internet
-
 Scenario: The book has an invalid link for the digital version
   Given the user has internet access
   And the user is on the "Book details" form

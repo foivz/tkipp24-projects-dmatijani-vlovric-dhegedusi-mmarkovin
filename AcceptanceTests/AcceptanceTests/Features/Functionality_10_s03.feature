@@ -1,4 +1,4 @@
-﻿Feature: Writing and reviewing reviews
+﻿Feature: Deleting reviews
 
 
 Scenario: Deleting an existing review

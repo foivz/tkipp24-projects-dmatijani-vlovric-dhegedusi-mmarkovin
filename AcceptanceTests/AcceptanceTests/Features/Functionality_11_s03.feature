@@ -1,4 +1,4 @@
-﻿Feature: Business Statistics
+﻿Feature: Review Statistics
 
 Background: 
 Given the user is logged in as a library employee

@@ -1,4 +1,4 @@
-﻿Feature: Business Statistics
+﻿Feature: Genre statistics
 
 Background: 
 Given the user is logged in as a library employee

@@ -1,4 +1,4 @@
-﻿Feature: Writing and reviewing reviews
+﻿Feature: Writing reviews
 
 Scenario: User has previously written a review for the selected book
   Given the user has previously written a review for the selected book

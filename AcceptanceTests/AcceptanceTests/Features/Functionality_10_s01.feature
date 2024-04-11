@@ -1,4 +1,4 @@
-﻿Feature: Writing and reviewing reviews
+﻿Feature: Reviewing all reviews
 
 Scenario: Viewing all reviews related to a selected book
   Given the user has selected a book and is on the book details page
