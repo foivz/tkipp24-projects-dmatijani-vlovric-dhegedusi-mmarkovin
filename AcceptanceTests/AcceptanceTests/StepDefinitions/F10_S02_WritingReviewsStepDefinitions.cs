@@ -1,4 +1,10 @@
+using AcceptanceTests.Support;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using OpenQA.Selenium;
+using OpenQA.Selenium.Support.UI;
 using System;
+using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using TechTalk.SpecFlow;
 
 namespace AcceptanceTests.StepDefinitions
@@ -6,17 +12,110 @@ namespace AcceptanceTests.StepDefinitions
     [Binding]
     public class F10_S02_WritingReviewsStepDefinitions
     {
+
+        [Given(@"the user has previously borrowed the book through the system")]
+        public void GivenTheUserHasPreviouslyBorrowedTheBookThroughTheSystem() {
+            var driver = GuiDriver.GetOrCreateDriver();
+
+            var txtUsername = driver.FindElementByAccessibilityId("txtUsername");
+            var txtPassword = driver.FindElementByAccessibilityId("txtPassword");
+
+            txtUsername.SendKeys("mpranjic23");
+            txtPassword.SendKeys("pranjicka98");
+
+
+            var btnLogin = driver.FindElementByAccessibilityId("btnLogin");
+            btnLogin.Click();
+            driver.SwitchTo().Window(driver.WindowHandles.First());
+
+            driver.Manage().Window.Maximize();
+            var btnSearch = driver.FindElementByAccessibilityId("btnSearch");
+            btnSearch.Click();
+
+
+            var txtSearch = driver.FindElementByAccessibilityId("txtSearch");
+            txtSearch.SendKeys("Haml");
+
+
+            var dgvBookSearch = driver.FindElementByAccessibilityId("dgvBookSearch");
+            var cellsInFirstRow = dgvBookSearch.FindElementsByClassName("DataGridCell");
+            cellsInFirstRow[0].Click();
+
+            var btnDetails = driver.FindElementByAccessibilityId("btnDetails");
+            btnDetails.Click();
+
+            var btnBorrow = driver.FindElementByName("Posudi");
+            btnBorrow.Click();
+
+            bool HasUserBorrowedBook = true;
+            Assert.IsTrue(HasUserBorrowedBook);
+
+            driver.SwitchTo().Window(driver.WindowHandles.First());
+            var btnOk = driver.FindElementByAccessibilityId("2");
+            btnOk.Click();
+
+        }
+
+        [Given(@"the user is on All Reviews form")]
+        public void GivenTheUserIsOnAllReviewsForm() {
+            var driver = GuiDriver.GetOrCreateDriver();
+
+            var btnSearch = driver.FindElementByAccessibilityId("btnSearch");
+            btnSearch.Click();
+
+            driver.SwitchTo().Window(driver.WindowHandles.First());
+            var dgvBookSearch = driver.FindElementByAccessibilityId("dgvBookSearch");
+            var cellsInFirstRow = dgvBookSearch.FindElementsByClassName("DataGridCell");
+            cellsInFirstRow[0].Click();
+
+            var btnDetails = driver.FindElementByAccessibilityId("btnDetails");
+            btnDetails.Click();
+
+            var btnAddReview = driver.FindElementByAccessibilityId("btnAddReview");
+            btnAddReview.Click();
+
+            bool dgReviews = driver.FindElementByAccessibilityId("dgReviews") != null;
+            Assert.IsTrue(dgReviews);
+
+        }
+
         [Given(@"the user has previously written a review for the selected book")]
         public void GivenTheUserHasPreviouslyWrittenAReviewForTheSelectedBook()
         {
-            throw new PendingStepException();
+            var driver = GuiDriver.GetOrCreateDriver();
+
+            var btnAddReview = driver.FindElementByAccessibilityId("btnAddReview");
+            btnAddReview.Click();
+
+            var cboRating = driver.FindElementByAccessibilityId("cboRating");
+            var selectElement = new SelectElement(cboRating);
+            selectElement.SelectByIndex(0);
+
+            var btnNewReview = driver.FindElementByAccessibilityId("btnAddReview");
+            btnAddReview.Click();
+
+            var dgReviews = driver.FindElementByAccessibilityId("dgReviews");
+            var rows = dgReviews.FindElementsByClassName("DataGridRow");
+
+            bool hasUserWrittenReview = false;
+
+
+            foreach (var row in rows) {
+                var cells = row.FindElements(By.TagName("DataGridCell"));
+
+                var usernameCell = cells[0];
+
+                string username = usernameCell.Text;
+
+                if (username == "Marija Pranjic") {
+                    hasUserWrittenReview = true;
+                    break;
+                }
+            }
+            Assert.IsTrue(hasUserWrittenReview);
+
         }
 
-        [Given(@"the user is on ""([^""]*)"" form")]
-        public void GivenTheUserIsOnForm(string p0)
-        {
-            throw new PendingStepException();
-        }
 
         [When(@"the user selects the Add Review option")]
         public void WhenTheUserSelectsTheAddReviewOption()
@@ -30,17 +129,12 @@ namespace AcceptanceTests.StepDefinitions
             throw new PendingStepException();
         }
 
-        [Then(@"the application displays an error message ""([^""]*)""")]
-        public void ThenTheApplicationDisplaysAnErrorMessage(string p0)
+        [Then(@"the application displays an error message Već si napisao recenziju za ovu knjigu!")]
+        public void ThenTheApplicationDisplaysAnErrorMessageVecSiNapisaoRecenzijuZaOvuKnjigu()
         {
             throw new PendingStepException();
         }
 
-        [Given(@"the user has previously borrowed the book through the system")]
-        public void GivenTheUserHasPreviouslyBorrowedTheBookThroughTheSystem()
-        {
-            throw new PendingStepException();
-        }
 
         [Given(@"the user has not written a review for the selected book")]
         public void GivenTheUserHasNotWrittenAReviewForTheSelectedBook()
@@ -48,8 +142,8 @@ namespace AcceptanceTests.StepDefinitions
             throw new PendingStepException();
         }
 
-        [Given(@"the user is on the ""([^""]*)"" form")]
-        public void GivenTheUserIsOnTheForm(string p0)
+        [Given(@"the user is on the Add Review form")]
+        public void GivenTheUserIsOnTheAddReviewForm()
         {
             throw new PendingStepException();
         }
@@ -84,12 +178,6 @@ namespace AcceptanceTests.StepDefinitions
             throw new PendingStepException();
         }
 
-        [Given(@"the user is on the Add Review form")]
-        public void GivenTheUserIsOnTheAddReviewForm()
-        {
-            throw new PendingStepException();
-        }
-
         [When(@"the user clicks the Add button")]
         public void WhenTheUserClicksTheAddButton()
         {
@@ -102,8 +190,8 @@ namespace AcceptanceTests.StepDefinitions
             throw new PendingStepException();
         }
 
-        [Then(@"the user is shown the ""([^""]*)"" form where he can also see his review")]
-        public void ThenTheUserIsShownTheFormWhereHeCanAlsoSeeHisReview(string p0)
+        [Then(@"the user is shown the All Reviews form where he can also see his review")]
+        public void ThenTheUserIsShownTheAllReviewsFormWhereHeCanAlsoSeeHisReview()
         {
             throw new PendingStepException();
         }
@@ -126,20 +214,14 @@ namespace AcceptanceTests.StepDefinitions
             throw new PendingStepException();
         }
 
-        [Then(@"the user is taken back to the ""([^""]*)"" form")]
-        public void ThenTheUserIsTakenBackToTheForm(string p0)
+        [Then(@"the user is taken back to the All Reviews form")]
+        public void ThenTheUserIsTakenBackToTheAllReviewsForm()
         {
             throw new PendingStepException();
         }
 
         [When(@"the user presses the Cancel button")]
         public void WhenTheUserPressesTheCancelButton()
-        {
-            throw new PendingStepException();
-        }
-
-        [Then(@"the user is taken back to the All Reviews form")]
-        public void ThenTheUserIsTakenBackToTheAllReviewsForm()
         {
             throw new PendingStepException();
         }
@@ -170,12 +252,6 @@ namespace AcceptanceTests.StepDefinitions
 
         [Given(@"the user has never borrowed the book through the system")]
         public void GivenTheUserHasNeverBorrowedTheBookThroughTheSystem()
-        {
-            throw new PendingStepException();
-        }
-
-        [Given(@"the user is on All Reviews form")]
-        public void GivenTheUserIsOnAllReviewsForm()
         {
             throw new PendingStepException();
         }

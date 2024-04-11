@@ -64,9 +64,9 @@ namespace AcceptanceTests.StepDefinitions
         public void ThenTheUserShouldSeeAFormWithAllWrittenReviewsForTheSelectedBook()
         {
             var driver = GuiDriver.GetDriver();
-            bool isOpened = driver.FindElementByAccessibilityId("dgReviews") != null;
+            bool dgReviews = driver.FindElementByAccessibilityId("dgReviews") != null;
 
-            Assert.IsTrue(isOpened);
+            Assert.IsTrue(dgReviews);
 
             GuiDriver.Dispose();
 
