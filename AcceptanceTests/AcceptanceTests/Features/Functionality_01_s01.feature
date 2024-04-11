@@ -1,11 +1,11 @@
-﻿Feature: Functionality_01_s01
+﻿Feature: Admin library view
 
 As an administrator, I want to be able to see all the libraries in the system
 and also know if there are none in the system
 
 Background:
 	Given the user is logged in as an administrator
-	And the user is on the "All libraries" screen
+	And the user is on the All libraries screen
 
 Scenario: No libraries
 	When there are no libraries in the database
