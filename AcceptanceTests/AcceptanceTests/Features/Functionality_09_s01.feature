@@ -1,4 +1,4 @@
-﻿Feature: Functionality_09_s01
+﻿Feature: Book reservation
 
 As a member I want to be able to put in reservations for books
 Background: 
@@ -6,7 +6,7 @@ Background:
 
 @tag1
 Scenario: Digital book
-	Given the member is on the "Search book catalogue" screen
+	Given the member is on the Search book catalogue screen
 	When the member chooses a digital book
 	And the member clicks on the See details button
 	Then the member shouldn't see a Reserve button

@@ -1,10 +1,10 @@
-﻿Feature: Functionality_08_s01
+﻿Feature: Book catalogue search and filter
 
 As a member I want to be able to search and filter the book catalogue
 
 Background: 
 	Given the user is logged in as a member
-	And the user is on the "Search library catalogue" screen
+	And the user is on the Search library catalogue screen
 
 @tag1
 Scenario: Book search works

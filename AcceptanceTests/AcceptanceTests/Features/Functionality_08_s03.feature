@@ -1,4 +1,4 @@
-﻿Feature: Functionality_08_s03
+﻿Feature: Wishlist
 
 As a member I want to be able to use the wishlist functionality
 Background: 

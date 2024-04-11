@@ -23,7 +23,7 @@ namespace AcceptanceTests.Support {
 
         private static WindowsDriver<WindowsElement> CreateDriverInstance() {
             var options = new AppiumOptions();
-            options.AddAdditionalCapability("app", @"C:\Putanja\Pl_Main.exe");
+            options.AddAdditionalCapability("app", @"C:\Program Files (x86)\Tim04\MyLibra\PresentationLayer.exe");
             options.AddAdditionalCapability("deviceName", "WindowsPC");
             var wd = new WindowsDriver<WindowsElement>(new Uri("http://127.0.0.1:4723"),
             options);

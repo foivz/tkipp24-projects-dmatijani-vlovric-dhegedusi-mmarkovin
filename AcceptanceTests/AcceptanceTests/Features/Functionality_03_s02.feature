@@ -1,10 +1,10 @@
-﻿Feature: Functionality_03_s02
+﻿Feature: New book copies
 
 As an employee I want to be able to enter new book copies
 
 Background: 
 	Given the user is logged in as an employee
-	And the user is on the "Add new book copies" screen
+	And the user is on the Add new book copies screen
 
 @tag1
 Scenario: Empty number of copies field
@@ -36,9 +36,9 @@ Scenario: Book copies succesfully added
 	And the employee should see a message that the copies have been succesfully added
 	And the employee should see a refreshed list
 
-Scenario: Back button from "Add new book copies" leads to "Action choice" screen
-	When the employee clicks on the "Back" button
-	Then the employee should be redirected to the "Action choice" screen
+Scenario: Back button from Add new book copies leads to Action choice screen
+	When the employee clicks on the Back button
+	Then the employee should be redirected to the Action choice screen
 
 Scenario: Book search works
 	When the employee enters an existing book name into the book search field

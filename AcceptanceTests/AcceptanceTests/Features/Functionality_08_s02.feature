@@ -1,10 +1,10 @@
-﻿Feature: Functionality_08_s02
+﻿Feature: Book details
 
 As a member I want to be able to see details about books
 
 Background:
 	Given the user is logged in as a member
-	And the user is on the "Search library catalogue" screen
+	And the user is on the Search library catalogue screen
 
 @tag1
 Scenario: Book details with all information
