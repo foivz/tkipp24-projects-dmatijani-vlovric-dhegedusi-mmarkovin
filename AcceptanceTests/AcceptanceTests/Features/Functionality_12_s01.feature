@@ -34,5 +34,5 @@ Scenario: The book has an invalid link for the digital version
   And the user is on the "Book details" form
   And there is a digital version of the selected book in the system 
   And the book has an invalid link
-  When the user clicks on the "Digital Version" button
-  Then the user should see an error message stating "The book has an invalid link"
+  When the user clicks on the "Digitalna verzija" button
+  Then the user should see an error message stating "Knjiga ima nevažeći link!"
