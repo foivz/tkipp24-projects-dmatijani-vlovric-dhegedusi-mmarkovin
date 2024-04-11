@@ -5,25 +5,25 @@ Given the user is logged in as a library member
 
  Scenario: Reading an existing book in digital format
   Given the user has internet access
-  And the user is on the "Book details" form
+  And the user is on the Book details form
   And there is a digital version of the selected book in the system
   And the book has a correct link
-  When the user clicks on the "Digital Version" button
+  When the user clicks on the Digital Version button
   Then an in-app web browser should open displaying the text of the book
   And the user can successfully read the book in digital format
 
 Scenario: Attempting to read a non-online book
   Given the user has internet access
-  And the user is on the "Search books" form
+  And the user is on the Search books form
   And there is no digital version of the selected book in the system
   When the user selects a book
-  And clicks on the "Detalji" button
-  Then the book details page should not have a "Digitalna verzija" button
+  And clicks on the Detalji button
+  Then the book details page should not have a Digitalna verzija button
 
 Scenario: The book has an invalid link for the digital version
   Given the user has internet access
-  And the user is on the "Book details" form
+  And the user is on the Book details form
   And there is a digital version of the selected book in the system 
   And the book has an invalid link
-  When the user clicks on the "Digitalna verzija" button
-  Then the user should see an error message stating "Knjiga ima nevažeći link!"
+  When the user clicks on the Digitalna verzija button
+  Then the user should see an error message stating Knjiga ima nevažeći link!
