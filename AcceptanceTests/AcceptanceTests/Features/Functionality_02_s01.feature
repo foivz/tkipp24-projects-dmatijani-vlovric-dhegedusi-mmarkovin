@@ -13,11 +13,11 @@ Scenario Outline: Invalid credentials
 	Then the user shold see <error> message
 
 	Examples: 
-	| username | password | error |
-	| noUsername | cindricka123 | Unijeli ste krive korisničke podatke! |
-	| pcindric89 | noPass       | Unijeli ste krive korisničke podatke! |
-	| noUsername | noPass       | Unijeli ste krive korisničke podatke! |
-	|            |              | Unijeli ste krive korisničke podatke! |
+	| username   | password     | error                                                                 |
+	| noUsername | cindricka123 | Unijeli ste krive korisničke podatke!                                 |
+	| pcindric89 | noPass       | Unijeli ste krive korisničke podatke!                                 |
+	| noUsername | noPass       | Unijeli ste krive korisničke podatke!                                 |
+	|            |              | Unijeli ste krive korisničke podatke!                                 |
 	| megi       | megi123      | Članarina je istekla! Članarinu možete produljiti u svojoj knjižnici. |
 
 Scenario Outline: Valid user credentials
