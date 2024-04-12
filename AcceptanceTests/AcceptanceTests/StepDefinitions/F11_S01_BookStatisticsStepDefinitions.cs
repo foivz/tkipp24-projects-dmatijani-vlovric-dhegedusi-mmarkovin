@@ -4,6 +4,7 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Appium;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using TechTalk.SpecFlow;
 
@@ -105,7 +106,7 @@ namespace AcceptanceTests.StepDefinitions
             AppiumWebElement dgAllBorrows = driver.FindElementByAccessibilityId("dgAllBorrows");
             IReadOnlyCollection<AppiumWebElement> rows = dgAllBorrows.FindElementsByClassName(("DataGridRow"));
 
-            Assert.IsTrue(rows.Count == 1);
+            Assert.IsTrue(rows.Count < 1);
         }
 
         [Then(@"the user should still see book details")]
@@ -113,15 +114,7 @@ namespace AcceptanceTests.StepDefinitions
             var driver = GuiDriver.GetOrCreateDriver();
 
             AppiumWebElement dgMostPopularBooks = driver.FindElementByAccessibilityId("dgMostPopularBooks");
-            IReadOnlyCollection<AppiumWebElement> headerCells = dgMostPopularBooks.FindElementsByClassName("DataGridColumnHeader");
-
-            int columnIndex = -1;
-            foreach (var headerCell in headerCells) {
-                if (headerCell.Text == "Broj Posudbi") {
-                    columnIndex = headerCells.IndexOf(headerCell);
-                    break;
-                }
-            }
+            IReadOnlyCollection<AppiumWebElement> rows = dgMostPopularBooks.FindElementsByClassName(("DataGridRow"));
 
             Assert.IsTrue(rows.Count > 1);
         }
@@ -132,6 +125,16 @@ namespace AcceptanceTests.StepDefinitions
 
             var driver = GuiDriver.GetOrCreateDriver();
 
+            AppiumWebElement dgMostPopularBooks = driver.FindElementByAccessibilityId("dgMostPopularBooks");
+
+            var rows = dgMostPopularBooks.FindElementsByClassName("DataGridRow");
+
+            foreach (var row in rows) {
+                var cells = row.FindElementsByClassName("DataGridCell");
+
+                var timesBorrowed = cells[2].Text;
+                Assert.IsTrue(timesBorrowed == "0");
+            }
             GuiDriver.Dispose();
         }
 
