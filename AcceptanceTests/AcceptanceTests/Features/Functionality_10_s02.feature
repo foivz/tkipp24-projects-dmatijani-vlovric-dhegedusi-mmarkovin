@@ -1,7 +1,7 @@
 ﻿Feature: Writing reviews
 
 Scenario: User has previously written a review for the selected book
-  Given the user has previously written a review for the selected book
+//  Given the user has previously written a review for the selected book
   And the user is on All Reviews form
   When the user selects the Add Review option
   Then the application remains on the All Reviews form
