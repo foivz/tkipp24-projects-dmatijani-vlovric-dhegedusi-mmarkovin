@@ -31,6 +31,12 @@ Scenario: Already existing employee username entered
 	And the user clicks the Save changes for the employee button
 	Then the system should show an error message that the employee can't be modified
 
+	Examples:
+		| username   |
+		| hmihovic   |
+		| mmarkic    |
+		| pcindric89 |
+
 Scenario: Employee password removed
 	When the user removes the employee password
 	And the user clicks the Save changes for the employee button

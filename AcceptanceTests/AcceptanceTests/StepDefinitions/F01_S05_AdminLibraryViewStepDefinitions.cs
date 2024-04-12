@@ -49,8 +49,8 @@ namespace AcceptanceTests.StepDefinitions
             var cboLibrary = driver.FindElementByAccessibilityId("cboLibrary");
             cboLibrary.Click();
 
-            var libraryWithNoEmployees = driver.FindElementByName("123 - Gradska knjižnica i citaonica Varaždin");
-            libraryWithNoEmployees.Click();
+            var libraryWithEmployees = driver.FindElementByName("123 - Gradska knjižnica i citaonica Varaždin");
+            libraryWithEmployees.Click();
         }
 
         [Then(@"the user should be shown the employees for that library")]
