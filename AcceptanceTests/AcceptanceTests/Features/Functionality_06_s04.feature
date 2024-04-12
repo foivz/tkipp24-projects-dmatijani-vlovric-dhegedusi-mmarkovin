@@ -13,14 +13,14 @@ Scenario: Deleting non existing member
 	Then the error message should appear "Odaberite člana!"
 
 Scenario: Member did not return the book
-	When employee selects "Sebastijan" "Kralj" 
+	When employee selects employee selects member with username
 	And employee clicks delete button
 	And employee clicks ok button on alert window
 	Then the employee should see members menagment window
 	And the table should still show that member
 
 Scenario: 
-	When employee selects "Larisa" "Kralj"
+	When employee selects member with username
 	And employee clicks delete button
 	And employee clicks ok button on alert window
 	Then the employee should see members menagment window
