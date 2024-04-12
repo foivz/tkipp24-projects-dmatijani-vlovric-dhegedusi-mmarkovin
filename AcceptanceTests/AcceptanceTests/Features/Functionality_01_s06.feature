@@ -13,6 +13,7 @@ Scenario: Library not chosen
 	And the user enters an employee name
 	And the user enters a correct employee username
 	And the user enters a correct employee password
+	And the user clicks the Save new employee button
 	Then the system should show an error message that the employee can't be added
 
 Scenario: Employee OIB not entered
@@ -21,6 +22,7 @@ Scenario: Employee OIB not entered
 	And the user enters an employee name
 	And the user enters a correct employee username
 	And the user enters a correct employee password
+	And the user clicks the Save new employee button
 	Then the system should show an error message that the employee can't be added
 
 Scenario: Already existing employee OIB entered
@@ -29,6 +31,7 @@ Scenario: Already existing employee OIB entered
 	And the user enters an employee name
 	And the user enters a correct employee username
 	And the user enters a correct employee password
+	And the user clicks the Save new employee button
 	Then the system should show an error message that the employee can't be added
 
 	Examples:
@@ -44,14 +47,16 @@ Scenario: Employee username not entered
 	And the user enters an employee name
 	And the user enters a correct employee OIB
 	And the user enters a correct employee password
+	And the user clicks the Save new employee button
 	Then the system should show an error message that the employee can't be added
 
-Scenario: Already existing employeeusername entered
+Scenario: Already existing employee username entered
 	When the employee username <username> is entered
 	And the library for employee is chosen
 	And the user enters an employee name
 	And the user enters a correct employee OIB
 	And the user enters a correct employee password
+	And the user clicks the Save new employee button
 	Then the system should show an error message that the employee can't be added
 
 	Examples:
@@ -61,10 +66,20 @@ Scenario: Already existing employeeusername entered
 		| mmarkic    |
 		| pcindric89 |
 
+Scenario: Password not entered
+	When the user doesn't enter the employee password
+	And the user enters a correct employee username
+	And the library for employee is chosen
+	And the user enters an employee name
+	And the user enters a correct employee OIB
+	And the user clicks the Save new employee button
+	Then the employee should be visible in the All employees list for the chosen library
+
 Scenario: Successful new employee
 	When the user enters a correct employee username
 	And the library for employee is chosen
 	And the user enters an employee name
 	And the user enters a correct employee OIB
 	And the user enters a correct employee password
+	And the user clicks the Save new employee button
 	Then the employee should be visible in the All employees list for the chosen library
