@@ -1,8 +1,8 @@
 ﻿Feature: Editing members
 
 As an employee
-I wnat to be able to register new memebers
-So that tehy can borrow and reserve books
+I wnat to be able to register existing memebers
+So that they can borrow and reserve books
 
 Background: 
 	Given Given the user is logged into app as employee
@@ -17,7 +17,7 @@ Scenario: Editing existing member
 	And the table with members should contain edited member
 
 Scenario: Editing non exsisting member
-	When employee selects clicks edit button
+	When employee clicks edit button
 	Then the error message should appear "Odaberite člana!"
 
 Scenario: Giving up on editing
