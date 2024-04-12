@@ -1,4 +1,4 @@
-﻿Feature: Functionality_06_s02
+﻿Feature: Registering new members
 
 As an employee
 I wnat to be able to register new memebers
