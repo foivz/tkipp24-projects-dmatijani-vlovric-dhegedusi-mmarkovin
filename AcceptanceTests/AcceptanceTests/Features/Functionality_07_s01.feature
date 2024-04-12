@@ -9,7 +9,7 @@ Background:
 	And is on the notifications panel
 
 @tag1
-Scenario Outline: [scenario name]
+Scenario Outline: Writing notifiation
 	When clicks buton New notification
 	And the New notification screen appears
 	And the employee enters title <title> and description <description>
@@ -21,7 +21,7 @@ Scenario Outline: [scenario name]
 		|  |  |
 		| Nova obavijest | Opis obavijesti |
 
-Scenario: 
+Scenario: Giving up on editing
 	When clicks buton New notification
 	And the New notification screen appears
 	And the employee enters title "test123" and description "test123

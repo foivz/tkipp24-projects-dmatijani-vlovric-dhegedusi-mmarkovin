@@ -20,6 +20,7 @@ Scenario: Membership did not expire
 Scenario: Membership extendes successfully
 	When the employee selects member with username "ppintaric50"
 	And  employee clicks extend button
-	Then the membership date of that member should be today's date
+	Then the employee should see members menagment window
+	And the membership date of that member should be today's date
 
 
