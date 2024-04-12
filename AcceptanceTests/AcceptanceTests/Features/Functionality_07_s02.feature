@@ -1,7 +1,7 @@
 ﻿Feature: Editing notifications
 
 As an employee
-I wnat to be able to write notifications of for my library
+I wnat to be able to write notifications for my library
 So that members can read them
 
 Background: 
@@ -21,7 +21,7 @@ Scenario: Editing notification
 	Then the employee should see notifications window
 	And the last row in table should have notification with title "Novi naslov"
 
-Scenario:
+Scenario: Giving up on editing notification
 	When the employee selects member with title "kjsrhflsdukrhk"
 	And employee clicks edit button
 	And enters new title "Novi naslov"

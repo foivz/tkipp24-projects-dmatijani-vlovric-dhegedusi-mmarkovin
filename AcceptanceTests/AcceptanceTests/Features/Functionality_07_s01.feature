@@ -1,7 +1,7 @@
 ﻿Feature: Writing notifications
 
 As an employee
-I wnat to be able to write notifications of for my library
+I wnat to be able to write notifications for my library
 So that members can read them
 
 Background: 
