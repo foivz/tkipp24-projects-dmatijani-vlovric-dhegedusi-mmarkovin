@@ -18,46 +18,6 @@ namespace AcceptanceTests.StepDefinitions
 
         [Given(@"the user has previously borrowed the book through the system")]
         public void GivenTheUserHasPreviouslyBorrowedTheBookThroughTheSystem() {
-/*            var driver = GuiDriver.GetOrCreateDriver();
-
-            var txtUsername = driver.FindElementByAccessibilityId("txtUsername");
-            var txtPassword = driver.FindElementByAccessibilityId("txtPassword");
-
-            txtUsername.SendKeys("mpranjic23");
-            txtPassword.SendKeys("pranjicka98");
-
-
-            var btnLogin = driver.FindElementByAccessibilityId("btnLogin");
-            btnLogin.Click();
-            driver.SwitchTo().Window(driver.WindowHandles.First());
-
-            driver.Manage().Window.Maximize();
-            var btnSearch = driver.FindElementByAccessibilityId("btnSearch");
-            btnSearch.Click();
-
-
-            var txtSearch = driver.FindElementByAccessibilityId("txtSearch");
-            txtSearch.SendKeys("Haml");
-
-
-            var dgvBookSearch = driver.FindElementByAccessibilityId("dgvBookSearch");
-            var cellsInFirstRow = dgvBookSearch.FindElementsByClassName("DataGridCell");
-            cellsInFirstRow[0].Click();
-
-            var btnDetails = driver.FindElementByAccessibilityId("btnDetails");
-            btnDetails.Click();
-
-            var btnBorrow = driver.FindElementByName("Posudi");
-            btnBorrow.Click();
-
-            bool HasUserBorrowedBook = true;
-            Assert.IsTrue(HasUserBorrowedBook);
-
-            driver.SwitchTo().Window(driver.WindowHandles.First());
-            var btnOk = driver.FindElementByAccessibilityId("2");
-            btnOk.Click();
-
-            GuiDriver.Dispose(); */
 
             var driver = GuiDriver.GetOrCreateDriver();
 
@@ -88,30 +48,18 @@ namespace AcceptanceTests.StepDefinitions
                     break;
                 }
             }
-
             Assert.IsTrue(bookFound);
-
-
-            /*           var rows = dgAllBorrows.FindElementsByClassName("DataGridRow");
-                        int count = rows.Count - 2;
-                        var lastRow = rows[count];
-                        var cells = lastRow.FindElements(By.ClassName("DataGridCell"));
-                        cells[0].Click();
-
-                        var btnBorrowBook = driver.FindElementByAccessibilityId("btnBorrowBook");
-                        btnBorrowBook.Click();
-
-                        var tbBorrowDuration = driver.FindElementByAccessibilityId("tbBorrowDuration");
-                        tbBorrowDuration.SendKeys("30");
-
-                        var btnAddNewBorrow = driver.FindElementByAccessibilityId("btnAddNewBorrow");
-                        btnAddNewBorrow.Click(); */
+            GuiDriver.Dispose();
 
         }
 
         [Given(@"the user is on All Reviews form")]
         public void GivenTheUserIsOnAllReviewsForm() {
             var driver = GuiDriver.GetOrCreateDriver();
+            GuiDriver.Dispose();
+            driver = GuiDriver.GetOrCreateDriver();
+
+
 
             var txtUsername = driver.FindElementByAccessibilityId("txtUsername");
             var txtPassword = driver.FindElementByAccessibilityId("txtPassword");
@@ -148,34 +96,26 @@ namespace AcceptanceTests.StepDefinitions
         [Given(@"the user has previously written a review for the selected book")]
         public void GivenTheUserHasPreviouslyWrittenAReviewForTheSelectedBook()
         {
+
+            GivenTheUserIsOnAllReviewsForm();
+
             var driver = GuiDriver.GetOrCreateDriver();
-
-            var btnAddReview = driver.FindElementByAccessibilityId("btnAddReview");
-            btnAddReview.Click();
-
-            var cboRating = driver.FindElementByAccessibilityId("cboRating");
-            var selectElement = new SelectElement(cboRating);
-            selectElement.SelectByIndex(0);
-
-            var btnNewReview = driver.FindElementByAccessibilityId("btnAddReview");
-            btnAddReview.Click();
-
-           var dgReviews = driver.FindElementByAccessibilityId("dgReviews");
+            var dgReviews = driver.FindElementByAccessibilityId("dgReviews");
             var rows = dgReviews.FindElementsByClassName("DataGridRow");
 
             bool hasUserWrittenReview = false;
 
 
             foreach (var row in rows) {
-                var cells = row.FindElements(By.TagName("DataGridCell"));
+                var cells = row.FindElementsByClassName("DataGridCell");
 
-                var usernameCell = cells[0];
+                foreach (var cell in cells) {
+                    string cellText = cell.Text.Trim();
 
-                string username = usernameCell.Text;
-
-                if (username == "Marija Pranjic") {
-                    hasUserWrittenReview = true;
-                    break;
+                    if (cellText == "Marija Pranjic") {
+                        hasUserWrittenReview = true;
+                        break;
+                    }
                 }
             }
             Assert.IsTrue(hasUserWrittenReview);
@@ -187,7 +127,10 @@ namespace AcceptanceTests.StepDefinitions
         public void WhenTheUserSelectsTheAddReviewOption()
         {
             var driver = GuiDriver.GetOrCreateDriver();
+            GuiDriver.Dispose();
+            GivenTheUserIsOnAllReviewsForm();
 
+            driver = GuiDriver.GetOrCreateDriver();
             var btnAddReview = driver.FindElementByAccessibilityId("btnAddReview");
             btnAddReview.Click();
         }
@@ -204,11 +147,14 @@ namespace AcceptanceTests.StepDefinitions
         [Then(@"the application displays an error message Već si napisao recenziju za ovu knjigu!")]
         public void ThenTheApplicationDisplaysAnErrorMessageVecSiNapisaoRecenzijuZaOvuKnjigu()
         {
-            var driver = GuiDriver.GetOrCreateDriver();
-
+            var driver = GuiDriver.GetDriver();
             driver.SwitchTo().Window(driver.WindowHandles.First());
-            var isWindowOpened = driver.FindElementByAccessibilityId("2") != null;
-            Assert.IsTrue(isWindowOpened);
+            bool isBtnOk = driver.FindElementByAccessibilityId("2") != null;
+            Assert.IsTrue(isBtnOk);
+            var btnOk = driver.FindElementByAccessibilityId("2");
+            btnOk.Click();
+            driver.SwitchTo().Window(driver.WindowHandles.First());
+            GuiDriver.Dispose();
 
         }
 
@@ -216,133 +162,304 @@ namespace AcceptanceTests.StepDefinitions
         [Given(@"the user has not written a review for the selected book")]
         public void GivenTheUserHasNotWrittenAReviewForTheSelectedBook()
         {
-            throw new PendingStepException();
+
+            var driver = GuiDriver.GetOrCreateDriver();
+            GuiDriver.Dispose();
+            GivenTheUserIsOnAllReviewsForm();
+
+            driver = GuiDriver.GetOrCreateDriver();
+            var dgReviews = driver.FindElementByAccessibilityId("dgReviews");
+            var rows = dgReviews.FindElementsByClassName("DataGridRow");
+
+            bool hasUserWrittenReview = false;
+
+
+            foreach (var row in rows) {
+                var cells = row.FindElementsByClassName("DataGridCell");
+
+                foreach (var cell in cells) {
+                    string cellText = cell.Text.Trim();
+
+                    if (cellText == "Marija Pranjic") {
+                        hasUserWrittenReview = true;
+                        break;
+                    }
+                }
+            }
+
+
+
+            Assert.IsTrue(!hasUserWrittenReview);
         }
 
         [Given(@"the user is on the Add Review form")]
         public void GivenTheUserIsOnTheAddReviewForm()
         {
-            throw new PendingStepException();
+            var driver = GuiDriver.GetOrCreateDriver();
+            GuiDriver.Dispose();
+
+            GivenTheUserIsOnAllReviewsForm();
+            driver = GuiDriver.GetOrCreateDriver();
+
+            var btnReviews = driver.FindElementByAccessibilityId("btnAddReview");
+            btnReviews.Click();
+
         }
 
         [When(@"the user selects a rating for the review")]
         public void WhenTheUserSelectsARatingForTheReview()
         {
-            throw new PendingStepException();
+            var driver = GuiDriver.GetOrCreateDriver();
+
+            var cboRating = driver.FindElementByAccessibilityId("cboRating");
+            cboRating.Click();
+
+            var listItem = driver.FindElementByName("4");
+            listItem.Click();
         }
 
         [When(@"the user enters an optional comment")]
         public void WhenTheUserEntersAnOptionalComment()
         {
-            throw new PendingStepException();
+            var driver = GuiDriver.GetOrCreateDriver();
+            var txtComment = driver.FindElementByAccessibilityId("txtComment");
+
+            txtComment.SendKeys("Knjiga nije loša");
         }
 
         [When(@"the user clicks the Dodaj button")]
         public void WhenTheUserClicksTheDodajButton()
         {
-            throw new PendingStepException();
-        }
-
-        [Then(@"the review is stored in the database")]
-        public void ThenTheReviewIsStoredInTheDatabase()
-        {
-            throw new PendingStepException();
+            var driver = GuiDriver.GetOrCreateDriver();
+            var btnAddNewReview = driver.FindElementByAccessibilityId("btnAddReview");
+            btnAddNewReview.Click();
         }
 
         [Then(@"the user is shown All Reviews form where he can also see his review")]
         public void ThenTheUserIsShownAllReviewsFormWhereHeCanAlsoSeeHisReview()
         {
-            throw new PendingStepException();
-        }
+            var driver = GuiDriver.GetOrCreateDriver();
+            bool isDgReviewsList = driver.FindElementByAccessibilityId("dgReviews") != null;
+            var dgReviews = driver.FindElementByAccessibilityId("dgReviews");
+            var rows = dgReviews.FindElementsByClassName("DataGridRow");
 
-        [When(@"the user clicks the Add button")]
-        public void WhenTheUserClicksTheAddButton()
-        {
-            throw new PendingStepException();
-        }
+            bool hasUserWrittenReview = false;
 
-        [When(@"the user doesn't fill the comment field")]
-        public void WhenTheUserDoesntFillTheCommentField()
-        {
-            throw new PendingStepException();
+
+            foreach (var row in rows) {
+                var cells = row.FindElementsByClassName("DataGridCell");
+
+                foreach (var cell in cells) {
+                    string cellText = cell.Text.Trim();
+
+                    if (cellText == "Marija Pranjic") {
+                        hasUserWrittenReview = true;
+                        break;
+                    }
+                }
+            }
+
+            Assert.IsTrue(isDgReviewsList && hasUserWrittenReview);
+            GuiDriver.Dispose();
         }
 
         [Then(@"the user is shown the All Reviews form where he can also see his review")]
         public void ThenTheUserIsShownTheAllReviewsFormWhereHeCanAlsoSeeHisReview()
         {
-            throw new PendingStepException();
+            var driver = GuiDriver.GetOrCreateDriver();
+            bool isDgReviewsList = driver.FindElementByAccessibilityId("dgReviews") != null;
+            var dgReviews = driver.FindElementByAccessibilityId("dgReviews");
+            var rows = dgReviews.FindElementsByClassName("DataGridRow");
+
+            bool hasUserWrittenReview = false;
+
+
+            foreach (var row in rows) {
+                var cells = row.FindElementsByClassName("DataGridCell");
+
+                foreach (var cell in cells) {
+                    string cellText = cell.Text.Trim();
+
+                    if (cellText == "Marija Pranjic") {
+                        hasUserWrittenReview = true;
+                        break;
+                    }
+                }
+            }
+
+            Assert.IsTrue(isDgReviewsList && hasUserWrittenReview);
+            GuiDriver.Dispose();
         }
 
         [When(@"the user selects a rating")]
         public void WhenTheUserSelectsARating()
         {
-            throw new PendingStepException();
+            var driver = GuiDriver.GetOrCreateDriver();
+
+            var cboRating = driver.FindElementByAccessibilityId("cboRating");
+            cboRating.Click();
+
+            var listItem = driver.FindElementByName("4");
+            listItem.Click();
+
         }
 
         [When(@"the user clicks the Odustani button")]
         public void WhenTheUserClicksTheOdustaniButton()
         {
-            throw new PendingStepException();
-        }
+            var driver = GuiDriver.GetOrCreateDriver();
 
-        [Then(@"the review is not stored in the database")]
-        public void ThenTheReviewIsNotStoredInTheDatabase()
-        {
-            throw new PendingStepException();
+            var btnCancel = driver.FindElementByAccessibilityId("btnCancel");
+            btnCancel.Click();
         }
 
         [Then(@"the user is taken back to the All Reviews form")]
         public void ThenTheUserIsTakenBackToTheAllReviewsForm()
         {
-            throw new PendingStepException();
+            var driver = GuiDriver.GetOrCreateDriver();
+            bool isDgReviewsList = driver.FindElementByAccessibilityId("dgReviews") != null;
+
+            Assert.IsTrue(isDgReviewsList);
+            GuiDriver.Dispose();
         }
 
         [When(@"the user presses the Cancel button")]
         public void WhenTheUserPressesTheCancelButton()
         {
-            throw new PendingStepException();
+            var driver = GuiDriver.GetOrCreateDriver();
+
+            var btnCancel = driver.FindElementByAccessibilityId("btnCancel");
+            btnCancel.Click();
         }
 
         [When(@"the user presses the Dodaj button without selecting a rating")]
         public void WhenTheUserPressesTheDodajButtonWithoutSelectingARating()
         {
-            throw new PendingStepException();
+            GivenTheUserIsOnTheAddReviewForm();
+            var driver = GuiDriver.GetOrCreateDriver();
+            var btnAddReview = driver.FindElementByAccessibilityId("btnAddReview");
+            btnAddReview.Click();
         }
 
-        [Then(@"the application does not add the review to the database")]
-        public void ThenTheApplicationDoesNotAddTheReviewToTheDatabase()
-        {
-            throw new PendingStepException();
-        }
 
         [Then(@"the application remains on Add Review form")]
         public void ThenTheApplicationRemainsOnAddReviewForm()
         {
-            throw new PendingStepException();
+            var driver = GuiDriver.GetOrCreateDriver();
+            bool cboRating = driver.FindElementByAccessibilityId("cboRating") != null;
+            Assert.IsTrue(cboRating);
         }
 
         [Then(@"an error window appears with the message Moraš dodati ocjenu prije objavljivanja recenzije!")]
         public void ThenAnErrorWindowAppearsWithTheMessageMorasDodatiOcjenuPrijeObjavljivanjaRecenzije()
         {
-            throw new PendingStepException();
+            var driver = GuiDriver.GetDriver();
+            driver.SwitchTo().Window(driver.WindowHandles.First());
+            bool isBtnOk = driver.FindElementByAccessibilityId("2") != null;
+            Assert.IsTrue(isBtnOk);
+            var btnOk = driver.FindElementByAccessibilityId("2");
+            btnOk.Click();
+            driver.SwitchTo().Window(driver.WindowHandles.First());
+            GuiDriver.Dispose();
         }
 
         [Given(@"the user has never borrowed the book through the system")]
         public void GivenTheUserHasNeverBorrowedTheBookThroughTheSystem()
         {
-            throw new PendingStepException();
+            var driver = GuiDriver.GetOrCreateDriver();
+
+            var txtUsernameE = driver.FindElementByAccessibilityId("txtUsername");
+            var txtPasswordE = driver.FindElementByAccessibilityId("txtPassword");
+
+            txtUsernameE.SendKeys("mpranjic23");
+            txtPasswordE.SendKeys("pranjicka98");
+
+            var btnLoginE = driver.FindElementByAccessibilityId("btnLogin");
+            btnLoginE.Click();
+
+            driver.SwitchTo().Window(driver.WindowHandles.First());
+            driver.Manage().Window.Maximize();
+
+            var btnBorrowE = driver.FindElementByAccessibilityId("btnBorrow");
+            btnBorrowE.Click();
+
+            AppiumWebElement dgAllBorrows = driver.FindElementByAccessibilityId("dgAllBorrows");
+            ReadOnlyCollection<AppiumWebElement> cells = dgAllBorrows.FindElementsByClassName("DataGridCell");
+
+            string bookName = "Romeo";
+            bool bookFound = false;
+
+            foreach (AppiumWebElement cell in cells) {
+                if (cell.Text.Contains(bookName)) {
+                    bookFound = true;
+                    break;
+                }
+            }
+            Assert.IsTrue(!bookFound);
         }
 
         [Then(@"the application does not open a form for writing a new review")]
         public void ThenTheApplicationDoesNotOpenAFormForWritingANewReview()
         {
-            throw new PendingStepException();
+            var driver = GuiDriver.GetOrCreateDriver();
+            driver.SwitchTo().Window(driver.WindowHandles.Last());
+
+            bool dgReviews = driver.FindElementByAccessibilityId("dgReviews") != null;
+            Assert.IsTrue(dgReviews);
+
         }
 
         [Then(@"an error window appears with the message Moraš posuditi knjigu prije pisanja recenzije!")]
         public void ThenAnErrorWindowAppearsWithTheMessageMorasPosuditiKnjiguPrijePisanjaRecenzije()
         {
-            throw new PendingStepException();
+            var driver = GuiDriver.GetOrCreateDriver();
+            driver.SwitchTo().Window(driver.WindowHandles.First());
+            bool isBtnOk = driver.FindElementByAccessibilityId("2") != null;
+            Assert.IsTrue(isBtnOk);
+            var btnOk = driver.FindElementByAccessibilityId("2");
+            btnOk.Click();
+            driver.SwitchTo().Window(driver.WindowHandles.First());
+            GuiDriver.Dispose();
         }
+
+        [Given(@"the user is on All Reviews form for the selected book")]
+        public void GivenTheUserIsOnAllReviewsFormForTheSelectedBook() {
+            var driver = GuiDriver.GetOrCreateDriver();
+            GuiDriver.Dispose();
+            driver = GuiDriver.GetOrCreateDriver();
+
+
+
+            var txtUsername = driver.FindElementByAccessibilityId("txtUsername");
+            var txtPassword = driver.FindElementByAccessibilityId("txtPassword");
+
+            txtUsername.SendKeys("mpranjic23");
+            txtPassword.SendKeys("pranjicka98");
+
+
+            var btnLogin = driver.FindElementByAccessibilityId("btnLogin");
+            btnLogin.Click();
+            driver.SwitchTo().Window(driver.WindowHandles.First());
+
+            driver.Manage().Window.Maximize();
+            var btnSearch = driver.FindElementByAccessibilityId("btnSearch");
+            btnSearch.Click();
+
+
+            var txtSearch = driver.FindElementByAccessibilityId("txtSearch");
+            txtSearch.SendKeys("Romeo");
+
+
+            var dgvBookSearch = driver.FindElementByAccessibilityId("dgvBookSearch");
+            var cellsInFirstRow = dgvBookSearch.FindElementsByClassName("DataGridCell");
+            cellsInFirstRow[0].Click();
+
+            var btnDetails = driver.FindElementByAccessibilityId("btnDetails");
+            btnDetails.Click();
+
+            var btnReviews = driver.FindElementByAccessibilityId("btnAddReview");
+            btnReviews.Click();
+        }
+
     }
 }

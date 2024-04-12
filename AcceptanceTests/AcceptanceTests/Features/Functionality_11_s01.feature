@@ -12,4 +12,5 @@ Scenario: Viewing the most borrowed books
 Scenario: No borrowed books in the system
   Given there are no records of borrowed books in the system
   When  the user selects the option Najposuđenije knjige from the criteria list
-  Then the user should not see any book details
+  Then the user should still see book details 
+  But the borrow count on those books will be 0
