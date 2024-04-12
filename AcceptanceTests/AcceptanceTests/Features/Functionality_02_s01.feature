@@ -14,11 +14,11 @@ Scenario Outline: Invalid credentials
 
 	Examples: 
 	| username   | password     | error                                                                 |
+	| megi       | megi123      | Članarina je istekla! Članarinu možete produljiti u svojoj knjižnici. |
 	| noUsername | cindricka123 | Unijeli ste krive korisničke podatke!                                 |
 	| pcindric89 | noPass       | Unijeli ste krive korisničke podatke!                                 |
 	| noUsername | noPass       | Unijeli ste krive korisničke podatke!                                 |
 	|            |              | Unijeli ste krive korisničke podatke!                                 |
-	| megi       | megi123      | Članarina je istekla! Članarinu možete produljiti u svojoj knjižnici. |
 
 Scenario Outline: Valid user credentials
 	When the user enters username <username> and password <password>
