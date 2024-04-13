@@ -57,7 +57,7 @@ namespace AcceptanceTests.StepDefinitions
         public void WhenTheUserChoosesMultipleLibrariesToDelete()
         {
             var driver = GuiDriver.GetDriver();
-            var libraryToDelete1 = driver.FindElementByName("997");
+            var libraryToDelete1 = driver.FindElementByName("1111");
             var libraryToDelete2 = driver.FindElementByName("12343");
 
             Actions action = new Actions(driver);
