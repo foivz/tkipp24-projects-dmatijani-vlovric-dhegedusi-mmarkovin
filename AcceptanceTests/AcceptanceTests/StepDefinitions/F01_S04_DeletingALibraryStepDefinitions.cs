@@ -25,15 +25,7 @@ namespace AcceptanceTests.StepDefinitions
         [Then(@"the system should show an error message that it cannot delete the library selection")]
         public void ThenTheSystemShouldShowAnErrorMessageThatItCannotDeleteTheLibrarySelection()
         {
-            var driver = GuiDriver.GetDriver();
-            Assert.IsNotNull(driver);
-            driver.SwitchTo().Window(driver.WindowHandles.First());
-            Assert.IsNotNull(driver);
-
-            var btnOK = driver.FindElementByName("OK");
-            Assert.IsNotNull(btnOK);
-            btnOK.Click();
-            GuiDriver.Dispose();
+            MessageBoxTestHelper.CheckIfMessageBoxIsShown();
         }
 
         [When(@"the user chooses one library to delete")]

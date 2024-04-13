@@ -62,15 +62,7 @@ namespace AcceptanceTests.StepDefinitions
         [Then(@"the system should show an error that the book can't be returned")]
         public void ThenTheSystemShouldShowAnErrorThatTheBookCantBeReturned()
         {
-            var driver = GuiDriver.GetDriver();
-            Assert.IsNotNull(driver);
-            driver.SwitchTo().Window(driver.WindowHandles.First());
-            Assert.IsNotNull(driver);
-
-            var btnOK = driver.FindElementByName("OK");
-            Assert.IsNotNull(btnOK);
-            btnOK.Click();
-            GuiDriver.Dispose();
+            MessageBoxTestHelper.CheckIfMessageBoxIsShown();
         }
 
         [Then(@"the system should show a message that there isn't a current borrow")]

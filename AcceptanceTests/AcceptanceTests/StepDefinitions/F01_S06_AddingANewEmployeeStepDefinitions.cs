@@ -71,15 +71,7 @@ namespace AcceptanceTests.StepDefinitions
         [Then(@"the system should show an error message that the employee can't be added")]
         public void ThenTheSystemShouldShowAnErrorMessageThatTheEmployeeCantBeAdded()
         {
-            var driver = GuiDriver.GetDriver();
-            Assert.IsNotNull(driver);
-            driver.SwitchTo().Window(driver.WindowHandles.First());
-            Assert.IsNotNull(driver);
-
-            var btnOK = driver.FindElementByName("OK");
-            Assert.IsNotNull(btnOK);
-            btnOK.Click();
-            GuiDriver.Dispose();
+            MessageBoxTestHelper.CheckIfMessageBoxIsShown();
         }
 
         [When(@"the employee OIB is not entered")]

@@ -48,15 +48,7 @@ namespace AcceptanceTests.StepDefinitions
         [Then(@"The system should show an error message that the library can't be modified")]
         public void ThenTheSystemShouldShowAnErrorMessageThatTheLibraryCantBeModified()
         {
-            var driver = GuiDriver.GetDriver();
-            Assert.IsNotNull(driver);
-            driver.SwitchTo().Window(driver.WindowHandles.First());
-            Assert.IsNotNull(driver);
-
-            var btnOK = driver.FindElementByName("OK");
-            Assert.IsNotNull(btnOK);
-            btnOK.Click();
-            GuiDriver.Dispose();
+            MessageBoxTestHelper.CheckIfMessageBoxIsShown();
         }
 
         [When(@"the user removes the library OIB")]
@@ -101,15 +93,7 @@ namespace AcceptanceTests.StepDefinitions
         [Then(@"the system should not change anything about the library")]
         public void ThenTheSystemShouldNotChangeAnythingAboutTheLibrary()
         {
-            var driver = GuiDriver.GetDriver();
-            Assert.IsNotNull(driver);
-            driver.SwitchTo().Window(driver.WindowHandles.First());
-            Assert.IsNotNull(driver);
-
-            var btnOK = driver.FindElementByName("OK");
-            Assert.IsNotNull(btnOK);
-            btnOK.Click();
-            GuiDriver.Dispose();
+            MessageBoxTestHelper.CheckIfMessageBoxIsShown();
         }
 
         [When(@"the user changes the library's name")]
