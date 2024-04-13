@@ -518,7 +518,7 @@ namespace AcceptanceTests.StepDefinitions
             var txtDescription = driver.FindElementByAccessibilityId("txtDescription");
             var txtDate = driver.FindElementByAccessibilityId("txtDate");
             var txtPages = driver.FindElementByAccessibilityId("txtNumberPages");
-            var txtImage = driver.FindElementByAccessibilityId("txtLinkPicture");
+            //var txtImage = driver.FindElementByAccessibilityId("txtLinkPicture");
 
             txtName.SendKeys("ImeSve 1");
             txtDescription.SendKeys("OpisSve 1");
@@ -565,6 +565,17 @@ namespace AcceptanceTests.StepDefinitions
             bool SameScreen = driver.FindElementByName("Unos nove knjige") != null;
             Assert.IsTrue(SameScreen);
         }
+
+        [Then(@"the employee should be redirected to the new book insertion screen")]
+        public void ThenTheEmployeeShouldBeRedirectedToTheNewBookInsertionScreen()
+        {
+            var driver = GuiDriver.GetDriver();
+
+            bool SameScreen = driver.FindElementByName("Unos nove knjige") != null;
+            Assert.IsTrue(SameScreen);
+        }
+
+
 
         [When(@"the employee enters the required fields")] //autor
         public void WhenTheEmployeeEntersTheRequiredFields()
@@ -634,6 +645,7 @@ namespace AcceptanceTests.StepDefinitions
             var txtName = driver.FindElementByAccessibilityId("txtName");
             txtName.SendKeys("Test");
         }
+
 
     }
 }

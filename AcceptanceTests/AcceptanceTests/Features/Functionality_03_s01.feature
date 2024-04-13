@@ -136,12 +136,12 @@ Scenario: Back button from New genre leads to New book entry screen
 	Given the employee entered some information on the New book screen
 	And the employee is on the New genre screen
 	When the employee clicks on the Back button
-	Then the employee should be redirected to the New book entry screen
+	Then the employee should be redirected to the new book insertion screen
 	And the employee should see all his entered inputs there
 
 Scenario: Back button from New author leads to New book entry screen
 	Given the employee entered some information on the New book screen
 	And the employee is on the New author screen
 	When the employee clicks on the Back button
-	Then the employee should be redirected to the New book entry screen
+	Then the employee should be redirected to the new book insertion screen
 	And the employee should see all his entered inputs there
