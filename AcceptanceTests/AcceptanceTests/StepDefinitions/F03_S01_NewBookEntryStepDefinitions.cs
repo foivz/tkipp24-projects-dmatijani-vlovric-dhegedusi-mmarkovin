@@ -1,5 +1,6 @@
 using AcceptanceTests.Support;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using OpenQA.Selenium;
 using System;
 using System.Linq;
 using TechTalk.SpecFlow;
@@ -150,7 +151,8 @@ namespace AcceptanceTests.StepDefinitions
             var driver = GuiDriver.GetDriver();
 
             var txtNumPages = driver.FindElementByAccessibilityId("txtNumberPages");
-            txtNumPages.SendKeys("a");
+            txtNumPages.SendKeys(Keys.Subtract);
+            txtNumPages.SendKeys("12");
         }
 
         [Then(@"the employee should see a warning message that the number of pages can only be a valid numerical value")]
@@ -236,13 +238,37 @@ namespace AcceptanceTests.StepDefinitions
             Assert.IsTrue(message);
         }
 
+        [When(@"the employee enters all required fields and options except the number of copies")]
+        public void WhenTheEmployeeEntersAllRequiredFieldsAndOptionsExceptTheNumberOfCopies()
+        {
+            var driver = GuiDriver.GetDriver();
+
+            var txtName = driver.FindElementByAccessibilityId("txtName");
+            var cmbGenre = driver.FindElementByAccessibilityId("cmbGenre");
+            var cmbAuthor = driver.FindElementByAccessibilityId("cmbAuthor");
+            var radioButton = driver.FindElementByName("Da");
+
+            txtName.SendKeys("ImeAutomatsko");
+            radioButton.Click();
+
+            cmbGenre.Click();
+            var chooseGenre = driver.FindElementByName("Romantika");
+            chooseGenre.Click();
+
+            cmbAuthor.Click();
+            var chooseAuthor = driver.FindElementByName("Harper Vincet");
+            chooseAuthor.Click();
+        }
+
+
         [When(@"the employee enters a non numerical or negative value into the number of copies field")]
         public void WhenTheEmployeeEntersANonNumericalOrNegativeValueIntoTheNumberOfCopiesField()
         {
             var driver = GuiDriver.GetDriver();
 
             var txtNumberCopies = driver.FindElementByAccessibilityId("txtNumberCopies");
-            txtNumberCopies.SendKeys("a");
+            txtNumberCopies.SendKeys(Keys.Subtract);
+            txtNumberCopies.SendKeys("13");
         }
 
         [Then(@"the employee should see a warning message that the number of copies can only be a valid numerical value")]
@@ -257,157 +283,357 @@ namespace AcceptanceTests.StepDefinitions
         [When(@"the employee enters all required fields and options before the genre selection")]
         public void WhenTheEmployeeEntersAllRequiredFieldsAndOptionsBeforeTheGenreSelection()
         {
-            throw new PendingStepException();
+            var driver = GuiDriver.GetDriver();
+
+            var txtName = driver.FindElementByAccessibilityId("txtName");
+            var txtCopies = driver.FindElementByAccessibilityId("txtNumberCopies");
+            var cmbAuthor = driver.FindElementByAccessibilityId("cmbAuthor");
+            var radioButton = driver.FindElementByName("Ne");
+
+            txtName.SendKeys("a");
+            txtCopies.SendKeys("1");
+            radioButton.Click();
+
+            cmbAuthor.Click();
+            var chooseAuthor = driver.FindElementByName("Harper Vincet");
+            chooseAuthor.Click();
         }
 
         [When(@"the employee leaves the genre selection empty")]
         public void WhenTheEmployeeLeavesTheGenreSelectionEmpty()
         {
-            throw new PendingStepException();
+            //nothing
         }
 
         [Then(@"the employee should see a warning message that the genre selection cannot be empty")]
         public void ThenTheEmployeeShouldSeeAWarningMessageThatTheGenreSelectionCannotBeEmpty()
         {
-            throw new PendingStepException();
+            var driver = GuiDriver.GetDriver();
+
+            bool message = driver.FindElementByName("Morate odabrati žanr!") != null;
+            Assert.IsTrue(message);
         }
 
         [When(@"the employee enters all required fields and options before the author selection")]
         public void WhenTheEmployeeEntersAllRequiredFieldsAndOptionsBeforeTheAuthorSelection()
         {
-            throw new PendingStepException();
+            var driver = GuiDriver.GetDriver();
+
+            var txtName = driver.FindElementByAccessibilityId("txtName");
+            var txtCopies = driver.FindElementByAccessibilityId("txtNumberCopies");
+            var cmbGenre = driver.FindElementByAccessibilityId("cmbGenre");
+            var radioButton = driver.FindElementByName("Ne");
+
+            txtName.SendKeys("a");
+            txtCopies.SendKeys("1");
+            radioButton.Click();
+
+            cmbGenre.Click();
+            var chooseGenre = driver.FindElementByName("Romantika");
+            chooseGenre.Click();
         }
 
         [When(@"the employee leaves the author selection empty")]
         public void WhenTheEmployeeLeavesTheAuthorSelectionEmpty()
         {
-            throw new PendingStepException();
+            //nothing
         }
 
         [Then(@"the employee should see a warning message that the author selection cannot be empty")]
         public void ThenTheEmployeeShouldSeeAWarningMessageThatTheAuthorSelectionCannotBeEmpty()
         {
-            throw new PendingStepException();
+            var driver = GuiDriver.GetDriver();
+
+            bool message = driver.FindElementByName("Morate odabrati autora!") != null;
+            Assert.IsTrue(message);
         }
 
         [Given(@"the employee is on the New genre screen")]
         public void GivenTheEmployeeIsOnTheNewGenreScreen()
         {
-            throw new PendingStepException();
+            var driver = GuiDriver.GetDriver();
+
+            var btnNewGenre = driver.FindElementByAccessibilityId("btnNewGenre");
+            btnNewGenre.Click();
+
         }
 
         [When(@"the employee leaves the genre name field empty")]
         public void WhenTheEmployeeLeavesTheGenreNameFieldEmpty()
         {
-            throw new PendingStepException();
+            //nothing
         }
+
+        [Then(@"the employee should remain on the New genre screen")]
+        public void ThenTheEmployeeShouldRemainOnTheNewGenreScreen()
+        {
+            var driver = GuiDriver.GetDriver();
+            bool SameScreen = driver.FindElementByName("Unos novog žanra") != null;
+            Assert.IsTrue(SameScreen);
+        }
+
+        [Then(@"the employee should see a message that the genre insertion was succesful")]
+        public void ThenTheEmployeeShouldSeeAMessageThatTheGenreInsertionWasSuccesful()
+        {
+            var driver = GuiDriver.GetDriver();
+
+            bool message = driver.FindElementByName("Uspješno!") != null;
+            Assert.IsTrue(message);
+        }
+
 
         [Then(@"the employee should see a warning message that the genre name field cannot be empty")]
         public void ThenTheEmployeeShouldSeeAWarningMessageThatTheGenreNameFieldCannotBeEmpty()
         {
-            throw new PendingStepException();
+            var driver = GuiDriver.GetDriver();
+
+            bool message = driver.FindElementByName("Morate unijeti ime žanra!") != null;
+            Assert.IsTrue(message);
         }
 
         [Given(@"the employee is on the New author screen")]
         public void GivenTheEmployeeIsOnTheNewAuthorScreen()
         {
-            throw new PendingStepException();
+            var driver = GuiDriver.GetDriver();
+
+            var btnNewGenre = driver.FindElementByAccessibilityId("btnNewAuthor");
+            btnNewGenre.Click();
         }
 
         [When(@"the employee leaves the author name field empty")]
         public void WhenTheEmployeeLeavesTheAuthorNameFieldEmpty()
         {
-            throw new PendingStepException();
+            //nothing
         }
+
+        [Then(@"the employee should remain on the New author screen")]
+        public void ThenTheEmployeeShouldRemainOnTheNewAuthorScreen()
+        {
+            var driver = GuiDriver.GetDriver();
+            bool SameScreen = driver.FindElementByName("Unos novog autora") != null;
+            Assert.IsTrue(SameScreen);
+        }
+
 
         [Then(@"the employee should see a warning message that the author name field cannot be empty")]
         public void ThenTheEmployeeShouldSeeAWarningMessageThatTheAuthorNameFieldCannotBeEmpty()
         {
-            throw new PendingStepException();
+            var driver = GuiDriver.GetDriver();
+
+            bool message = driver.FindElementByName("Morate unijeti ime autora!") != null;
+            Assert.IsTrue(message);
+            //faila jer pise knjige
         }
 
         [When(@"the employee enters a name into the author name field")]
         public void WhenTheEmployeeEntersANameIntoTheAuthorNameField()
         {
-            throw new PendingStepException();
+            var driver = GuiDriver.GetDriver();
+
+            var txtName = driver.FindElementByAccessibilityId("txtName");
+            txtName.SendKeys("Ivan");
         }
 
         [When(@"the employee leaves the author last name field empty")]
         public void WhenTheEmployeeLeavesTheAuthorLastNameFieldEmpty()
         {
-            throw new PendingStepException();
+            //nothing
         }
 
         [Then(@"the employee should see a warning message that the author last name field cannot be empty")]
         public void ThenTheEmployeeShouldSeeAWarningMessageThatTheAuthorLastNameFieldCannotBeEmpty()
         {
-            throw new PendingStepException();
+            var driver = GuiDriver.GetDriver();
+
+            bool message = driver.FindElementByName("Morate unijeti prezime!") != null;
+            Assert.IsTrue(message);
         }
 
         [When(@"the employee enters all required fields before the birth date")]
         public void WhenTheEmployeeEntersAllRequiredFieldsBeforeTheBirthDate()
         {
-            throw new PendingStepException();
+            var driver = GuiDriver.GetDriver();
+
+            var txtName = driver.FindElementByAccessibilityId("txtName");
+            var txtSurname = driver.FindElementByAccessibilityId("txtSurname");
+            txtName.SendKeys("Ivan");
+            txtSurname.SendKeys("Papa");
         }
+
+        [When(@"the employee enters a birth date different than dd-MM-yyyy")]
+        public void WhenTheEmployeeEntersABirthDateDifferentThanDd_MM_Yyyy()
+        {
+            var driver = GuiDriver.GetDriver();
+
+            var txtDate = driver.FindElementByAccessibilityId("txtBirthDate");
+            txtDate.SendKeys("5.9.2002.");
+        }
+
 
         [When(@"the employee enters valid inputs, chooses options and selects dropdowns for name, radio button, number of copies, genre and author")]
         public void WhenTheEmployeeEntersValidInputsChoosesOptionsAndSelectsDropdownsForNameRadioButtonNumberOfCopiesGenreAndAuthor()
         {
-            throw new PendingStepException();
+            var driver = GuiDriver.GetDriver();
+
+            var txtName = driver.FindElementByAccessibilityId("txtName");
+            var txtCopies = driver.FindElementByAccessibilityId("txtNumberCopies");
+            var cmbGenre = driver.FindElementByAccessibilityId("cmbGenre");
+            var cmbAuthor = driver.FindElementByAccessibilityId("cmbAuthor");
+            var radioButton = driver.FindElementByName("Ne");
+
+            txtName.SendKeys("Ime 1");
+            //OVJD MIJENJAT SVAKI PUT
+            txtCopies.SendKeys("1");
+            radioButton.Click();
+
+            cmbGenre.Click();
+            var chooseGenre = driver.FindElementByName("Romantika");
+            chooseGenre.Click();
+
+            cmbAuthor.Click();
+            var chooseAuthor = driver.FindElementByName("Harper Vincet");
+            chooseAuthor.Click();
         }
 
         [Then(@"the employee should see a message that the insertion was succesful")]
         public void ThenTheEmployeeShouldSeeAMessageThatTheInsertionWasSuccesful()
         {
-            throw new PendingStepException();
+            var driver = GuiDriver.GetDriver();
+
+            bool message = driver.FindElementByName("Uspješno") != null;
+            Assert.IsTrue(message);
         }
 
-        [When(@"the employee enters and chooses all valid information")]
+        [When(@"the employee enters and chooses all valid information")] //za knjigu
         public void WhenTheEmployeeEntersAndChoosesAllValidInformation()
         {
-            throw new PendingStepException();
+            var driver = GuiDriver.GetDriver();
+
+            var txtName = driver.FindElementByAccessibilityId("txtName");
+            var txtCopies = driver.FindElementByAccessibilityId("txtNumberCopies");
+            var cmbGenre = driver.FindElementByAccessibilityId("cmbGenre");
+            var cmbAuthor = driver.FindElementByAccessibilityId("cmbAuthor");
+            var radioButton = driver.FindElementByName("Ne");
+
+            var txtDescription = driver.FindElementByAccessibilityId("txtDescription");
+            var txtDate = driver.FindElementByAccessibilityId("txtDate");
+            var txtPages = driver.FindElementByAccessibilityId("txtNumberPages");
+            var txtImage = driver.FindElementByAccessibilityId("txtLinkPicture");
+
+            txtName.SendKeys("ImeSve 1");
+            txtDescription.SendKeys("OpisSve 1");
+            txtDate.SendKeys("03");
+            txtDate.SendKeys(Keys.Subtract);
+            txtDate.SendKeys("04");
+            txtDate.SendKeys(Keys.Subtract);
+            txtDate.SendKeys("1998");
+
+            txtPages.SendKeys("101");
+            //txtImage.SendKeys("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTxByMe5tXy2r41PqgovT1yfm1R9pPAjiKfZCKzfK0sZw&s");
+            //OVJD MIJENJAT SVAKI PUT
+            txtCopies.SendKeys("1");
+            radioButton.Click();
+
+            cmbGenre.Click();
+            var chooseGenre = driver.FindElementByName("Romantika");
+            chooseGenre.Click();
+
+            cmbAuthor.Click();
+            var chooseAuthor = driver.FindElementByName("Harper Vincet");
+            chooseAuthor.Click();
         }
 
         [When(@"the employee enters the genre name field")]
         public void WhenTheEmployeeEntersTheGenreNameField()
         {
-            throw new PendingStepException();
+            var driver = GuiDriver.GetDriver();
+
+            var txtName = driver.FindElementByAccessibilityId("txtName");
+            txtName.SendKeys("Ime 1");
+            //OVDJE MIJENJAT SVAKI PUT
         }
 
         [Then(@"the employee should be redirected to the New book entry screen")]
         public void ThenTheEmployeeShouldBeRedirectedToTheNewBookEntryScreen()
         {
-            throw new PendingStepException();
+            var driver = GuiDriver.GetDriver();
+
+
+            var btnOk = driver.FindElementByName("OK");
+            btnOk.Click();
+
+            bool SameScreen = driver.FindElementByName("Unos nove knjige") != null;
+            Assert.IsTrue(SameScreen);
         }
 
-        [When(@"the employee enters the required fields")]
+        [When(@"the employee enters the required fields")] //autor
         public void WhenTheEmployeeEntersTheRequiredFields()
         {
-            throw new PendingStepException();
+            var driver = GuiDriver.GetDriver();
+
+            var txtName = driver.FindElementByAccessibilityId("txtName");
+            var txtSurname = driver.FindElementByAccessibilityId("txtSurname");
+
+            txtName.SendKeys("Autor 1");
+            txtSurname.SendKeys("Prezime 1");
+            //OVO MIJENJAT
         }
 
-        [When(@"the employee enters all information")]
+        [When(@"the employee enters all information")] //autor
         public void WhenTheEmployeeEntersAllInformation()
         {
-            throw new PendingStepException();
+            var driver = GuiDriver.GetDriver();
+
+            var txtName = driver.FindElementByAccessibilityId("txtName");
+            var txtSurname = driver.FindElementByAccessibilityId("txtSurname");
+            var txtBirthDate = driver.FindElementByAccessibilityId("txtBirthDate");
+
+            txtName.SendKeys("AutorSve 1");
+            txtSurname.SendKeys("PrezimeSve 1");
+            //OVO MIJENJAT
+            txtBirthDate.SendKeys("03");
+            txtBirthDate.SendKeys(Keys.Subtract);
+            txtBirthDate.SendKeys("12");
+            txtBirthDate.SendKeys(Keys.Subtract);
+            txtBirthDate.SendKeys("2001");
         }
 
         [When(@"the employee clicks on the Back button")]
         public void WhenTheEmployeeClicksOnTheBackButton()
         {
-            throw new PendingStepException();
+            var driver = GuiDriver.GetDriver();
+
+            var btnBack = driver.FindElementByAccessibilityId("btnCancel");
+            btnBack.Click();
         }
 
         [Then(@"the employee should be redirected to the Action choice screen")]
         public void ThenTheEmployeeShouldBeRedirectedToTheActionChoiceScreen()
         {
-            throw new PendingStepException();
+            var driver = GuiDriver.GetDriver();
+            bool SameScreen = driver.FindElementByName("Odabir radnje") != null;
+            Assert.IsTrue(SameScreen);
         }
 
-        [Then(@"the employee should see all his entered inputs there")]
+        [Then(@"the employee should see all his entered inputs there")] //od autora do knjige
         public void ThenTheEmployeeShouldSeeAllHisEnteredInputsThere()
         {
-            throw new PendingStepException();
+            var driver = GuiDriver.GetDriver();
+
+            var txtName = driver.FindElementByAccessibilityId("txtName");
+            string nameValue = txtName.Text;
+            bool empty = string.IsNullOrEmpty(nameValue);
+            Assert.IsFalse(empty);
         }
+
+        [Given(@"the employee entered some information on the New book screen")]
+        public void GivenTheEmployeeEnteredSomeInformationOnTheNewBookScreen()
+        {
+            var driver = GuiDriver.GetDriver();
+
+            var txtName = driver.FindElementByAccessibilityId("txtName");
+            txtName.SendKeys("Test");
+        }
+
     }
 }

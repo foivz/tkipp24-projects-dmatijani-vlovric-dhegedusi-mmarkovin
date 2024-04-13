@@ -42,7 +42,7 @@ Scenario: Empty number of copies field
 	And the employee should see a warning message that the number of copies field cannot be empty
 
 Scenario: Non numerical entry for number of copies
-	When the employee enters all required fields and options
+	When the employee enters all required fields and options except the number of copies
 	And the employee enters a non numerical or negative value into the number of copies field
 	And the employee clicks on the Insert button
 	Then the employee should remain on the same screen
@@ -66,14 +66,14 @@ Scenario: Empty genre name field
 	Given the employee is on the New genre screen
 	When the employee leaves the genre name field empty
 	And the employee clicks on the Insert button
-	Then the employee should remain on the same screen
+	Then the employee should remain on the New genre screen
 	And the employee should see a warning message that the genre name field cannot be empty
 
 Scenario: Empty author name field
 	Given the employee is on the New author screen
 	When the employee leaves the author name field empty
 	And the employee clicks on the Insert button
-	Then the employee should remain on the same screen
+	Then the employee should remain on the New author screen
 	And the employee should see a warning message that the author name field cannot be empty
 
 Scenario: Empty author last name field
@@ -81,15 +81,15 @@ Scenario: Empty author last name field
 	When the employee enters a name into the author name field
 	And the employee leaves the author last name field empty
 	And the employee clicks on the Insert button
-	Then the employee should remain on the same screen
+	Then the employee should remain on the New author screen
 	And the employee should see a warning message that the author last name field cannot be empty
 
 Scenario: Wrong birth date format
 	Given the employee is on the New author screen
 	When the employee enters all required fields before the birth date
-	And the employee enters a date different than dd-MM-yyyy
+	And the employee enters a birth date different than dd-MM-yyyy
 	And the employee clicks the Insert button
-	Then the employee should remain on the same screen
+	Then the employee should remain on the New author screen
 	And the employee should see a warning message that the date has to be in the dd-MM-yyyy format
 
 Scenario: Succesful book insertion with only required information entered
@@ -108,15 +108,15 @@ Scenario: Succesful new genre insertion
 	Given the employee is on the New genre screen
 	When the employee enters the genre name field
 	And the employee clicks on the Insert button
-	Then the employee should remain on the same screen
-	And the employee should see a message that the insertion was succesful 
+	Then the employee should remain on the New genre screen
+	And the employee should see a message that the genre insertion was succesful 
 	And the employee should be redirected to the New book entry screen
 
 Scenario: Succesful new author insertion with date of birth empty
 	Given the employee is on the New author screen
 	When the employee enters the required fields
 	And the employee clicks on the Insert button
-	Then the employee should remain on the same screen
+	Then the employee should remain on the New author screen
 	And the employee should see a message that the insertion was succesful 
 	And the employee should be redirected to the New book entry screen
 
@@ -124,7 +124,7 @@ Scenario: Succesful new author insertion with all information
 	Given the employee is on the New author screen
 	When the employee enters all information
 	And the employee clicks on the Insert button
-	Then the employee should remain on the same screen
+	Then the employee should remain on the New author screen
 	And the employee should see a message that the insertion was succesful 
 	And the employee should be redirected to the New book entry screen
 
@@ -133,13 +133,15 @@ Scenario: Back button from New book entry leads to Action choice screen
 	Then the employee should be redirected to the Action choice screen
 
 Scenario: Back button from New genre leads to New book entry screen
-	Given the employee is on the New genre screen
+	Given the employee entered some information on the New book screen
+	And the employee is on the New genre screen
 	When the employee clicks on the Back button
 	Then the employee should be redirected to the New book entry screen
 	And the employee should see all his entered inputs there
 
 Scenario: Back button from New author leads to New book entry screen
-	Given the employee is on the New author screen
+	Given the employee entered some information on the New book screen
+	And the employee is on the New author screen
 	When the employee clicks on the Back button
 	Then the employee should be redirected to the New book entry screen
 	And the employee should see all his entered inputs there
