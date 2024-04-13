@@ -64,7 +64,7 @@ namespace AcceptanceTests.StepDefinitions
         public void WhenTheUserChoosesMultipleEmployeesToDelete()
         {
             var driver = GuiDriver.GetDriver();
-            var employeeToDelete1 = driver.FindElementByName("99999987321");
+            var employeeToDelete1 = driver.FindElementByName("12312312334");
             var employeeToDelete2 = driver.FindElementByName("12345678901");
 
             Actions action = new Actions(driver);
