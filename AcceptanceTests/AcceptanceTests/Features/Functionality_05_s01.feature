@@ -1,4 +1,4 @@
-﻿Feature: Returning a borrowed book
+﻿Feature: F05_S01 - Returning a borrowed book
 
 As an administrator, I want to be able to return a borrowed book
 
@@ -6,7 +6,7 @@ Background:
 	Given an employee from a library which has borrows is logged in
 	When the user clicks the Borrows button
 
-Scenario: Returning a book by choosing from the list
+Scenario: F05_S01_C01 - Returning a book by choosing from the list
 	When the user clicks the Current borrows tab
 	And the user clicks the borrow for the book <book>
 	And the user clicks the Return book button
@@ -18,7 +18,7 @@ Scenario: Returning a book by choosing from the list
 		| book              | returnedbook        |
 		| 18935995 - Hamlet | 18935995 - Hamlet   |
 
-Scenario: Book barcode not entered
+Scenario: F05_S01_C03 - Book barcode not entered
 	When the user clicks the Return book button
 	And the user enters the member barcode <memberbarcode>
 	And the user doesn't enter the book barcode
@@ -29,7 +29,7 @@ Scenario: Book barcode not entered
 		| memberbarcode |
 		| z48rSx4m      |
 
-Scenario: Member barcode not entered
+Scenario: F05_S01_C04 - Member barcode not entered
 	When the user clicks the Return book button
 	And the user enters the book barcode <bookbarcode>
 	And the user doesn't enter the member barcode
@@ -40,7 +40,7 @@ Scenario: Member barcode not entered
 		| bookbarcode |
 		| 65625036    |
 
-Scenario: Non existent book barcode entered
+Scenario: F05_S01_C05 - Non existent book barcode entered
 	When the user clicks the Return book button
 	And the user enters the book barcode <bookbarcode>
 	And the user enters the member barcode <memberbarcode>
@@ -53,7 +53,7 @@ Scenario: Non existent book barcode entered
 		| 99511       | z48rSx4m      |
 		| abcd        | z48rSx4m      |
 
-Scenario: Non existent member barcode entered
+Scenario: F05_S01_C06 - Non existent member barcode entered
 	When the user clicks the Return book button
 	And the user enters the book barcode <bookbarcode>
 	And the user enters the member barcode <memberbarcode>
@@ -66,7 +66,7 @@ Scenario: Non existent member barcode entered
 		| 99511         | 65625036    |
 		| abcd          | 65625036    |
 
-Scenario: Currently non-existent borrow
+Scenario: F05_S01_C07 - Currently non-existent borrow
 	When the user clicks the Return book button
 	And the user enters the book barcode <bookbarcode>
 	And the user enters the member barcode <memberbarcode>
@@ -77,7 +77,7 @@ Scenario: Currently non-existent borrow
 		| bookbarcode | memberbarcode |
 		| 21932274    | uDRcqmgi      |
 
-Scenario: Trying to return a previous borrow
+Scenario: F05_S01_C08 - Trying to return a previous borrow
 	When the user clicks the Return book button
 	And the user enters the book barcode <bookbarcode>
 	And the user enters the member barcode <memberbarcode>
@@ -88,7 +88,7 @@ Scenario: Trying to return a previous borrow
 		| bookbarcode | memberbarcode |
 		| 21932274    | z48rSx4m      |
 
-Scenario: Returning a book by entering the barcodes
+Scenario: F05_S01_C09 - Returning a book by entering the barcodes
 	When the user clicks the Return book button
 	And the user enters the book barcode <bookbarcode>
 	And the user enters the member barcode <memberbarcode>

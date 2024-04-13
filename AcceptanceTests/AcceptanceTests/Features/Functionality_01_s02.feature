@@ -1,4 +1,4 @@
-﻿Feature: Adding a new library
+﻿Feature: F01_S02 - Adding a new library
 
 As an administrator, I want to be able to add a new library into the system
 and also know whether I can or cannot enter in a library with different attributes
@@ -9,14 +9,14 @@ Background:
 	And the user enters a correct library price per day late
 	And the user enters correct membership duration
 
-Scenario: Library ID not entered
+Scenario: F01_S02_C02 - Library ID not entered
 	When the library ID is not entered
 	And the user enters a correct library name
 	And the user enters a correct library OIB
 	And the user clicks the Save new library button
 	Then the system should show an error message that the library can't be added
 
-Scenario: Already existing library ID entered
+Scenario: F01_S02_C03 - Already existing library ID entered
 	When the library ID <id> is entered
 	And the user enters a correct library name
 	And the user enters a correct library OIB
@@ -30,14 +30,14 @@ Scenario: Already existing library ID entered
 		| 1111  |
 		| 12343 |
 
-Scenario: Library OIB not entered
+Scenario: F01_S02_C04 - Library OIB not entered
 	When the library OIB is not entered
 	And the user enters a correct library name
 	And the user enters a correct library ID
 	And the user clicks the Save new library button
 	Then the system should show an error message that the library can't be added
 
-Scenario: Already existing library OIB entered
+Scenario: F01_S02_C05 - Already existing library OIB entered
 	When the library OIB <oib> is entered
 	And the user enters a correct library name
 	And the user enters a correct library ID
@@ -51,14 +51,14 @@ Scenario: Already existing library OIB entered
 		| 96857345682 |
 		| 1234443443  |
 
-Scenario: Library name not entered
+Scenario: F01_S02_C06 - Library name not entered
 	When the library name is not entered
 	And the user enters a correct library OIB
 	And the user enters a correct library ID
 	And the user clicks the Save new library button
 	Then the system should show an error message that the library can't be added
 
-Scenario: Successful new library
+Scenario: F01_S02_C07 - Successful new library
 	When the user enters a correct library name
 	And the user enters a correct library OIB
 	And the user enters a correct library ID

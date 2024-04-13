@@ -1,4 +1,4 @@
-﻿Feature: Deleting an employee
+﻿Feature: F01_S08 - Deleting an employee
 
 As an administrator, I want to be able to delete an employee if needed
 and also be warned before deleting
@@ -8,17 +8,17 @@ Background:
 	And the user is on the All employees screen
 	And the user chooses a library with employees
 
-Scenario: No employees chosen
+Scenario: F01_S08_C01 - No employees chosen
 	When the user clicks the Delete employee button
 	Then the system should show an error message that it cannot delete the employee selection
 
-Scenario: One employee chosen
+Scenario: F01_S08_C02 - One employee chosen
 	When the user chooses one employee to delete
 	And the user clicks the Delete employee button
 	Then the system should warn the user before deleting an employee
 	And the system should delete the selected employee
 
-Scenario: Multiple employees chosen
+Scenario: F01_S08_C03 - Multiple employees chosen
 	When the user chooses multiple employees to delete
 	And the user clicks the Delete employee button
 	Then the system should show an error message that it cannot delete the employee selection

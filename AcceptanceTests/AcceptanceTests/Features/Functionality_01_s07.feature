@@ -1,4 +1,4 @@
-﻿Feature: Editing employee info
+﻿Feature: F01_S07 - Editing employee info
 
 As an administrator, I want to be able to edit employee information if needed
 and also know whether I can or cannot enter in specific information
@@ -10,22 +10,22 @@ Background:
 	And the user chooses an employee from the All employees list
 	And the user clicks on the Edit employee button
 
-Scenario: Employee name removed
+Scenario: F01_S07_C03 - Employee name removed
 	When the user removes the employee name
 	And the user clicks the Save changes for the employee button
 	Then the system should show the employee without the name
 
-Scenario: Employee surname removed
+Scenario: F01_S07_C04 - Employee surname removed
 	When the user removes the employee surname
 	And the user clicks the Save changes for the employee button
 	Then the system should show the employee without the surname
 
-Scenario: Employee username removed
+Scenario: F01_S07_C05 - Employee username removed
 	When the user removes the employee username
 	And the user clicks the Save changes for the employee button
 	Then the system should show an error message that the employee can't be modified
 
-Scenario: Already existing employee username entered
+Scenario: F01_S07_C06 - Already existing employee username entered
 	When the user removes the employee username
 	And the employee username <username> is entered
 	And the user clicks the Save changes for the employee button
@@ -37,12 +37,12 @@ Scenario: Already existing employee username entered
 		| mmarkic    |
 		| pcindric89 |
 
-Scenario: Employee password removed
+Scenario: F01_S07_C07 - Employee password removed
 	When the user removes the employee password
 	And the user clicks the Save changes for the employee button
 	Then the system should show an error message that the employee can't be modified
 
-Scenario: Successful employee edit
+Scenario: F01_S07_C08 - Successful employee edit
 	When the user changes the employee's name
 	And the user enters the employee surname
 	And the user clicks the Save changes for the employee button

@@ -1,4 +1,4 @@
-﻿Feature: Adding a new employee
+﻿Feature: F01_S06 - Adding a new employee
 
 As an administrator, I want to be able to add a new employee into the system for the chosen library
 and also know whether I can or cannot enter in an employee with different attributes
@@ -7,7 +7,7 @@ Background:
 	Given the user is logged in as an administrator
 	And the user is on the New employee screen
 
-Scenario: Library not chosen
+Scenario: F01_S06_C01 - Library not chosen
 	When the library for employee is not chosen
 	And the user enters a correct employee OIB
 	And the user enters an employee name
@@ -16,7 +16,7 @@ Scenario: Library not chosen
 	And the user clicks the Save new employee button
 	Then the system should show an error message that the employee can't be added
 
-Scenario: Employee OIB not entered
+Scenario: F01_S06_C02 - Employee OIB not entered
 	When the employee OIB is not entered
 	And the library for employee is chosen
 	And the user enters an employee name
@@ -25,7 +25,7 @@ Scenario: Employee OIB not entered
 	And the user clicks the Save new employee button
 	Then the system should show an error message that the employee can't be added
 
-Scenario: Already existing employee OIB entered
+Scenario: F01_S06_C03 - Already existing employee OIB entered
 	When the employee OIB <oib> is entered
 	And the library for employee is chosen
 	And the user enters an employee name
@@ -41,7 +41,7 @@ Scenario: Already existing employee OIB entered
 		| 12345678901 |
 		| 66885599443 |
 	
-Scenario: Employee username not entered
+Scenario: F01_S06_C04 - Employee username not entered
 	When the employee username is not entered
 	And the library for employee is chosen
 	And the user enters an employee name
@@ -50,7 +50,7 @@ Scenario: Employee username not entered
 	And the user clicks the Save new employee button
 	Then the system should show an error message that the employee can't be added
 
-Scenario: Already existing employee username entered
+Scenario: F01_S06_C05 - Already existing employee username entered
 	When the employee username <username> is entered
 	And the library for employee is chosen
 	And the user enters an employee name
@@ -66,7 +66,7 @@ Scenario: Already existing employee username entered
 		| mmarkic    |
 		| pcindric89 |
 
-Scenario: Password not entered
+Scenario: F01_S06_C06 - Password not entered
 	When the user doesn't enter the employee password
 	And the user enters a correct employee username
 	And the library for employee is chosen
@@ -75,7 +75,7 @@ Scenario: Password not entered
 	And the user clicks the Save new employee button
 	Then the employee should be visible in the All employees list for the chosen library
 
-Scenario: Successful new employee
+Scenario: F01_S06_C07 - Successful new employee
 	When the user enters a correct employee username
 	And the library for employee is chosen
 	And the user enters an employee name
