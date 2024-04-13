@@ -31,4 +31,4 @@ Scenario: Reading notification details
 	Given the member is on notifications control
 	When selects notification with "Citanje pod Zvijezdama: Nocni Citalacki Maraton"
 	And member clicks Details button
-	Then selected notification detail control should apear
+	Then selected notification detail control should apear "Citanje pod Zvijezdama: Nocni Citalacki Maraton"
