@@ -18,14 +18,18 @@ Scenario Outline: Writing notifiation
 	 
 	Examples: 
 		| title | description |
+		| Neka nova obavijest | Opis obavijesti |
 		|  |  |
-		| Nova obavijest | Opis obavijesti |
 
 Scenario: Giving up on editing
 	When clicks buton New notification
 	And the New notification screen appears
-	And the employee enters title "test123" and description "test123"
-	And clisks save button
-	Then tables should not contain the message
+	And the employee enters title <title> and description <description>
+	And clisks cancel button
+	Then Then tables should not contain the message
+	 
+	Examples: 
+		| title | description |
+		| Neka nova obavijest  | Opis obavijesti |
 
 
