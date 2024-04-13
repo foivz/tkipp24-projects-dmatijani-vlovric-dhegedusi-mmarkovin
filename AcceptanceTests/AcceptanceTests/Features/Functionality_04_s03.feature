@@ -25,7 +25,7 @@ Scenario: Book barcode not entered
 
 	Examples:
 		| memberbarcode |
-		| 1238439564    |
+		| z48rSx4m      |
 
 Scenario: Member barcode not entered
 	Given an employee from a library which has borrows is logged in
@@ -53,7 +53,7 @@ Scenario: Borrow duration not entered
 
 	Examples:
 		| bookbarcode | memberbarcode |
-		| 18935995    | 1238439564    |
+		| 65625036    | z48rSx4m      |
 
 Scenario: Non existent book barcode entered
 	Given an employee from a library which has borrows is logged in
@@ -67,9 +67,9 @@ Scenario: Non existent book barcode entered
 
 	Examples:
 		| bookbarcode | memberbarcode |
-		| 11111599999 | 1238439564    |
-		| 99511       | 1238439564    |
-		| abcd        | 1238439564    |
+		| 11111599999 | z48rSx4m      |
+		| 99511       | z48rSx4m      |
+		| abcd        | z48rSx4m      |
 
 Scenario: Non existent member barcode entered
 	Given an employee from a library which has borrows is logged in
@@ -83,9 +83,9 @@ Scenario: Non existent member barcode entered
 
 	Examples:
 		| memberbarcode | bookbarcode |
-		| 11111599999   | 18935995    |
-		| 99511         | 18935995    |
-		| abcd          | 18935995    |
+		| 11111599999   | 65625036    |
+		| 99511         | 65625036    |
+		| abcd          | 65625036    |
 
 Scenario: Already existing borrow
 	Given an employee from a library which has borrows is logged in
@@ -99,7 +99,7 @@ Scenario: Already existing borrow
 
 	Examples:
 		| bookbarcode | memberbarcode |
-		| 65625036    | 1238439564    |
+		| 18935995    | z48rSx4m      |
 
 Scenario: Borrowing a book by entering the barcodes
 	Given an employee from a library which has borrows is logged in
@@ -113,4 +113,4 @@ Scenario: Borrowing a book by entering the barcodes
 
 	Examples:
 		| bookbarcode | memberbarcode |
-		| 18935995    | 1238439564    |
+		| 65625036    | z48rSx4m      |
