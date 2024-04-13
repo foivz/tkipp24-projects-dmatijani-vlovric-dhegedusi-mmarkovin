@@ -7,7 +7,7 @@ using TechTalk.SpecFlow;
 namespace AcceptanceTests.StepDefinitions
 {
     [Binding]
-    public class F05_S01_BorrowedBooksVisibleStepDefinitions
+    public class F04_S01_BorrowedBooksVisibleStepDefinitions
     {
         [Given(@"an employee from a library which has borrows is logged in")]
         public void GivenAnEmployeeFromALibraryWhichHasBorrowsIsLoggedIn()
