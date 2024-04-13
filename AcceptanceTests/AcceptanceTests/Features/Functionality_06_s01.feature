@@ -4,7 +4,6 @@ As an employee
 I wnat to be able to filter memebers by name and surname
 So that I can easily find them
 
-
 Background: 
 	Given the user is logged into app as employee
 	And is on the Member Management panel
