@@ -30,6 +30,7 @@ namespace AcceptanceTests.StepDefinitions
             driver.SwitchTo().Window(driver.WindowHandles.First());
             var btnLogout = driver.FindElementByAccessibilityId("btnLogout");
             btnLogout.Click();
+            driver.SwitchTo().Window(driver.WindowHandles.First());
         }
 
         [Then(@"the user should see the Login form")]
@@ -39,12 +40,9 @@ namespace AcceptanceTests.StepDefinitions
             driver.SwitchTo().Window(driver.WindowHandles.First());
             bool isCorrectTitle = driver.Title == "Login";
             Assert.IsTrue(isCorrectTitle);
-        }
 
-        [AfterScenario]
-        public void CloseApplication()
-        {
             GuiDriver.Dispose();
         }
+
     }
 }

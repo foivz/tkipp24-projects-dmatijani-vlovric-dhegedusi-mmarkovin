@@ -1,4 +1,8 @@
+using AcceptanceTests.Support;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using OpenQA.Selenium;
 using System;
+using System.Linq;
 using TechTalk.SpecFlow;
 
 namespace AcceptanceTests.StepDefinitions
@@ -9,37 +13,55 @@ namespace AcceptanceTests.StepDefinitions
         [Given(@"the user is on the login form")]
         public void GivenTheUserIsOnTheLoginForm()
         {
-            throw new PendingStepException();
+            var driver = GuiDriver.GetOrCreateDriver();
+
+            bool isCorrectTitle = driver.Title == "Login";
+            Assert.IsTrue(isCorrectTitle);
         }
 
-        [When(@"the user enters username megi and password megi(.*)")]
-        public void WhenTheUserEntersUsernameMegiAndPasswordMegi(int p0)
+        [When(@"the user enters username (.*) and password (.*)")]
+        public void WhenTheUserEntersUsernameMegiAndPasswordMegi(string username, string password)
         {
-            throw new PendingStepException();
+            var driver = GuiDriver.GetDriver();
+
+            var txtUsername = driver.FindElementByAccessibilityId("txtUsername");
+            var txtPassword = driver.FindElementByAccessibilityId("txtPassword");
+
+            txtUsername.SendKeys(username);
+            txtPassword.SendKeys(password);
         }
 
         [When(@"the user clicks the Login button")]
         public void WhenTheUserClicksTheLoginButton()
         {
-            throw new PendingStepException();
+            var driver = GuiDriver.GetDriver();
+
+            var btnLogin = driver.FindElementByAccessibilityId("btnLogin");
+            btnLogin.Click();
         }
 
-        [Then(@"the user shold see Članarina je istekla! Članarinu možete produljiti u svojoj knjižnici\. message")]
-        public void ThenTheUserSholdSeeClanarinaJeIsteklaClanarinuMozeteProduljitiUSvojojKnjiznici_Message()
+        [Then(@"the user shold see (.*) message")]
+        public void ThenTheUserSholdSeeErrorMessage(string error)
         {
-            throw new PendingStepException();
-        }
+            var driver = GuiDriver.GetDriver();
+            Assert.IsNotNull(driver);
+            driver.SwitchTo().Window(driver.WindowHandles.First());
+            Assert.IsNotNull(driver);
 
-        [When(@"the user enters username pcindric(.*) and password cindricka(.*)")]
-        public void WhenTheUserEntersUsernamePcindricAndPasswordCindricka(int p0, int p1)
-        {
-            throw new PendingStepException();
+            var btnOK = driver.FindElementByName("OK");
+            Assert.IsNotNull(btnOK);
+            btnOK.Click();
+            GuiDriver.Dispose();
+
         }
 
         [Then(@"the user should see employee window")]
         public void ThenTheUserShouldSeeEmployeeWindow()
         {
-            throw new PendingStepException();
+            var driver = GuiDriver.GetDriver();
+            driver.SwitchTo().Window(driver.WindowHandles.First());
+            bool isCorrectTitle = driver.Title == "EmployeePanel";
+            Assert.IsTrue(isCorrectTitle);
         }
     }
 }
