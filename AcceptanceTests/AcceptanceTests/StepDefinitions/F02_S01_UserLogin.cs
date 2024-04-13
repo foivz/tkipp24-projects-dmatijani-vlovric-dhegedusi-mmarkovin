@@ -60,8 +60,10 @@ namespace AcceptanceTests.StepDefinitions
         {
             var driver = GuiDriver.GetDriver();
             driver.SwitchTo().Window(driver.WindowHandles.First());
-            bool isCorrectTitle = driver.Title == "EmployeePanel";
+            bool isCorrectTitle = driver.Title == "MyLibra";
             Assert.IsTrue(isCorrectTitle);
+
+            GuiDriver.Dispose();
         }
     }
 }

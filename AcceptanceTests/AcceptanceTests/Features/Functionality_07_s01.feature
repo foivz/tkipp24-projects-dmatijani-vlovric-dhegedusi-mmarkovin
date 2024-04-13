@@ -15,7 +15,7 @@ Scenario Outline: Writing notifiation
 	And the employee enters title <title> and description <description>
 	And clisks save button
 	Then tables last row should contain notifiv+cation with <title> and <description>
-
+	 
 	Examples: 
 		| title | description |
 		|  |  |
@@ -24,7 +24,7 @@ Scenario Outline: Writing notifiation
 Scenario: Giving up on editing
 	When clicks buton New notification
 	And the New notification screen appears
-	And the employee enters title "test123" and description "test123
+	And the employee enters title "test123" and description "test123"
 	And clisks save button
 	Then tables should not contain the message
 

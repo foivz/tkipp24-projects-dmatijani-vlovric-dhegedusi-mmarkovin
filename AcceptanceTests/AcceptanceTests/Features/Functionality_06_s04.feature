@@ -19,7 +19,7 @@ Scenario: Member did not return the book
 	Then the employee should see members menagment window
 	And the table should still show that member
 
-Scenario: 
+Scenario: Member deleted
 	When employee selects member with username
 	And employee clicks delete button
 	And employee clicks ok button on alert window
