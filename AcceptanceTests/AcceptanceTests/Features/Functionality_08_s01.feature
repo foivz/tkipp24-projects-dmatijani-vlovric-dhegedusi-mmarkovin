@@ -18,7 +18,7 @@ Scenario: Digital book inclusion
 
 Scenario: Search criteria
 	When the member selects one type of criteria
-	And the member enters information into the search bar
+	And the member enters information into the filtered search bar
 	Then the member should see books that match information of only the chosen criteria
 
 Scenario: Clear filters
