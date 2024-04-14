@@ -8,9 +8,8 @@ Background:
 
 @tag1
 Scenario: Archived books are listed
-	When the employee is on the archive screen
 	Then the employee should see a list of archived books
 
 Scenario: Back button from Archive leads to Action choice screen
-	When the employee clicks on the Back button
+	When the employee clicks on the Back button from the archive
 	Then the employee should be redirected to the Action choice screen
