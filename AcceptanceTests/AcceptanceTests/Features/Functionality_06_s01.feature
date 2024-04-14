@@ -11,14 +11,22 @@ Background:
 Scenario Outline: Filtering members by name and surename
 	When Employee enters name <name> and surename <surename>
 	And clicks the Filter button
-	Then application shows <name> <surename>
+	Then application shows <name> and <surename>
 
 	Examples: 
-		| username   | surename |
+		| name | surename |
 		| Sebastijan |          | 
 		|            | Kralj    |
 		| Sebastijan | Kralj    |
-		| Petra      | Perković |
+
+Scenario: Filtering members that do not exist
+	When Employee enters name <name> and surename <surename>
+	And clicks the Filter button
+	Then application shows empty table
+
+	Examples: 
+		| name   | surename |
+		| Petra | Perković |
 
 Scenario: Clearing the filter
 	When Employee enters name <name> and surename <surename>
@@ -26,5 +34,5 @@ Scenario: Clearing the filter
 	Then application shows all members
 
 	Examples: 
-		| username   | surename |
+		| name  | surename |
 		| Sebastijan | Kralj    |
