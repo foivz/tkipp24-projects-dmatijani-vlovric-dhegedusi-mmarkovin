@@ -11,10 +11,10 @@ namespace AcceptanceTests.StepDefinitions
     [Binding]
     public class F09_s01_BookReservationStepDefinitions
     {
-        public static string bookA { get; set; } = "Book A14";
-        public static string bookB { get; set; } = "Book B14";
-        public static string bookC { get; set; } = "Book C14";
-        public static string bookD { get; set; } = "Book D14";
+        public static string bookA { get; set; } = "Book A15";
+        public static string bookB { get; set; } = "Book B15";
+        public static string bookC { get; set; } = "Book C15";
+        public static string bookD { get; set; } = "Book D15";
 
         public void EnterBook(string name, WindowsDriver<WindowsElement> Driver)
         {
