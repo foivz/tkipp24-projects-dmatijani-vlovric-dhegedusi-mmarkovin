@@ -11,10 +11,10 @@ namespace AcceptanceTests.StepDefinitions
     [Binding]
     public class F09_s01_BookReservationStepDefinitions
     {
-        public static string bookA { get; set; } = "Book A13";
-        public static string bookB { get; set; } = "Book B13";
-        public static string bookC { get; set; } = "Book C13";
-        public static string bookD { get; set; } = "Book D13";
+        public static string bookA { get; set; } = "Book A14";
+        public static string bookB { get; set; } = "Book B14";
+        public static string bookC { get; set; } = "Book C14";
+        public static string bookD { get; set; } = "Book D14";
 
         public void EnterBook(string name, WindowsDriver<WindowsElement> Driver)
         {
@@ -1163,5 +1163,165 @@ namespace AcceptanceTests.StepDefinitions
             bool copies = driver.FindElementByAccessibilityId("tblAvailable").Text == "Ne";
             Assert.IsTrue(copies);
         }
+
+        [Given(@"the member has a reserved book D")]
+        public void GivenTheMemberHasAReservedBookD()
+        {
+            var driver = GuiDriver.GetDriver();
+            driver.SwitchTo().Window(driver.WindowHandles.First());
+
+            var btnOk = driver.FindElementByAccessibilityId("2");
+            btnOk.Click();
+
+            var btnSearch = driver.FindElementByAccessibilityId("btnSearch");
+            btnSearch.Click();
+
+            var txtSearch = driver.FindElementByAccessibilityId("txtSearch");
+            txtSearch.SendKeys(bookD);
+
+            var dgv = driver.FindElementByAccessibilityId("dgvBookSearch");
+            var rows = dgv.FindElementsByClassName("DataGridRow");
+            var cells = rows[0].FindElementsByClassName("DataGridCell");
+            cells[0].Click();
+
+            var btnDetails = driver.FindElementByAccessibilityId("btnDetails");
+            btnDetails.Click();
+
+            driver.Manage().Window.Maximize();
+
+            var btnReserve = driver.FindElementByAccessibilityId("btnReserve");
+            btnReserve.Click();
+
+            driver.SwitchTo().Window(driver.WindowHandles.First());
+            var btnAccept = driver.FindElementByName("Potvrđujem");
+            btnAccept.Click();
+
+            driver.SwitchTo().Window(driver.WindowHandles.First());
+            btnOk = driver.FindElementByAccessibilityId("2");
+            btnOk.Click();
+        }
+
+        [Given(@"the member removes the book D from his reservations")]
+        public void GivenTheMemberRemovesTheBookDFromHisReservations()
+        {
+            var driver = GuiDriver.GetDriver();
+
+            var btnReservations = driver.FindElementByAccessibilityId("btnReservations");
+            btnReservations.Click();
+
+            var dgv = driver.FindElementByAccessibilityId("dgvReservations");
+            var rows = dgv.FindElementsByClassName("DataGridRow");
+            foreach (var row in rows)
+            {
+                var cells = row.FindElementsByClassName("DataGridCell");
+                if (cells[0].Text == bookD)
+                {
+                    cells[0].Click();
+                    break;
+                }
+            }
+
+            var btnRemove = driver.FindElementByAccessibilityId("btnRemove");
+            btnRemove.Click();
+
+            var btnOk = driver.FindElementByAccessibilityId("2");
+            btnOk.Click();
+        }
+
+
+        [When(@"an employee enters (.*) new copies of the book D")] //2
+        public void WhenAnEmployeeEntersNewCopiesOfTheBookD(int p0)
+        {
+            var driver = GuiDriver.GetDriver();
+
+            //logout
+            var btnLogout = driver.FindElementByAccessibilityId("btnLogout");
+            btnLogout.Click();
+
+            //login
+            driver.SwitchTo().Window(driver.WindowHandles.First());
+            var txtUsername = driver.FindElementByAccessibilityId("txtUsername");
+            var txtPassword = driver.FindElementByAccessibilityId("txtPassword");
+            txtUsername.SendKeys("pcindric88");
+            txtPassword.SendKeys("a");
+            var btnLogin = driver.FindElementByAccessibilityId("btnLogin");
+            btnLogin.Click();
+
+            //catalogue, new copies
+            driver.SwitchTo().Window(driver.WindowHandles.First());
+            var btnCatalogue = driver.FindElementByAccessibilityId("btnBookCatalog");
+            btnCatalogue.Click();
+
+            var btnCopies = driver.FindElementByAccessibilityId("btnNewCopies");
+            btnCopies.Click();
+
+            //new book copy
+            var txtSearch = driver.FindElementByAccessibilityId("txtBookName");
+            txtSearch.SendKeys(bookD);
+
+            var dgv = driver.FindElementByAccessibilityId("dgvBookNamesArchive");
+            var rows = dgv.FindElementsByClassName("DataGridRow");
+            var cells = rows[0].FindElementsByClassName("DataGridCell");
+            cells[0].Click();
+
+            var txtCopies = driver.FindElementByAccessibilityId("txtNumberCopies");
+            txtCopies.SendKeys("2");
+
+            var btnInsert = driver.FindElementByAccessibilityId("btnSave");
+            btnInsert.Click();
+            var btnOk = driver.FindElementByAccessibilityId("2");
+            btnOk.Click();
+
+            //logout
+            btnLogout = driver.FindElementByAccessibilityId("btnLogout");
+            btnLogout.Click();
+        }
+
+        [When(@"the member logs in again")]
+        public void WhenTheMemberLogsInAgain()
+        {
+            var driver = GuiDriver.GetDriver();
+            driver.SwitchTo().Window(driver.WindowHandles.First());
+
+            var txtUsername = driver.FindElementByAccessibilityId("txtUsername");
+            var txtPassword = driver.FindElementByAccessibilityId("txtPassword");
+            txtUsername.SendKeys("anabol");
+            txtPassword.SendKeys("123");
+            var btnLogin = driver.FindElementByAccessibilityId("btnLogin");
+            btnLogin.Click();
+
+            driver.SwitchTo().Window(driver.WindowHandles.First());
+        }
+
+        [Then(@"the member should see that the number of available copies of book D on the Details page is (.*)")] //2
+        public void ThenTheMemberShouldSeeThatTheNumberOfAvailableCopiesOfBookDOnTheDetailsPageIs(int p0)
+        {
+            var driver = GuiDriver.GetDriver();
+            driver.SwitchTo().Window(driver.WindowHandles.First());
+
+            var btnOk = driver.FindElementByAccessibilityId("2");
+            btnOk.Click();
+
+            var btnSearch = driver.FindElementByAccessibilityId("btnSearch");
+            btnSearch.Click();
+
+            var txtSearch = driver.FindElementByAccessibilityId("txtSearch");
+            txtSearch.SendKeys(bookD);
+
+            var dgv = driver.FindElementByAccessibilityId("dgvBookSearch");
+            var rows = dgv.FindElementsByClassName("DataGridRow");
+            var cells = rows[0].FindElementsByClassName("DataGridCell");
+            cells[0].Click();
+
+            var btnDetails = driver.FindElementByAccessibilityId("btnDetails");
+            btnDetails.Click();
+
+            driver.Manage().Window.Maximize();
+
+            bool copies = driver.FindElementByAccessibilityId("tblAvailable").Text == "Da, broj raspoloživih primjeraka je: 2";
+            Assert.IsTrue(copies);
+        }
+
+
     }
 }

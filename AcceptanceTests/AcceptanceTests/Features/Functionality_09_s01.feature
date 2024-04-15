@@ -84,4 +84,11 @@ Scenario: F09_S01_C11 Removal
 	When the second member logs in
 	Then the second member should see a notification window
 	And the second member should see that the number of available copies of book B on the Details page is 0
-	
+
+Scenario: F09_S01_C12 Remove reservation valid availability
+	Given the member has a reserved book D
+	And the member removes the book D from his reservations
+	And no other member has that book reserved
+	When an employee enters 2 new copies of the book D
+	And the member logs in again
+	Then the member should see that the number of available copies of book D on the Details page is 2
