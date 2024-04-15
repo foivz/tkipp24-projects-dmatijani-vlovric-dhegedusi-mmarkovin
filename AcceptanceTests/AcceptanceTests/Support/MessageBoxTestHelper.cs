@@ -1,12 +1,8 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
-namespace AcceptanceTests.Support {
+namespace AcceptanceTests.Support
+{
     public static class MessageBoxTestHelper {
         public static void CheckIfMessageBoxIsShown() {
             var driver = GuiDriver.GetDriver();

@@ -1,8 +1,6 @@
 ﻿using AcceptanceTests.Support;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
 using System.Linq;
-using System.Windows.Forms;
 using TechTalk.SpecFlow;
 
 namespace AcceptanceTests.StepDefinitions
