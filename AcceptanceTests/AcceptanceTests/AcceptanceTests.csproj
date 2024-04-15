@@ -5,11 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <SpecFlowObsoleteCodeBehindFiles Remove="Features\Functionality_01_s01 - Copy.feature.cs" />
+	  <SpecFlowObsoleteCodeBehindFiles Remove="Features\Functionality_01_s01 - Copy.feature.cs" />
   </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Appium.WebDriver" Version="4.4.5" />
+    <ItemGroup>
+	<PackageReference Include="Appium.WebDriver" Version="4.4.5" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.0.0" />
     <PackageReference Include="SpecFlow.Plus.LivingDocPlugin" Version="3.9.57" />
     <PackageReference Include="SpecFlow.MsTest" Version="3.9.40" />
@@ -23,14 +22,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="System.Windows.Forms" />
+	  <Reference Include="System.Windows.Forms" />
   </ItemGroup>
 
   <ItemGroup>
-    <SpecFlowFeatureFiles Update="Features\Functionality_01_s05.feature">
-      <Visible>$(UsingMicrosoftNETSdk)</Visible>
-      <CodeBehindFile>%(RelativeDir)%(Filename).feature$(DefaultLanguageSourceExtension)</CodeBehindFile>
-    </SpecFlowFeatureFiles>
+	  <SpecFlowFeatureFiles Update="Features\Functionality_01_s05.feature">
+		  <Visible>$(UsingMicrosoftNETSdk)</Visible>
+		  <CodeBehindFile>%(RelativeDir)%(Filename).feature$(DefaultLanguageSourceExtension)</CodeBehindFile>
+	  </SpecFlowFeatureFiles>
+    <Folder Include="Features\" />
+    <Folder Include="Support\" />
   </ItemGroup>
 
 </Project>
