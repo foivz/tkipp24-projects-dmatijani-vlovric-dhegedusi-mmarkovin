@@ -72,7 +72,7 @@ namespace AcceptanceTests.StepDefinitions
 
         }
 
-        [Then(@"application shows (.*) and (.*) ")]
+        [Then(@"application shows (.*) and (.*)")]
         public void ThenApplicationShowsNameAndSurename(string name, string surename)
         {
             var driver = GuiDriver.GetDriver();
