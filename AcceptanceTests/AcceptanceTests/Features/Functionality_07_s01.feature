@@ -14,7 +14,7 @@ Scenario Outline: Writing notifiation
 	And the New notification screen appears
 	And the employee enters title <title> and description <description>
 	And clisks save button
-	Then tables last row should contain notifiv+cation with <title> and <description>
+	Then tables last row should contain notification with <title> and <description>
 	 
 	Examples: 
 		| title | description |

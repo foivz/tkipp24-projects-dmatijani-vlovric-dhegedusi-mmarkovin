@@ -76,8 +76,8 @@ namespace AcceptanceTests.StepDefinitions
             btnOK.Click();
         }
 
-        [Then(@"tables last row should contain notifiv\+cation with title (.*) and description (.*) ")]
-        public void ThenTablesLastRowShouldContainNotifivCationWithAnd(string title, string description)
+        [Then(@"tables last row should contain notification with (.*) and (.*)")]
+        public void ThenTablesLastRowShouldContainNotifiCationWithAnd(string title, string description)
         {
             var driver = GuiDriver.GetDriver();
             var newNotificationTitle = driver.FindElementByName("title");
