@@ -80,8 +80,8 @@ namespace AcceptanceTests.StepDefinitions
         public void ThenTablesLastRowShouldContainNotifiCationWithAnd(string title, string description)
         {
             var driver = GuiDriver.GetDriver();
-            var newNotificationTitle = driver.FindElementByName("title");
-            var newNotificationDescription = driver.FindElementByName("description");
+            var newNotificationTitle = driver.FindElementByName(title);
+            var newNotificationDescription = driver.FindElementByName(description);
             Assert.IsNotNull(newNotificationTitle);
             Assert.IsNotNull(newNotificationDescription);
 
@@ -103,7 +103,7 @@ namespace AcceptanceTests.StepDefinitions
             var notificationsControl = driver.FindElementByName("Sve obavijesti");
             Assert.IsNotNull(notificationsControl);
 
-            var newNotification = driver.FindElementsByName("Neka nova obavijest");
+            var newNotification = driver.FindElementsByName("Jerkolilili");
             bool exsists = newNotification.Count != 0;
             Assert.IsFalse(exsists);
 

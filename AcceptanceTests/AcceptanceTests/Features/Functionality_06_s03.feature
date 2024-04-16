@@ -11,10 +11,10 @@ Background:
 @tag1
 Scenario: Editing existing member
 	When employee selects member with username "anabol" and clicks edit button
-	And the employee edits name "AAAaaa" and surename "BBBbb"
+	And the employee edits name "ANANANA" and surename "BABABA"
 	And clicks Save button on screeen
 	Then the employee should see member managment panel
-	And the table with members should contain edited member "AAAaaa" "BBBbb"
+	And the table with members should contain edited member "ANANANA" "BABABA"
 
 Scenario: Editing non exsisting member
 	When employee clicks edit button on screeen

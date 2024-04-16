@@ -10,6 +10,7 @@ namespace AcceptanceTests.StepDefinitions
     [Binding]
     public class F10_S03_DeletingReviewsStepDefinitions
     {
+        F10_S02_WritingReviewsStepDefinitions helperClass = new F10_S02_WritingReviewsStepDefinitions();
         [When(@"the user presses the Obriši Recenziju button")]
         public void WhenTheUserPressesTheObrisiRecenzijuButton()
         {
@@ -56,13 +57,49 @@ namespace AcceptanceTests.StepDefinitions
         [Given(@"the user has not previously written a review for the selected book")]
         public void GivenTheUserHasNotPreviouslyWrittenAReviewForTheSelectedBook()
         {
-            throw new PendingStepException();
+            var driver = GuiDriver.GetOrCreateDriver();
+            GuiDriver.Dispose();
+            helperClass.GivenTheUserIsOnAllReviewsForm();
+
+            driver = GuiDriver.GetOrCreateDriver();
+            var dgReviews = driver.FindElementByAccessibilityId("dgReviews");
+            var rows = dgReviews.FindElementsByClassName("DataGridRow");
+
+            bool hasUserWrittenReview = false;
+
+
+            foreach (var row in rows)
+            {
+                var cells = row.FindElementsByClassName("DataGridCell");
+
+                foreach (var cell in cells)
+                {
+                    string cellText = cell.Text.Trim();
+
+                    if (cellText == "Marija Pranjic")
+                    {
+                        hasUserWrittenReview = true;
+                        break;
+                    }
+                }
+            }
+
+
+
+            Assert.IsTrue(!hasUserWrittenReview);
         }
 
         [Then(@"an error window appears with the message Niste napisali recenziju za ovu knjigu!")]
         public void ThenAnErrorWindowAppearsWithTheMessageNisteNapisaliRecenzijuZaOvuKnjigu()
         {
-            throw new PendingStepException();
+            var driver = GuiDriver.GetDriver();
+            driver.SwitchTo().Window(driver.WindowHandles.First());
+            bool isBtnOk = driver.FindElementByAccessibilityId("2") != null;
+            Assert.IsTrue(isBtnOk);
+            var btnOk = driver.FindElementByAccessibilityId("2");
+            btnOk.Click();
+            driver.SwitchTo().Window(driver.WindowHandles.First());
+            GuiDriver.Dispose();
         }
     }
 }

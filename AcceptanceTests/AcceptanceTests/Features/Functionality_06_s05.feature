@@ -18,9 +18,9 @@ Scenario: Membership did not expire
 	Then the error should appear
 
 Scenario: Membership extendes successfully
-	When the employee selects member with username "test02"
+	When the employee selects member with username "test03"
 	And  employee clicks extend button
 	Then the members menagment window should appear
-	And the membership date of that member should be today's date "14/4/2024"
+	And the membership date of that member should be today's date "16/4/2024"
 
 

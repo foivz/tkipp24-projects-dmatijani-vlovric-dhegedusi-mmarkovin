@@ -1,4 +1,4 @@
-using AcceptanceTests.Support;
+ï»¿using AcceptanceTests.Support;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OpenQA.Selenium;
 using System;
@@ -36,7 +36,7 @@ namespace AcceptanceTests.StepDefinitions
             var btnMembership = driver.FindElementByAccessibilityId("btnMembership");
             btnMembership.Click();
 
-            var membersPanel = driver.FindElementByName("Èlanovi knjižnice");
+            var membersPanel = driver.FindElementByName("ÄŒlanovi knjiÅ¾nice");
             Assert.IsNotNull(membersPanel);
         }
 
@@ -64,7 +64,7 @@ namespace AcceptanceTests.StepDefinitions
             var dgvName = driver.FindElementsByName("Petra");
             bool nameExists = dgvName.Count != 0;
             Assert.IsFalse(nameExists);
-            var dgvSurename = driver.FindElementsByName("Perkoviæ");
+            var dgvSurename = driver.FindElementsByName("PerkoviÃ¦");
             bool surnameExists = dgvSurename.Count != 0;
             Assert.IsFalse(surnameExists);
 

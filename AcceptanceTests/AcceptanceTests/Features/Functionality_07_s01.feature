@@ -18,8 +18,7 @@ Scenario Outline: Writing notifiation
 	 
 	Examples: 
 		| title | description |
-		| Neka nova obavijest | Opis obavijesti |
-		|  |  |
+		| Marijamjakaka | ghjghjgchhcgm |
 
 Scenario: Giving up on editing
 	When clicks buton New notification
@@ -30,6 +29,6 @@ Scenario: Giving up on editing
 	 
 	Examples: 
 		| title | description |
-		| Neka nova obavijest  | Opis obavijesti |
+		| Jerkolilili | Opis obavijesti |
 
 

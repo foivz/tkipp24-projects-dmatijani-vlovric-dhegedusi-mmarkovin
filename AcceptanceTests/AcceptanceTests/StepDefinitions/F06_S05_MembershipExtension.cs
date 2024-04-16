@@ -1,4 +1,4 @@
-using AcceptanceTests.Support;
+Ôªøusing AcceptanceTests.Support;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Linq;
@@ -29,7 +29,7 @@ namespace AcceptanceTests.StepDefinitions
             var driver = GuiDriver.GetDriver();
 
             System.Threading.Thread.Sleep(1000);
-            var btnMembership = driver.FindElementByName("Produljenje Ëlanstva");
+            var btnMembership = driver.FindElementByName("Produljenje ƒçlanstva");
             btnMembership.Click();
         }
 
@@ -58,7 +58,7 @@ namespace AcceptanceTests.StepDefinitions
         public void ThenTheMembersMenagmentWindowShouldAppear()
         {
             var driver = GuiDriver.GetDriver();
-            var membersControl = driver.FindElementByName("»lanovi knjiûnice");
+            var membersControl = driver.FindElementByName("ƒålanovi knji≈ænice");
             Assert.IsNotNull(membersControl);
         }
 

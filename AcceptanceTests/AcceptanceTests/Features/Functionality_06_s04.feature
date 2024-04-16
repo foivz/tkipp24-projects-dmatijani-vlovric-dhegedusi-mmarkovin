@@ -20,8 +20,8 @@ Scenario: Member did not return the book
 	And the table should still show that member "bazinga"
 
 Scenario: Member deleted
-	When employee selects employee selects member with username "test3"
+	When employee selects employee selects member with username "test5"
 	And employee clicks delete button
 	And employee clicks ok button on alert window
 	Then the employee should see members menagment window
-	And the table without that member "test3"
+	And the table without that member "test5"

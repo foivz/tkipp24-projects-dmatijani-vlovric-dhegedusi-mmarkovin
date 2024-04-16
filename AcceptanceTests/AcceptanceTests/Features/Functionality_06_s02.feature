@@ -30,7 +30,7 @@ Scenario Outline: Invalid required parameters
 		And the table with members should contain member with <OIB> <username>
 	Examples: 
 	| name | surename | OIB | username | password |
-	|  |  | 44435345678 | jana3 | jjjj | 
+	|  |  | 44115345678 | jana2345 | jjjj | 
 	| Magdalena | Markovinović | 45672345678 |  megica08 | lozinka123 |
 
 Scenario Outline: Giving up on registration

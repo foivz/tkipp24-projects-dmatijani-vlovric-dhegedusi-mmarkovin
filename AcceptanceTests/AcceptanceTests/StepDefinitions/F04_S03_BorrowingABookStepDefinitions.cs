@@ -30,7 +30,7 @@ namespace AcceptanceTests.StepDefinitions
             driver.FindElementByAccessibilityId("txtSearch").SendKeys("Ham");
             driver.FindElementByName("Hamlet").Click();
             driver.FindElementByAccessibilityId("btnDetails").Click();
-            driver.FindElementByName("Maximise").Click();
+            driver.Manage().Window.Maximize();
             driver.FindElementByName("Posudi").Click();
             driver.SwitchTo().Window(driver.WindowHandles.First());
             driver.FindElementByName("OK").Click();

@@ -1,4 +1,4 @@
-using AcceptanceTests.Support;
+ï»¿using AcceptanceTests.Support;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Drawing;
@@ -42,7 +42,7 @@ namespace AcceptanceTests.StepDefinitions
         public void ThenTheEmployeeShouldSeeMembersMenagmentWindow()
         {
             var driver = GuiDriver.GetDriver();
-            var membersControl = driver.FindElementByName("Èlanovi knjižnice");
+            var membersControl = driver.FindElementByName("ÄŒlanovi knjiÅ¾nice");
             Assert.IsNotNull(membersControl);
         }
 
