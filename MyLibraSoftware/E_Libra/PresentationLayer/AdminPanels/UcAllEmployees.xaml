@@ -1,0 +1,61 @@
+﻿<UserControl x:Class="PresentationLayer.AdminPanels.UcAllEmployees"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:PresentationLayer.AdminPanels"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <DockPanel Background="#FFEFE8">
+        <TextBlock Background="#637E78" DockPanel.Dock="Top" Height="40"
+               Style="{StaticResource titleText}" FontSize="20" Padding="5"
+               Foreground="#FFFFFF">
+            Popis zaposlenika
+        </TextBlock>
+
+        <StackPanel DockPanel.Dock="Bottom" Height="50"
+                    Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Width="120" Height="40" Margin="0,5,5,5"
+                    HorizontalAlignment="Right"
+                    x:Name="btnRemoveEmployee"
+                    Style="{StaticResource bigButton}"
+                    Background="#637E78"
+                    Click="btnRemoveEmployee_Click">Ukloni</Button>
+            <Button Width="120" Height="40" Margin="0,5,5,5"
+                    HorizontalAlignment="Right"
+                    x:Name="btnEditEmployee"
+                    Style="{StaticResource bigButton}"
+                    Background="#637E78"
+                    Click="btnEditEmployee_Click">Izmijeni</Button>
+            <Button Width="120" Height="40" Margin="0,5,5,5"
+                    HorizontalAlignment="Right"
+                    x:Name="btnAddNewEmployee"
+                    Style="{StaticResource bigButton}"
+                    Background="#637E78"
+                    Click="btnAddNewEmployee_Click">Dodaj novog</Button>
+        </StackPanel>
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <StackPanel Height="50" Grid.Row="0">
+                <ComboBox Grid.Column="0" Width="200" Height="25"
+                          x:Name="cboLibrary" Margin="12.5" HorizontalAlignment="Left"
+                          SelectionChanged="cboLibrary_SelectionChanged"/>
+            </StackPanel>
+            <DataGrid x:Name="dgAllEmployees" Grid.Row="1" AutoGenerateColumns="False">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="ID" Binding="{Binding id}"/>
+                    <DataGridTextColumn Header="Ime" Binding="{Binding name}"/>
+                    <DataGridTextColumn Header="Prezime" Binding="{Binding surname}"/>
+                    <DataGridTextColumn Header="Korisničko ime" Binding="{Binding username}"/>
+                    <DataGridTextColumn Header="Lozinka" Binding="{Binding password}"/>
+                    <DataGridTextColumn Header="OIB" Binding="{Binding OIB}"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Grid>
+    </DockPanel>
+</UserControl>

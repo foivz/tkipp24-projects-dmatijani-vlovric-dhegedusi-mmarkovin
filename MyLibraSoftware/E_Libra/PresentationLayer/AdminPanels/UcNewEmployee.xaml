@@ -1,0 +1,89 @@
+﻿<UserControl x:Class="PresentationLayer.AdminPanels.UcNewEmployee"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:PresentationLayer.AdminPanels"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <DockPanel Background="#FFEFE8">
+        <TextBlock Background="#637E78" DockPanel.Dock="Top" Height="40"
+               Style="{StaticResource titleText}" FontSize="20" Padding="5"
+               Foreground="#FFFFFF">
+            Dodavanje novog zaposlenika
+        </TextBlock>
+
+        <StackPanel DockPanel.Dock="Bottom" Height="50"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Center">
+            <Button Width="120" Height="40"
+                    Margin="2.5,5,2.5,5"
+                    x:Name="btnAddNewLibrary"
+                    Style="{StaticResource bigButton}"
+                    Background="#637E78"
+                    Click="btnAddNewLibrary_Click">Spremi</Button>
+
+            <Button Width="120" Height="40"
+                    Margin="2.5,5,2.5,5"
+                    x:Name="btnCancel"
+                    Style="{StaticResource bigButton}"
+                    Background="#637E78"
+                    Click="btnCancel_Click">Odustani</Button>
+        </StackPanel>
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="1*"/>
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="5*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="5*"/>
+            </Grid.ColumnDefinitions>
+
+            <Label Grid.Row="0" Grid.Column="0"
+                   Content="Knjižnica kojoj pripada:"
+                   FontSize="16" HorizontalAlignment="Right"
+                   VerticalAlignment="Center" x:Name="lblLibrary"/>
+            <Label Grid.Row="1" Grid.Column="0"
+                   Content="Ime:"
+                   FontSize="16" HorizontalAlignment="Right"
+                   VerticalAlignment="Center" x:Name="lblEmployeeName"/>
+            <Label Grid.Row="2" Grid.Column="0"
+                   Content="Prezime:"
+                   FontSize="16" HorizontalAlignment="Right"
+                   VerticalAlignment="Center" x:Name="lblEmployeeSurname"/>
+            <Label Grid.Row="3" Grid.Column="0"
+                   Content="Korisničko ime:"
+                   FontSize="16" HorizontalAlignment="Right"
+                   VerticalAlignment="Center" x:Name="lblEmployeeUsername"/>
+            <Label Grid.Row="4" Grid.Column="0"
+                   Content="Lozinka:"
+                   FontSize="16" HorizontalAlignment="Right"
+                   VerticalAlignment="Center" x:Name="lblEmployeePassword"/>
+            <Label Grid.Row="5" Grid.Column="0"
+                   Content="OIB zaposlenika:"
+                   FontSize="16" HorizontalAlignment="Right"
+                   VerticalAlignment="Center" x:Name="lblEmployeeOIB"/>
+
+            <ComboBox Width="200" Height="25" Grid.Row="0" Grid.Column="3"
+                      HorizontalAlignment="Left" x:Name="cboLibrary"/>
+            <TextBox Width="200" Height="25" Grid.Row="1" Grid.Column="3"
+                     HorizontalAlignment="Left" x:Name="tbEmployeeName"/>
+            <TextBox Width="200" Height="25" Grid.Row="2" Grid.Column="3"
+                     HorizontalAlignment="Left" x:Name="tbEmployeeSurname"/>
+            <TextBox Width="200" Height="25" Grid.Row="3" Grid.Column="3"
+                     HorizontalAlignment="Left" x:Name="tbEmployeeUsername"/>
+            <TextBox Width="200" Height="25" Grid.Row="4" Grid.Column="3"
+                     HorizontalAlignment="Left" x:Name="tbEmployeePassword"/>
+            <TextBox Width="200" Height="25" Grid.Row="5" Grid.Column="3"
+                     HorizontalAlignment="Left" x:Name="tbEmployeeOIB"/>
+        </Grid>
+    </DockPanel>
+</UserControl>

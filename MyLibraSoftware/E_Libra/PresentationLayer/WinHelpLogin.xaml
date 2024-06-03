@@ -1,0 +1,22 @@
+﻿<Window x:Class="PresentationLayer.WinHelpLogin"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PresentationLayer"
+        mc:Ignorable="d"
+        Title="WinHelpLogin" Height="450" Width="800"
+        SizeChanged="Window_SizeChanged">
+    <DockPanel>
+        <StackPanel DockPanel.Dock="Top" Orientation="Vertical"
+                    Background="#F8DFD4">
+            <Button x:Name="btnClose" Content="Zatvori" Style="{StaticResource navButton}"
+                    Width="150" HorizontalAlignment="Right" Margin="5"
+                    Click="btnClose_Click"/>
+        </StackPanel>
+        <ScrollViewer Background="White" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Disabled">
+            <ContentControl x:Name="pdfView"/>
+        </ScrollViewer>
+    </DockPanel>
+    
+</Window>

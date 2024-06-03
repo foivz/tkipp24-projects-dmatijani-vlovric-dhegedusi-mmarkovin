@@ -1,0 +1,112 @@
+﻿<UserControl x:Class="PresentationLayer.MemberPanels.UcMemberBorrows"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:PresentationLayer.MemberPanels" xmlns:local1="clr-namespace:PresentationLayer"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <local1:BorrowStatusConverter x:Key="BorrowStatusConverter"/>
+    </UserControl.Resources>
+    <DockPanel Background="White">
+        <TextBlock Background="#637E60" DockPanel.Dock="Top" Height="40"
+               Style="{StaticResource titleText}" FontSize="20" Padding="5"
+               Foreground="#FFEFE8">
+            Moje posudbe
+        </TextBlock>
+
+        <TabControl>
+            <TabItem Header="Sve posudbe">
+                <DockPanel>
+                    <TextBlock Background="#637E60" DockPanel.Dock="Top" Height="30"
+                           Style="{StaticResource titleText}" FontSize="14" Padding="5"
+                           Foreground="#FFEFE8">
+                        Sve posudbe
+                    </TextBlock>
+
+                    <DataGrid x:Name="dgAllBorrows" AutoGenerateColumns="False">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Datum posudbe" Binding="{Binding borrow_date}"/>
+                            <DataGridTextColumn Header="Datum vraćanja/rok" Binding="{Binding return_date}"/>
+                            <DataGridTextColumn Header="Status posudbe" Binding="{Binding borrow_status, Converter={StaticResource BorrowStatusConverter}}"/>
+                            <DataGridTextColumn Header="Posuđena knjiga" Binding="{Binding Book}"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </DockPanel>
+            </TabItem>
+
+            <TabItem Header="Na čekanju">
+                <DockPanel>
+                    <TextBlock Background="#637E60" DockPanel.Dock="Top" Height="30"
+                           Style="{StaticResource titleText}" FontSize="14" Padding="5"
+                           Foreground="#FFEFE8">
+                        Posudbe na čekanju
+                    </TextBlock>
+
+                    <DataGrid x:Name="dgPendingBorrows" AutoGenerateColumns="False">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Datum posudbe" Binding="{Binding borrow_date}"/>
+                            <DataGridTextColumn Header="Rok za dolazak po knjigu" Binding="{Binding return_date}"/>
+                            <DataGridTextColumn Header="Posuđena knjiga" Binding="{Binding Book}"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </DockPanel>
+            </TabItem>
+
+            <TabItem Header="Trenutno posuđene">
+                <DockPanel>
+                    <TextBlock Background="#637E60" DockPanel.Dock="Top" Height="30"
+                           Style="{StaticResource titleText}" FontSize="14" Padding="5"
+                           Foreground="#FFEFE8">
+                        Trenutne posudbe
+                    </TextBlock>
+
+                    <DataGrid x:Name="dgCurrentBorrows" AutoGenerateColumns="False">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Datum posudbe" Binding="{Binding borrow_date}"/>
+                            <DataGridTextColumn Header="Rok za vraćanje" Binding="{Binding return_date}"/>
+                            <DataGridTextColumn Header="Posuđena knjiga" Binding="{Binding Book}"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </DockPanel>
+            </TabItem>
+
+            <TabItem Header="Kasne">
+                <DockPanel>
+                    <TextBlock Background="#637E60" DockPanel.Dock="Top" Height="30"
+                           Style="{StaticResource titleText}" FontSize="14" Padding="5"
+                           Foreground="#FFEFE8">
+                        Posudbe koje kasne
+                    </TextBlock>
+
+                    <DataGrid x:Name="dgLateBorrows" AutoGenerateColumns="False">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Datum posudbe" Binding="{Binding borrow_date}"/>
+                            <DataGridTextColumn Header="Datum do kojega se trebalo vratiti" Binding="{Binding return_date}"/>
+                            <DataGridTextColumn Header="Posuđena knjiga" Binding="{Binding Book}"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </DockPanel>
+            </TabItem>
+
+            <TabItem Header="Prethodne">
+                <DockPanel>
+                    <TextBlock Background="#637E60" DockPanel.Dock="Top" Height="30"
+                           Style="{StaticResource titleText}" FontSize="14" Padding="5"
+                           Foreground="#FFEFE8">
+                        Prethodne posudbe
+                    </TextBlock>
+
+                    <DataGrid x:Name="dgDoneBorrows" AutoGenerateColumns="False">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Datum posudbe" Binding="{Binding borrow_date}"/>
+                            <DataGridTextColumn Header="Datum vraćanja" Binding="{Binding return_date}"/>
+                            <DataGridTextColumn Header="Posuđena knjiga" Binding="{Binding Book}"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </DockPanel>
+            </TabItem>
+        </TabControl>
+    </DockPanel>
+</UserControl>

@@ -1,0 +1,18 @@
+﻿<Window x:Class="PresentationLayer.WinAcceptDecline"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PresentationLayer"
+        mc:Ignorable="d"
+        Title="WinAcceptDecline" Height="150" Width="400" WindowStartupLocation="CenterScreen">
+    <Grid>
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+            <TextBlock x:Name="tblText" Margin="0,0,0,10" />
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button Content="Odustani" Width="75" Margin="5" x:Name="btnDecline" Click="btnDecline_Click"/>
+                <Button Content="Potvrđujem" Width="75" Margin="5" x:Name="btnAccept" Click="btnAccept_Click"/>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</Window>

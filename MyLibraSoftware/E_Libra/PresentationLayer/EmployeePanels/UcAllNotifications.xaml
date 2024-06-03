@@ -1,0 +1,22 @@
+﻿<UserControl x:Class="PresentationLayer.EmployeePanels.UcAllNotifications"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:PresentationLayer.EmployeePanels"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800" Loaded="UserControl_Loaded">
+    <DockPanel>
+        <TextBlock Text="Sve obavijesti" Style="{StaticResource titleText}" Background="#637E60" Foreground="#FFEFE8" DockPanel.Dock="Top"/>
+        <StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom" Height="54" HorizontalAlignment="Right">
+            <Button x:Name="btnNewNotification" Width="150" Height="40" Margin="5" Style="{StaticResource bigButton}" Background="#637E60" HorizontalAlignment="Right" Content="Nova obavijest" Click="btnNewNotification_Click"/>
+            <Button x:Name="btnNotificationUpdate" Width="150" Height="40" Margin="5" Style="{StaticResource bigButton}" Background="#637E60" HorizontalAlignment="Right" Content="Izmjeni" Click="btnNotificationUpdate_Click"/>
+        </StackPanel>
+        <DataGrid x:Name="dgvAllNotifications" Margin="10" AutoGenerateColumns="False">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Naslov" Binding="{Binding title}" Width="Auto"/>
+                <DataGridTextColumn Header="Opis" Binding="{Binding description}" Width="*"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </DockPanel>
+</UserControl>
