@@ -1,0 +1,16 @@
+﻿<UserControl x:Class="PresentationLayer.UcCatalogueOptions"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:PresentationLayer"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <StackPanel Background="White">
+        <Label Background="#637E60" Content="Odabir radnje" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="16" Foreground="#FFEFE8"></Label>
+        <Button Style="{StaticResource bigButton}" Content="Unos nove knjige" Width="300" FontSize="15" Margin="0,100,0,20" x:Name="btnNewBook" Click="btnNewBook_Click"></Button>
+        <Button Style="{StaticResource bigButton}" Content="Dodavanje primjeraka knjige" Width="300" FontSize="15" Margin="0,20,0,20" x:Name="btnNewCopies" Click="btnNewCopies_Click"></Button>
+        <Button Style="{StaticResource bigButton}" Content="Arhiviranje knjige" Width="300" FontSize="15" Margin="0,20,0,20" x:Name="btnArchive" Click="btnArchive_Click"></Button>
+        <Button Style="{StaticResource bigButton}" Content="Pregled arhive" Width="300" FontSize="15" Margin="0,20,0,20" x:Name="btnArchiveList" Click="btnArchiveList_Click"></Button>
+    </StackPanel>
+</UserControl>

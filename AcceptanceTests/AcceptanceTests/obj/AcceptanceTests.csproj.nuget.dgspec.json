@@ -1,0 +1,82 @@
+{
+  "format": 1,
+  "restore": {
+    "C:\\Users\\vikto\\Source\\Repos\\tkipp24-projects-dmatijani-vlovric-dhegedusi-mmarkovin\\AcceptanceTests\\AcceptanceTests\\AcceptanceTests.csproj": {}
+  },
+  "projects": {
+    "C:\\Users\\vikto\\Source\\Repos\\tkipp24-projects-dmatijani-vlovric-dhegedusi-mmarkovin\\AcceptanceTests\\AcceptanceTests\\AcceptanceTests.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\vikto\\Source\\Repos\\tkipp24-projects-dmatijani-vlovric-dhegedusi-mmarkovin\\AcceptanceTests\\AcceptanceTests\\AcceptanceTests.csproj",
+        "projectName": "AcceptanceTests",
+        "projectPath": "C:\\Users\\vikto\\Source\\Repos\\tkipp24-projects-dmatijani-vlovric-dhegedusi-mmarkovin\\AcceptanceTests\\AcceptanceTests\\AcceptanceTests.csproj",
+        "packagesPath": "C:\\Users\\vikto\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\vikto\\Source\\Repos\\tkipp24-projects-dmatijani-vlovric-dhegedusi-mmarkovin\\AcceptanceTests\\AcceptanceTests\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\vikto\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net48"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net48": {
+            "targetAlias": "net48",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net48": {
+          "targetAlias": "net48",
+          "dependencies": {
+            "Appium.WebDriver": {
+              "target": "Package",
+              "version": "[4.4.5, )"
+            },
+            "FluentAssertions": {
+              "target": "Package",
+              "version": "[6.2.0, )"
+            },
+            "MSTest.TestAdapter": {
+              "target": "Package",
+              "version": "[2.2.7, )"
+            },
+            "MSTest.TestFramework": {
+              "target": "Package",
+              "version": "[2.2.7, )"
+            },
+            "Microsoft.NET.Test.Sdk": {
+              "target": "Package",
+              "version": "[17.0.0, )"
+            },
+            "SpecFlow.MsTest": {
+              "target": "Package",
+              "version": "[3.9.40, )"
+            },
+            "SpecFlow.Plus.LivingDocPlugin": {
+              "target": "Package",
+              "version": "[3.9.57, )"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.202\\RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,87 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{7F1A9A1C-B853-4F27-9A2D-03DC5088F8E4}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>BussinessLogicLayer</RootNamespace>
+    <AssemblyName>BussinessLogicLayer</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Exceptions\BookNotFoundException.cs" />
+    <Compile Include="Exceptions\EmployeeException.cs" />
+    <Compile Include="Exceptions\EmployeeWithSameIDException.cs" />
+    <Compile Include="Exceptions\EmployeeWithSameOIBException.cs" />
+    <Compile Include="Exceptions\EmployeeWithSameUsernameException.cs" />
+    <Compile Include="Exceptions\LibraryException.cs" />
+    <Compile Include="Exceptions\LibraryHasMembersException.cs" />
+    <Compile Include="Exceptions\LibraryHasBooksException.cs" />
+    <Compile Include="Exceptions\LibraryHasEmployeesException.cs" />
+    <Compile Include="Exceptions\LibraryWithSameIDException.cs" />
+    <Compile Include="Exceptions\LibraryWithSameOIBException.cs" />
+    <Compile Include="Exceptions\MemberNotFoundException.cs" />
+    <Compile Include="Exceptions\NoMoreBookCopiesException.cs" />
+    <Compile Include="Exceptions\WrongLibraryException.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="services\ArchiveServices.cs" />
+    <Compile Include="services\BorrowService.cs" />
+    <Compile Include="services\AuthorService.cs" />
+    <Compile Include="services\EmployeeService.cs" />
+    <Compile Include="services\LibraryService.cs" />
+    <Compile Include="Exceptions\BookException.cs" />
+    <Compile Include="services\AdministratorService.cs" />
+    <Compile Include="services\BookServices.cs" />
+    <Compile Include="services\MemberService.cs" />
+    <Compile Include="services\GenreServices.cs" />
+    <Compile Include="services\NotificationService.cs" />
+    <Compile Include="services\ReservationService.cs" />
+    <Compile Include="services\ReviewService.cs" />
+    <Compile Include="services\StatisticsService.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DataAccessLayer\DataAccessLayer.csproj">
+      <Project>{35d148d2-ed6d-4188-95bd-e67d6c7b8fe2}</Project>
+      <Name>DataAccessLayer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\EntitiesLayer\EntitiesLayer.csproj">
+      <Project>{334B2EF2-CC21-4264-86B0-5177E914E1E2}</Project>
+      <Name>EntitiesLayer</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

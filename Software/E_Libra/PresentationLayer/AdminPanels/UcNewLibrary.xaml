@@ -1,0 +1,103 @@
+﻿<UserControl x:Class="PresentationLayer.AdminPanels.UcNewLibrary"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:PresentationLayer.AdminPanels"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <DockPanel Background="#FFEFE8">
+        <TextBlock Background="#637E78" DockPanel.Dock="Top" Height="40"
+               Style="{StaticResource titleText}" FontSize="20" Padding="5"
+               Foreground="#FFFFFF">
+            Dodavanje nove knjižnice
+        </TextBlock>
+
+        <StackPanel DockPanel.Dock="Bottom" Height="50"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Center">
+            <Button Width="120" Height="40"
+                    Margin="2.5,5,2.5,5"
+                    x:Name="btnAddNewLibrary"
+                    Style="{StaticResource bigButton}"
+                    Background="#637E78"
+                    Click="btnAddNewLibrary_Click">Spremi</Button>
+
+            <Button Width="120" Height="40"
+                    Margin="2.5,5,2.5,5"
+                    x:Name="btnCancel"
+                    Style="{StaticResource bigButton}"
+                    Background="#637E78"
+                    Click="btnCancel_Click">Odustani</Button>
+        </StackPanel>
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="1*"/>
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="5*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="5*"/>
+            </Grid.ColumnDefinitions>
+
+            <Label Grid.Row="0" Grid.Column="0"
+                   Content="ID knjižnice:"
+                   FontSize="16" HorizontalAlignment="Right"
+                   VerticalAlignment="Center" x:Name="lblLibraryID"/>
+            <Label Grid.Row="1" Grid.Column="0"
+                   Content="Naziv knjižnice:"
+                   FontSize="16" HorizontalAlignment="Right"
+                   VerticalAlignment="Center" x:Name="lblLibraryName"/>
+            <Label Grid.Row="2" Grid.Column="0"
+                   Content="OIB knjižnice:"
+                   FontSize="16" HorizontalAlignment="Right"
+                   VerticalAlignment="Center" x:Name="lblLibraryOIB"/>
+            <Label Grid.Row="3" Grid.Column="0"
+                   Content="Telefonski broj:"
+                   FontSize="16" HorizontalAlignment="Right"
+                   VerticalAlignment="Center" x:Name="lblLibraryPhone"/>
+            <Label Grid.Row="4" Grid.Column="0"
+                   Content="Elektronička pošta:"
+                   FontSize="16" HorizontalAlignment="Right"
+                   VerticalAlignment="Center" x:Name="lblLibraryEmail"/>
+            <Label Grid.Row="5" Grid.Column="0"
+                   Content="Cijena kašnjenja vraćanja po danu:"
+                   FontSize="16" HorizontalAlignment="Right"
+                   VerticalAlignment="Center" x:Name="lblLibraryPriceDayLate"/>
+            <Label Grid.Row="6" Grid.Column="0"
+                   Content="Adresa knjižnice:"
+                   FontSize="16" HorizontalAlignment="Right"
+                   VerticalAlignment="Center" x:Name="lblLibraryAddress"/>
+            <Label Grid.Row="7" Grid.Column="0"
+                   Content="Trajanje članarine:"
+                   FontSize="16" HorizontalAlignment="Right"
+                   VerticalAlignment="Center" x:Name="lblLibraryMembershipDuration"/>
+
+            <TextBox Width="200" Height="25" Grid.Row="0" Grid.Column="3"
+                     HorizontalAlignment="Left" x:Name="tbLibraryID"/>
+            <TextBox Width="200" Height="25" Grid.Row="1" Grid.Column="3"
+                     HorizontalAlignment="Left" x:Name="tbLibraryName"/>
+            <TextBox Width="200" Height="25" Grid.Row="2" Grid.Column="3"
+                     HorizontalAlignment="Left" x:Name="tbLibraryOIB"/>
+            <TextBox Width="200" Height="25" Grid.Row="3" Grid.Column="3"
+                     HorizontalAlignment="Left" x:Name="tbLibraryPhone"/>
+            <TextBox Width="200" Height="25" Grid.Row="4" Grid.Column="3"
+                     HorizontalAlignment="Left" x:Name="tbLibraryEmail"/>
+            <TextBox Width="200" Height="25" Grid.Row="5" Grid.Column="3"
+                     HorizontalAlignment="Left" x:Name="tbLibraryPriceDayLate"/>
+            <TextBox Width="200" Height="25" Grid.Row="6" Grid.Column="3"
+                     HorizontalAlignment="Left" x:Name="tbLibraryAddress"/>
+            <TextBox Width="200" Height="25" Grid.Row="7" Grid.Column="3"
+                     HorizontalAlignment="Left" x:Name="tbLibraryMembershipDuration"/>
+        </Grid>
+    </DockPanel>
+</UserControl>
