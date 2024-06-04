@@ -77,11 +77,16 @@ namespace PresentationLayer.EmployeePanels
             string name = "", surname = "";
             string input = txtFilter.Text;
             string[] words = input.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-            if (words.Length >= 2)
+            if (words.Length == 1)
+            {
+                name = words[0];
+                surname = words[0];
+            } else
             {
                 name = words[0];
                 surname = words[1];
             }
+            
             List<Member> filteredMembers = memberService.GetAllMembersByFilter(name,surname);
             dgvMembers.ItemsSource = filteredMembers;
         }
