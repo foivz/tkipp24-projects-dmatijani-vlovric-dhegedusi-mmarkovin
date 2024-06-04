@@ -77,27 +77,40 @@ namespace PresentationLayer.EmployeePanels
         }
         private bool CheckUniqueConstraints(Member member)
         {
-            bool memberExsists = memberService.CheckExistingUsername(member);
-            bool barcodeExists = memberService.CheckBarcodeUnoque(member);
-            bool oibExsists = memberService.CheckOibUnoque(member);
-            if (memberExsists)
+            if (!IsUnique(() => memberService.CheckExistingUsername(member), "Korisničko ime već postoji!", clearTextBox: true))
             {
-                txtUsername.Text = "";
-                MessageBox.Show("Korisničko ime već postoji!", "Greška", MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
             }
-            if (barcodeExists)
+
+            if (!IsUnique(() => memberService.CheckBarcodeUnoque(member), "Barkod već postoji!"))
             {
-                MessageBox.Show("Barkod već postoji!", "Greška", MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
             }
-            if (oibExsists)
+
+            if (!IsUnique(() => memberService.CheckOibUnoque(member), "Oib već postoji!"))
             {
-                MessageBox.Show("Oib već postoji!", "Greška", MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
             }
+
             return true;
         }
+
+        private bool IsUnique(Func<bool> checkFunc, string errorMessage, bool clearTextBox = false)
+        {
+            if (checkFunc())
+            {
+                if (clearTextBox)
+                {
+                    txtUsername.Text = "";
+                }
+
+                MessageBox.Show(errorMessage, "Greška", MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
+            }
+
+            return true;
+        }
+
         private void btnGenerateBarcode_Click(object sender, RoutedEventArgs e)
         {
             txtBarcode.Text = memberService.RandomCodeGenerator().ToString();
