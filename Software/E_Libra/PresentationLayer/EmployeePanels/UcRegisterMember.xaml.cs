@@ -39,18 +39,7 @@ namespace PresentationLayer.EmployeePanels
             CheckOIBIsNumber();
             if (txtOIB.Text != "" && txtPassword.Password != "" && txtUsername.Text != "" && txtBarcode.Text != "")
             {
-                int LibraryId = employeeService.GetEmployeeLibraryId(LoggedUser.Username);
-                Member newMember = new Member()
-                {
-                    name = (txtName.Text).Length <= 45 ? txtName.Text : (txtName.Text).Substring(0, 45),
-                    surname = (txtSurname.Text).Length <= 45 ? txtSurname.Text : (txtSurname.Text).Substring(0, 45),
-                    OIB = (txtOIB.Text).Length <= 11 ? txtOIB.Text : (txtOIB.Text).Substring(0, 11),
-                    username = (txtUsername.Text).Length <= 45 ? txtUsername.Text : (txtUsername.Text).Substring(0, 45), 
-                    password = (txtPassword.Password).Length <= 45 ? txtPassword.Password : (txtPassword.Password).Substring(0, 45),
-                    membership_date = txtDate.SelectedDate,
-                    barcode_id = (txtBarcode.Text).Length <= 45 ? txtBarcode.Text : (txtBarcode.Text).Substring(0, 45),
-                    Library_id = LibraryId
-                };
+                Member newMember = MakeNewMember();
                 bool checkedConstraints = CheckUniqueConstraints(newMember);
                 if (checkedConstraints)
                 {
@@ -62,6 +51,22 @@ namespace PresentationLayer.EmployeePanels
             {
                 MessageBox.Show("Obavezni podaci čnana nisu uneseni ili su krivo unešeni!", "Greška", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+        private Member MakeNewMember() 
+        {
+            int LibraryId = employeeService.GetEmployeeLibraryId(LoggedUser.Username);
+            Member newMember = new Member()
+            {
+                name = (txtName.Text).Length <= 45 ? txtName.Text : (txtName.Text).Substring(0, 45),
+                surname = (txtSurname.Text).Length <= 45 ? txtSurname.Text : (txtSurname.Text).Substring(0, 45),
+                OIB = (txtOIB.Text).Length <= 11 ? txtOIB.Text : (txtOIB.Text).Substring(0, 11),
+                username = (txtUsername.Text).Length <= 45 ? txtUsername.Text : (txtUsername.Text).Substring(0, 45),
+                password = (txtPassword.Password).Length <= 45 ? txtPassword.Password : (txtPassword.Password).Substring(0, 45),
+                membership_date = txtDate.SelectedDate,
+                barcode_id = (txtBarcode.Text).Length <= 45 ? txtBarcode.Text : (txtBarcode.Text).Substring(0, 45),
+                Library_id = LibraryId
+            };
+            return newMember;
         }
         private void CheckOIBIsNumber()
         {
