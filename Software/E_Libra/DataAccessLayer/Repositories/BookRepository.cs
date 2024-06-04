@@ -138,8 +138,8 @@ namespace DataAccessLayer.Repositories
         }
         public int ArhiveBook(Book passedBook, Archive archive)
         {
-            string name = passedBook.name;
-            var book = (from b in Entities where b.name == name select b).FirstOrDefault();
+            int id = passedBook.id;
+            var book = (from b in Entities where b.id == id select b).FirstOrDefault();
             book.Archives.Add(archive);
             return SaveChanges();
         }
