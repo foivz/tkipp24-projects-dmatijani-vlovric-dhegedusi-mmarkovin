@@ -54,34 +54,44 @@ namespace PresentationLayer.EmployeePanels
         private void btnDeleteMember_Click(object sender, RoutedEventArgs e)
         {
             Member selectedMember = dgvMembers.SelectedItem as Member;
-            if (selectedMember != null)
-            {
-                bool deleted = false;
-                MessageBoxResult reuslt =  MessageBox.Show("Jeste li sigurni da želite izbrisati", "Upozorenje", MessageBoxButton.OKCancel, MessageBoxImage.Warning);
-                if(reuslt == MessageBoxResult.OK)
-                {
-                    deleted = memberService.DeleteMember(selectedMember);
-                }
-                if (deleted)
-                {
-                    dgvMembers.ItemsSource = memberService.GetAllMembersByLybrary();
-                }
-            } else
+            if (selectedMember == null)
             {
                 MessageBox.Show("Odaberite člana!", "Greška", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            MessageBoxResult result = MessageBox.Show("Jeste li sigurni da želite izbrisati", "Upozorenje", MessageBoxButton.OKCancel, MessageBoxImage.Warning);
+            if (result == MessageBoxResult.OK)
+            {
+                DeleteMember(selectedMember);
             }
         }
+
+        private void DeleteMember(Member member)
+        {
+            bool deleted = memberService.DeleteMember(member);
+            if (deleted)
+            {
+                dgvMembers.ItemsSource = memberService.GetAllMembersByLybrary();
+            }
+        }
+
 
         private void btnFilter_Click(object sender, RoutedEventArgs e)
         {
             string name = "", surname = "";
             string input = txtFilter.Text;
             string[] words = input.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-            if (words.Length >= 2)
+            if (words.Length == 1)
+            {
+                name = words[0];
+                surname = words[0];
+            } else
             {
                 name = words[0];
                 surname = words[1];
             }
+            
             List<Member> filteredMembers = memberService.GetAllMembersByFilter(name,surname);
             dgvMembers.ItemsSource = filteredMembers;
         }
