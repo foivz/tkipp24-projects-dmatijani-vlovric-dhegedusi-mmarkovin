@@ -27,6 +27,8 @@ namespace PresentationLayer.AdminPanels {
 
             if (selectedLibrary != null) {
                 LoadEmployees(selectedLibrary);
+            } else {
+                txtNoEmployees.Visibility = Visibility.Hidden;
             }
         }
 
@@ -57,18 +59,17 @@ namespace PresentationLayer.AdminPanels {
         }
         
         private void LoadEmployees(Library selectedLibrary) {
+            txtNoEmployees.Visibility = Visibility.Hidden;
             if (selectedLibrary == null) {
                 dgAllEmployees.ItemsSource = new List<Library>();
                 return;
             }
 
-            Task.Run(() => {
-                List<Employee> employees = service.GetEmployeesByLibrary(selectedLibrary);
-
-                Application.Current.Dispatcher.Invoke(() => {
-                    dgAllEmployees.ItemsSource = employees;
-                });
-            });
+            List<Employee> employees = service.GetEmployeesByLibrary(selectedLibrary);
+            dgAllEmployees.ItemsSource = employees;
+            if (employees.Count == 0) {
+                txtNoEmployees.Visibility = Visibility.Visible;
+            }
         }
 
         private void btnEditEmployee_Click(object sender, RoutedEventArgs e) {
