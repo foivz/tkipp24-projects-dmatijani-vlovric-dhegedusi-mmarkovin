@@ -104,29 +104,11 @@ namespace DataAccessLayer.Repositories
             return sql;
         }
 
-
-
-        public int InsertNewCopies(int number, Book passedBook, bool saveChanges = true)
+        public int InsertOneCopy(Book passedBook, bool saveChanges = true)
         {
-            ReservationRepository reservationRepository = new ReservationRepository();
-            string name = passedBook.name;
-            var book = (from b in Entities where b.name == name select b).FirstOrDefault();
-            if(number == -1)
-            {
-                book.current_copies += number;
-            }
-            else if(book.current_copies < 0)
-            {
-                book.total_copies += number;
-                reservationRepository.SetReservationEndDateAndAddCopies(book, (int)book.current_copies, number);
-            }
-            else
-            {
-                book.total_copies += number;
-                book.current_copies += number;
-            }
-
-            
+            int id = passedBook.id;
+            var book = (from b in Entities where b.id == id select b).FirstOrDefault();
+            book.current_copies++;
             if (saveChanges)
             {
                 return SaveChanges();
@@ -135,6 +117,54 @@ namespace DataAccessLayer.Repositories
             {
                 return 0;
             }
+        }
+        public int InsertMultipleCopies(int number, Book passedBook, bool saveChanges = true)
+        {
+            int id = passedBook.id;
+            var book = (from b in Entities where b.id == id select b).FirstOrDefault();
+            book.current_copies += number;
+            if (saveChanges)
+            {
+                return SaveChanges();
+            }
+            else
+            {
+                return 0;
+            }
+        }
+        public int RemoveOneCopy(Book passedBook, bool saveChanges = true)
+        {
+            int id = passedBook.id;
+            var book = (from b in Entities where b.id == id select b).FirstOrDefault();
+            book.current_copies--;
+            if (saveChanges)
+            {
+                return SaveChanges();
+            }
+            else
+            {
+                return 0;
+            }
+        }
+        public int InsertNewCopies(int number, Book passedBook, bool saveChanges = true)
+        {
+            int id = passedBook.id;
+            var book = (from b in Entities where b.id == id select b).FirstOrDefault();
+            book.current_copies += number;
+            book.total_copies += number;
+            if (saveChanges)
+            {
+                return SaveChanges();
+            }
+            else
+            {
+                return 0;
+            }
+        }
+        public int GetBookCurrentCopies(int id)
+        {
+            var book = (from b in Entities where b.id == id select b).FirstOrDefault();
+            return (int)book.current_copies;
         }
         public int ArhiveBook(Book passedBook, Archive archive)
         {

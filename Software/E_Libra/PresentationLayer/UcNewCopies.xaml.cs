@@ -77,6 +77,7 @@ namespace PresentationLayer
             BookServices services = new BookServices();
             int number = TryParseInt(txtNumberCopies.Text);
             var book = dgvBookNamesArchive.SelectedItem as Book;
+
             if(services.InsertNewCopies(number, book))
             {
                 MessageBox.Show("Uspješno!");

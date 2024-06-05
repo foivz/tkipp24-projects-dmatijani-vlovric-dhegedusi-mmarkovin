@@ -26,7 +26,7 @@ namespace BussinessLogicLayer.services
                 return repo.CheckExistingReservation(bookId, memberId);
             }
         }
-        public int Add(Reservation reservation)
+        public int AddReservation(Reservation reservation)
         {
             using (var repo = new ReservationRepository())
             {
@@ -47,18 +47,6 @@ namespace BussinessLogicLayer.services
                 return repo.GetReservationsForMemberNormal(memberId).ToList();
             }
         }
-        public bool RemoveReservation(int reservationId)
-        {
-            using (var repo = new ReservationRepository())
-            {
-                int res = repo.RemoveReservation(reservationId);
-                if (res == 1)
-                {
-                    return true;
-                }
-                else return false;
-            }
-        }
         public int CountExistingReservations(int memberId)
         {
             using(var repo = new ReservationRepository())
@@ -66,19 +54,33 @@ namespace BussinessLogicLayer.services
                 return repo.CountExistingReservations(memberId);
             }
         }
-        public void SetReservationEndDateAndAddCopies(Book book, int current, int received)
+        public bool EnterDateForReservation(Book book)
         {
             using (var repo = new ReservationRepository())
             {
-                repo.SetReservationEndDateAndAddCopies(book, current, received);
+                return repo.EnterDateForReservation(book);
             }
         }
         public void CheckReservationDates()
         {
-            using (var repo = new ReservationRepository())
+            var repo = new ReservationRepository();
+            var overdueReservations = repo.GetOverdueReservations();
+            var bookService = new BookServices();
+            foreach (var reservation in overdueReservations)
             {
-                repo.CheckReservationDates();
+
+                repo.Remove(reservation);
+                bookService.InsertOneCopy(reservation.Book);
+                repo.EnterDateForReservation(reservation.Book);
             }
+
+        }
+        public void ReturnBook(Book book)
+        {
+            var repo = new ReservationRepository();
+            var bookServices = new BookServices();
+            bookServices.InsertOneCopy(book);
+            repo.EnterDateForReservation(book);
         }
         public int GetReservationId(int memberId, int bookId)
         {
@@ -113,6 +115,25 @@ namespace BussinessLogicLayer.services
             using (var repo = new ReservationRepository()) {
                 return repo.Remove(reservation, saveChanges);
             }
+        }
+        public bool RemoveReservationFromList(int reservationId)
+        {
+            var repo = new ReservationRepository();
+            var bookService = new BookServices();
+            var reservation = repo.GetReservationById(reservationId);
+
+            if (reservation.reservation_date == null)
+            {
+                repo.Remove(reservation);
+                bookService.InsertOneCopy(reservation.Book);
+            }
+            else
+            {
+                repo.Remove(reservation);
+                bookService.InsertOneCopy(reservation.Book);
+                repo.EnterDateForReservation(reservation.Book);
+            }
+            return true;
         }
     }
 }
