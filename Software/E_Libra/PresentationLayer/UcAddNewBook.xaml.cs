@@ -97,6 +97,17 @@ namespace PresentationLayer
                 return;
             }
 
+            Book book = MakeNewBook();
+            
+            var author = cmbAuthor.SelectedItem as Author;
+            var bookService = new BookServices();
+            var rez = bookService.AddBook(book, author);
+            MessageBox.Show(rez ? "Uspješno" : "Neuspješno");
+            (Window.GetWindow(this) as EmployeePanel).contentPanel.Content = new UcAddNewBook();
+        }
+
+        private Book MakeNewBook()
+        {
             EmployeeService service = new EmployeeService();
             var book = new Book
             {
@@ -111,11 +122,8 @@ namespace PresentationLayer
                 Genre = cmbGenre.SelectedItem as Genre,
                 Library_id = service.GetEmployeeLibraryId(LoggedUser.Username)
             };
-            var author = cmbAuthor.SelectedItem as Author;
-            var bookService = new BookServices();
-            var rez = bookService.AddBook(book, author);
-            MessageBox.Show(rez ? "Uspješno" : "Neuspješno");
-            (Window.GetWindow(this) as EmployeePanel).contentPanel.Content = new UcAddNewBook();
+
+            return book;
         }
 
         private DateTime? ConvertIntoDateTime(TextBox txtDate)
