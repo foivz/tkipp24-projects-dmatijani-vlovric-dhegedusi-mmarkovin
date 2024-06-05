@@ -60,6 +60,10 @@ namespace PresentationLayer.AdminPanels {
             }
             string newEmployeeName = tbEmployeeName.Text;
             string newEmployeeSurname = tbEmployeeSurname.Text;
+            if (tbEmployeeUsername.Text.Trim() == "") {
+                MessageBox.Show("Korisničko ime ne smije ostati prazno!");
+                return;
+            }
             string newEmployeeUsername = tbEmployeeUsername.Text;
             string newEmployeePassword = tbEmployeePassword.Text;
             string newEmployeeOIB = tbEmployeeOIB.Text;
