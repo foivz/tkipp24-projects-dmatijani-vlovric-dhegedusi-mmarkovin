@@ -63,24 +63,27 @@ namespace BussinessLogicLayer.services
         }
         public void CheckReservationDates()
         {
-            var repo = new ReservationRepository();
-            var overdueReservations = repo.GetOverdueReservations();
-            var bookService = new BookServices();
-            foreach (var reservation in overdueReservations)
+            using(var repo = new ReservationRepository())
             {
+                var overdueReservations = repo.GetOverdueReservations();
+                var bookService = new BookServices();
+                foreach (var reservation in overdueReservations)
+                {
 
-                repo.Remove(reservation);
-                bookService.InsertOneCopy(reservation.Book);
-                repo.EnterDateForReservation(reservation.Book);
+                    repo.Remove(reservation);
+                    bookService.InsertOneCopy(reservation.Book);
+                    repo.EnterDateForReservation(reservation.Book);
+                }
             }
-
         }
         public void ReturnBook(Book book)
         {
-            var repo = new ReservationRepository();
             var bookServices = new BookServices();
-            bookServices.InsertOneCopy(book);
-            repo.EnterDateForReservation(book);
+            using (var repo = new ReservationRepository())
+            {
+                bookServices.InsertOneCopy(book);
+                repo.EnterDateForReservation(book);
+            }
         }
         public int GetReservationId(int memberId, int bookId)
         {
@@ -118,22 +121,24 @@ namespace BussinessLogicLayer.services
         }
         public bool RemoveReservationFromList(int reservationId)
         {
-            var repo = new ReservationRepository();
             var bookService = new BookServices();
-            var reservation = repo.GetReservationById(reservationId);
-
-            if (reservation.reservation_date == null)
+            using (var repo = new ReservationRepository())
             {
-                repo.Remove(reservation);
-                bookService.InsertOneCopy(reservation.Book);
+                var reservation = repo.GetReservationById(reservationId);
+                Book book = reservation.Book;
+                if (reservation.reservation_date == null)
+                {
+                    repo.Remove(reservation);
+                    bookService.InsertOneCopy(book);
+                }
+                else
+                {
+                    repo.Remove(reservation);
+                    bookService.InsertOneCopy(reservation.Book);
+                    repo.EnterDateForReservation(reservation.Book);
+                }
+                return true;
             }
-            else
-            {
-                repo.Remove(reservation);
-                bookService.InsertOneCopy(reservation.Book);
-                repo.EnterDateForReservation(reservation.Book);
-            }
-            return true;
         }
     }
 }

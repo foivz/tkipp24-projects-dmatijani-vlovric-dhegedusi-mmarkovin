@@ -64,32 +64,33 @@ namespace BussinessLogicLayer.services
         public bool InsertNewCopies(int number, Book book)
         {
             var numCopies = number;
-            var repo = new BookRepository();
             var reservationService = new ReservationService();
-            int currentCopies = repo.GetBookCurrentCopies(book.id);
-
-            bool imaRezervacije;
-            if(currentCopies < 0) //ako ima rezervacija
+            using (var repo = new BookRepository())
             {
-                do
+                int currentCopies = repo.GetBookCurrentCopies(book.id);
+                bool imaRezervacije;
+                if (currentCopies < 0) //ako ima rezervacija
                 {
-                    imaRezervacije = reservationService.EnterDateForReservation(book); //daj osobi datum na rezervaciju
-                    if (imaRezervacije)
+                    do
                     {
-                        repo.InsertOneCopy(book);
-                        numCopies--;
+                        imaRezervacije = reservationService.EnterDateForReservation(book); //daj osobi datum na rezervaciju
+                        if (imaRezervacije)
+                        {
+                            repo.InsertOneCopy(book);
+                            numCopies--;
+                        }
+                    } while (imaRezervacije && numCopies > 0);
+                    if (numCopies > 0) //ako je ostalo jos kopija nakon popunjavanja svih rezervacija
+                    {
+                        repo.InsertMultipleCopies(numCopies, book); //dodaj ih
                     }
-                } while (imaRezervacije && numCopies > 0);
-                if (numCopies > 0) //ako je ostalo jos kopija nakon popunjavanja svih rezervacija
-                {
-                    repo.InsertMultipleCopies(numCopies, book); //dodaj ih
                 }
+                else
+                {
+                    repo.InsertNewCopies(number, book); //samo dodajem current i total copies
+                }
+                return true;
             }
-            else
-            {
-                repo.InsertNewCopies(number, book); //samo dodajem current i total copies
-            }
-            return true;
         }
         public bool ArchiveBook(Book book, Archive archive)
         {

@@ -79,8 +79,10 @@ namespace DataAccessLayer.Repositories
         }
         public Reservation GetReservationById(int reservationId)
         {
-            var query = Entities.FirstOrDefault(r => r.idReservation == reservationId);
-            return query;
+            var query = from e in Entities
+                        where e.idReservation == reservationId
+                        select e;
+            return query.FirstOrDefault();
         }
         public int CountExistingReservations(int memberId)
         {
