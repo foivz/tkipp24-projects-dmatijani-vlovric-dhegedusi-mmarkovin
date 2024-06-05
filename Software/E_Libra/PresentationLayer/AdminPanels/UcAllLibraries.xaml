@@ -19,22 +19,19 @@
 
         <Grid Height="50" DockPanel.Dock="Bottom">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="160"/>
+                <ColumnDefinition Width="130"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-
-            <StackPanel Orientation="Horizontal" Grid.Column="0">
+            
                 <Button Width="120" Height="40" Margin="5"
                     HorizontalAlignment="Left"
                     x:Name="btnLibraryEmployees"
                     Style="{StaticResource bigButton}"
                     Background="#637E78"
                     Click="btnLibraryEmployees_Click">Zaposlenici</Button>
-                <Image Source="../Resources/loader.gif" Width="25" x:Name="Loader"/>
-            </StackPanel>
 
 
-            <StackPanel Grid.Column="1" Height="50"
+                <StackPanel Grid.Column="1" Height="50"
                     Orientation="Horizontal" HorizontalAlignment="Right">
                 <Button Width="120" Height="40" Margin="0,5,5,5"
                     HorizontalAlignment="Right"
@@ -81,6 +78,7 @@
                            VerticalAlignment="Center"
                            FontSize="16"/>
             </Border>
+            <Image Source="../Resources/loader.gif" Width="25" x:Name="Loader"/>
         </Grid>
     </DockPanel>
 </UserControl>
