@@ -49,6 +49,10 @@ namespace PresentationLayer.AdminPanels {
                 return;
             }
             string newLibraryName = tbLibraryName.Text;
+            if (tbLibraryOIB.Text.Trim() == "") {
+                MessageBox.Show("OIB ne smije biti prazan!");
+                return;
+            }
             string newLibraryOIB = tbLibraryOIB.Text;
             string newLibraryPhone = tbLibraryPhone.Text;
             string newLibraryEmail = tbLibraryEmail.Text;
