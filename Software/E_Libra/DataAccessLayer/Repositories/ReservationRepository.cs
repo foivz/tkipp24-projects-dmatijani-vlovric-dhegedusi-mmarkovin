@@ -77,85 +77,45 @@ namespace DataAccessLayer.Repositories
                         select r;
             return query;
         }
-        public int RemoveReservation(int reservationId)
+        public Reservation GetReservationById(int reservationId)
         {
-            var reservation = Entities.FirstOrDefault(r => r.idReservation == reservationId);
-            BookRepository bookRepository = new BookRepository();
-            Book book = bookRepository.GetBookById(reservation.Book_id);
-
-            if (reservation.reservation_date != null)
-            {
-                SetReservationEndDateAndAddCopies(book, (int)book.current_copies, 1);
-            }
-            Entities.Remove(reservation);
-            return SaveChanges();
+            var query = from e in Entities
+                        where e.idReservation == reservationId
+                        select e;
+            return query.FirstOrDefault();
         }
         public int CountExistingReservations(int memberId)
         {
             var count = Entities.Count(r => r.Member_id == memberId);
             return count;
         }
-        public void SetReservationEndDateAndAddCopies(Book book, int current, int received)
+        public bool EnterDateForReservation(Book book)
         {
-            //current je -nesto
-            //received je novi broj
             Book thisBook = Context.Books.Find(book.id);
-            int absCurrent = Math.Abs(current);
-            if(absCurrent > received || absCurrent == received)
-            {
-                //received puta napravim upis datuma
-                var reservationsToUpdate = Entities
-                .Where(r => r.Book_id == thisBook.id && r.reservation_date == null)
+            var reservation = Entities.Where(r => r.Book_id == thisBook.id && r.reservation_date == null)
                 .OrderBy(r => r.idReservation)
-                .Take(received);
-
-                DateTime endDate = DateTime.Now.AddDays(3);
-                //DateTime endDate = DateTime.Now.AddMinutes(3);
-
-                foreach (var reservation in reservationsToUpdate)
-                {
-                    reservation.reservation_date = endDate;
-                }
-
-            }
-            else //absCurrent < received
+                .FirstOrDefault();
+            if (reservation != null)
             {
-                //absCurrent puta napravim upis datuma
-                var reservationsToUpdate = Entities
-                .Where(r => r.Book_id == thisBook.id && r.reservation_date == null)
-                .OrderBy(r => r.idReservation)
-                .Take(absCurrent);
-
-                DateTime endDate = DateTime.Now.AddDays(3);
-
-                foreach (var reservation in reservationsToUpdate)
-                {
-                    reservation.reservation_date = endDate;
-                }
-
+                reservation.reservation_date = DateTime.Now.AddDays(3);
+                SaveChanges();
+                return true;
             }
-            thisBook.current_copies += received;
-            SaveChanges();
+            else
+            {
+                return false;
+            }
         }
-        public void CheckReservationDates()
+        public IQueryable<Reservation> GetOverdueReservations()
         {
             var now = DateTime.Now;
 
             var overdueReservations = from r in Entities
                                       where r.reservation_date.HasValue && r.reservation_date.Value < now
                                       select r;
-
-            foreach (var reservation in overdueReservations)
-            {
-                BookRepository bookRepository = new BookRepository();
-                Book book = bookRepository.GetBookById(reservation.Book_id);
-
-                SetReservationEndDateAndAddCopies(book, (int)reservation.Book.current_copies, 1);
-                Entities.Remove(reservation);
-            }
-
-            SaveChanges();
+            return overdueReservations;
         }
+
         public int GetReservationId(int memberId, int bookId)
         {
             var query = (from r in Entities where r.Member_id == memberId && r.Book_id == bookId select r.idReservation).FirstOrDefault();

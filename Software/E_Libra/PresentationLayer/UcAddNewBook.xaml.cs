@@ -51,62 +51,64 @@ namespace PresentationLayer
             cmbGenre.ItemsSource = genres;
         }
 
-        private void btnSave_Click(object sender, RoutedEventArgs e)
+        private string ValidateInputs()
         {
-            if(txtName.Text == "")
+            if (txtName.Text == "")
             {
-                MessageBox.Show("Morate unijeti ime knjige!");
-                return;
+                return "Morate unijeti ime knjige!";
             }
             if (txtNumberCopies.Text == "")
             {
-                MessageBox.Show("Morate unijeti broj primjeraka knjige! Ako je knjiga digitalna unesite 0");
-                return;
+                return "Morate unijeti broj primjeraka knjige! Ako je knjiga digitalna unesite 0";
             }
             if (cmbGenre.Text == "")
             {
-                MessageBox.Show("Morate odabrati žanr!");
-                return;
+                return "Morate odabrati žanr!";
             }
-            if(GetCheckBoxValue() == 3)
+            if (GetCheckBoxValue() == 3)
             {
-                MessageBox.Show("Morate odabrati je li knjiga digitalna!");
-                return;
+                return "Morate odabrati je li knjiga digitalna!";
             }
-            if(cmbAuthor.Text == "")
+            if (cmbAuthor.Text == "")
             {
-                MessageBox.Show("Morate odabrati autora!");
+                return "Morate odabrati autora!";
+            }
+            return null;
+        }
+
+        private void btnSave_Click(object sender, RoutedEventArgs e)
+        {
+            string validationError = ValidateInputs();
+            if (validationError != null)
+            {
+                MessageBox.Show(validationError);
                 return;
             }
-            EmployeeService service = new EmployeeService();
             
             try
             {
                 ConvertIntoDateTime(txtDate);
-            }catch (Exception)
-            {
-                MessageBox.Show("Neispravan format datuma! Primjer formata je 05-09-2002");
-                return;
-            }
-            try
-            {
                 TryParseInt(txtNumberPages.Text);
-            }catch(BookException ex)
-            {
-                MessageBox.Show(ex.Poruka);
-                return;
-            }
-            try
-            {
                 TryParseInt(txtNumberCopies.Text);
             }
-            catch (BookException ex)
+            catch(BookException ex)
             {
                 MessageBox.Show(ex.Poruka);
                 return;
             }
 
+            Book book = MakeNewBook();
+            
+            var author = cmbAuthor.SelectedItem as Author;
+            var bookService = new BookServices();
+            var rez = bookService.AddBook(book, author);
+            MessageBox.Show(rez ? "Uspješno" : "Neuspješno");
+            (Window.GetWindow(this) as EmployeePanel).contentPanel.Content = new UcAddNewBook();
+        }
 
+        private Book MakeNewBook()
+        {
+            EmployeeService service = new EmployeeService();
             var book = new Book
             {
                 name = txtName.Text,
@@ -120,21 +122,46 @@ namespace PresentationLayer
                 Genre = cmbGenre.SelectedItem as Genre,
                 Library_id = service.GetEmployeeLibraryId(LoggedUser.Username)
             };
-            var author = cmbAuthor.SelectedItem as Author;
-            var bookService = new BookServices();
-            var rez = bookService.AddBook(book, author);
-            MessageBox.Show(rez ? "Uspješno" : "Neuspješno");
-            (Window.GetWindow(this) as EmployeePanel).contentPanel.Content = new UcAddNewBook();
+
+            return book;
         }
 
         private DateTime? ConvertIntoDateTime(TextBox txtDate)
         {
-            if(txtDate.Text == "")
+            if (txtDate.Text == "")
             {
                 return null;
             }
-            DateTime date = DateTime.ParseExact(txtDate.Text, "dd-MM-yyyy", System.Globalization.CultureInfo.InvariantCulture);
-            return date;
+            try
+            {
+                DateTime date = DateTime.ParseExact(txtDate.Text, "dd-MM-yyyy", System.Globalization.CultureInfo.InvariantCulture);
+                return date;
+            }
+            catch (FormatException)
+            {
+                throw new BookException("Neispravan format datuma! Primjer formata je 05-09-2002");
+            }
+        }
+
+
+        private int? TryParseInt(string input)
+        {
+            if (input == "")
+            {
+                return null;
+            }
+            if (int.TryParse(input, out int result))
+            {
+                if(result < 0)
+                {
+                    throw new BookException("Broj stranica ili primjeraka mora biti pozitivan!");
+                }
+                return result;
+            }
+            else
+            {
+                throw new BookException("Polja u koja se upisuje broj moraju sadržavati samo brojeve!");
+            }
         }
 
         private int GetCheckBoxValue()
@@ -152,21 +179,6 @@ namespace PresentationLayer
             {
                 checkboxValue = radioButton.Content.ToString();
                 
-            }
-        }
-        private int? TryParseInt(string input)
-        {
-            if(input == "")
-            {
-                return null;
-            }
-            if (int.TryParse(input, out int result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new BookException("Polja u koja se upisuje broj moraju sadržavati samo brojeve!");
             }
         }
 
