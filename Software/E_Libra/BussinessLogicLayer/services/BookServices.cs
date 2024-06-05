@@ -76,13 +76,13 @@ namespace BussinessLogicLayer.services
                         imaRezervacije = reservationService.EnterDateForReservation(book); //daj osobi datum na rezervaciju
                         if (imaRezervacije)
                         {
-                            repo.InsertOneCopy(book);
+                            repo.InsertNewCopies(1, book);
                             numCopies--;
                         }
                     } while (imaRezervacije && numCopies > 0);
                     if (numCopies > 0) //ako je ostalo jos kopija nakon popunjavanja svih rezervacija
                     {
-                        repo.InsertMultipleCopies(numCopies, book); //dodaj ih
+                        repo.InsertNewCopies(numCopies, book); //dodaj ih
                     }
                 }
                 else

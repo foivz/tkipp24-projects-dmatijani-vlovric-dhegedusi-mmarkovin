@@ -134,8 +134,8 @@ namespace BussinessLogicLayer.services
                 else
                 {
                     repo.Remove(reservation);
-                    bookService.InsertOneCopy(reservation.Book);
-                    repo.EnterDateForReservation(reservation.Book);
+                    bookService.InsertOneCopy(book);
+                    repo.EnterDateForReservation(book);
                 }
                 return true;
             }

@@ -118,20 +118,6 @@ namespace DataAccessLayer.Repositories
                 return 0;
             }
         }
-        public int InsertMultipleCopies(int number, Book passedBook, bool saveChanges = true)
-        {
-            int id = passedBook.id;
-            var book = (from b in Entities where b.id == id select b).FirstOrDefault();
-            book.current_copies += number;
-            if (saveChanges)
-            {
-                return SaveChanges();
-            }
-            else
-            {
-                return 0;
-            }
-        }
         public int RemoveOneCopy(Book passedBook, bool saveChanges = true)
         {
             int id = passedBook.id;
