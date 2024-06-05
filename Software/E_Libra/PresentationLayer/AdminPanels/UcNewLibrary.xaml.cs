@@ -48,6 +48,10 @@ namespace PresentationLayer.AdminPanels {
                 MessageBox.Show("ID treba biti cijeli broj!");
                 return;
             }
+            if (tbLibraryName.Text.Trim() == "") {
+                MessageBox.Show("Ime ne smije biti prazno!");
+                return;
+            }
             string newLibraryName = tbLibraryName.Text;
             if (tbLibraryOIB.Text.Trim() == "") {
                 MessageBox.Show("OIB ne smije biti prazan!");
