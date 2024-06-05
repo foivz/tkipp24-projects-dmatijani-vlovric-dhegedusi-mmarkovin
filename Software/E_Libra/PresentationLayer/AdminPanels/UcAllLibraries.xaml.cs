@@ -32,17 +32,7 @@ namespace PresentationLayer.AdminPanels {
                 return;
             }
 
-            try {
-                int successful = service.DeleteLibrary(selectedLibrary);
-                if (successful == 0) {
-                    MessageBox.Show("Brisanje nije uspjelo!");
-                }
-
-                Loader.Visibility = Visibility.Visible;
-                await ShowAllLibraries();
-            } catch (LibraryException ex) {
-                MessageBox.Show(ex.Message);
-            }
+            await ShowWarningBeforeDeleting(selectedLibrary);
         }
 
         private void btnEditLibrary_Click(object sender, RoutedEventArgs e) {
@@ -98,6 +88,32 @@ namespace PresentationLayer.AdminPanels {
 
         private async void UserControl_Loaded(object sender, RoutedEventArgs e) {
             await ShowAllLibraries();
+        }
+
+        private async Task ShowWarningBeforeDeleting(Library selectedLibrary) {
+            MessageBoxResult result = MessageBox.Show("Sigurni ste da želite obrisati odabranu knjižnicu?", "Upozorenje", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+
+            switch (result) {
+                case MessageBoxResult.Yes:
+                    await DeleteSelectedLibrary(selectedLibrary);
+                    break;
+                case MessageBoxResult.No:
+                    break;
+            }
+        }
+
+        private async Task DeleteSelectedLibrary(Library selectedLibrary) {
+            try {
+                int successful = service.DeleteLibrary(selectedLibrary);
+                if (successful == 0) {
+                    MessageBox.Show("Brisanje nije uspjelo!");
+                }
+
+                Loader.Visibility = Visibility.Visible;
+                await ShowAllLibraries();
+            } catch (LibraryException ex) {
+                MessageBox.Show(ex.Message);
+            }
         }
     }
 }
