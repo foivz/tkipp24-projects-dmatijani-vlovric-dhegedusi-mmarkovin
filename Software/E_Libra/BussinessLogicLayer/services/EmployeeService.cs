@@ -51,8 +51,8 @@ namespace BussinessLogicLayer.services {
                 }
 
                 var employeesWithUsername = repository.GetEmployeesByUsername(employee.username);
-                var otherEmployeesWithUsername = employeesWithUsername.ToList().FindAll(e => e.username != employee.username);
-                if (otherEmployeesWithUsername.ToList().Count == 0) {
+                var otherEmployeesWithUsername = employeesWithUsername.ToList().FindAll(e => e.OIB != employee.OIB);
+                if (otherEmployeesWithUsername.Count > 0) {
                     throw new EmployeeWithSameUsernameException("Zaposlenik sa tim korisničkim imenom već postoji!");
                 }
 
