@@ -1,6 +1,7 @@
 ﻿using EntitiesLayer;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Net;
 using System.Security.Policy;
@@ -19,6 +20,14 @@ namespace DataAccessLayer.Repositories {
                         select e;
 
             return query;
+        }
+
+        public async Task<List<Library>> GetAllLibrariesAsync() {
+            var query = from e in Entities
+                        select e;
+
+            var libraries = await query.ToListAsync();
+            return libraries;
         }
 
         public IQueryable<Library> GetLibrariesById(int libraryId) {

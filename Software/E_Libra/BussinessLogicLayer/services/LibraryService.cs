@@ -16,6 +16,12 @@ namespace BussinessLogicLayer.services {
             }
         }
 
+        public async Task<List<Library>> GetAllLibrariesAsync() {
+            using (var repository = new LibraryRepository()) {
+                return await repository.GetAllLibrariesAsync();
+            }
+        }
+
         public int AddLibrary(Library newLibrary) {
             using (var repository = new LibraryRepository()) {
                 var librariesWithId = repository.GetLibrariesById(newLibrary.id);

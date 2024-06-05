@@ -1,5 +1,6 @@
 ﻿using BussinessLogicLayer.Exceptions;
 using BussinessLogicLayer.services;
+using DataAccessLayer.Repositories;
 using EntitiesLayer;
 using System;
 using System.Collections.Generic;
@@ -23,10 +24,9 @@ namespace PresentationLayer.AdminPanels {
 
         public UcAllLibraries() {
             InitializeComponent();
-            ShowAllLibraries();
         }
 
-        private void btnRemoveLibrary_Click(object sender, RoutedEventArgs e) {
+        private async void btnRemoveLibrary_Click(object sender, RoutedEventArgs e) {
             Library selectedLibrary = GetSelectedLibrary();
             if (selectedLibrary == null) {
                 return;
@@ -38,7 +38,8 @@ namespace PresentationLayer.AdminPanels {
                     MessageBox.Show("Brisanje nije uspjelo!");
                 }
 
-                ShowAllLibraries();
+                Loader.Visibility = Visibility.Visible;
+                await ShowAllLibraries();
             } catch (LibraryException ex) {
                 MessageBox.Show(ex.Message);
             }
@@ -69,14 +70,11 @@ namespace PresentationLayer.AdminPanels {
             AdminGuiControl.LoadNewControl(ucAllEmployees);
         }
 
-        private void ShowAllLibraries() {
-            Task.Run(() => {
-                var libraries = service.GetAllLibraries();
-
-                Application.Current.Dispatcher.Invoke(() => {
-                    dgAllLibraries.ItemsSource = libraries;
-                });
-            });
+        private async Task ShowAllLibraries() {
+            var taskLibraries = service.GetAllLibrariesAsync();
+            var libraries = await taskLibraries;
+            dgAllLibraries.ItemsSource = libraries;
+            Loader.Visibility = Visibility.Hidden;
         }
 
         private Library GetSelectedLibrary() {
@@ -92,6 +90,10 @@ namespace PresentationLayer.AdminPanels {
             }
 
             return selectedLibrary;
+        }
+
+        private async void UserControl_Loaded(object sender, RoutedEventArgs e) {
+            await ShowAllLibraries();
         }
     }
 }

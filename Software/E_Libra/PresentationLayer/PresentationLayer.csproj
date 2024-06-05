@@ -414,6 +414,7 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <Resource Include="Resources\loader.gif" />
     <Content Include="UserDocumentation\User_documentation_admin.pdf" />
     <Content Include="UserDocumentation\User_documentation_employee.pdf" />
     <Content Include="UserDocumentation\User_documentation_login.pdf" />
