@@ -40,17 +40,12 @@ namespace PresentationLayer.AdminPanels {
 
         private void PopulateComboBox(Library selectedLibrary = null) {
             var libraryService = new LibraryService();
-            Task.Run(() => {
-                var allLibraries = libraryService.GetAllLibraries();
+            var allLibraries = libraryService.GetAllLibraries();
+            cboLibrary.ItemsSource = allLibraries;
 
-                Application.Current.Dispatcher.Invoke(() => {
-                    cboLibrary.ItemsSource = allLibraries;
-
-                    if (selectedLibrary != null) {
-                        cboLibrary.SelectedItem = allLibraries.FirstOrDefault(l => l.id == selectedLibrary.id);
-                    }
-                });
-            });
+            if (selectedLibrary != null) {
+                cboLibrary.SelectedItem = allLibraries.FirstOrDefault(l => l.id == selectedLibrary.id);
+            }
         }
 
         private void cboLibrary_SelectionChanged(object sender, SelectionChangedEventArgs e) {
@@ -101,16 +96,32 @@ namespace PresentationLayer.AdminPanels {
             Employee selectedEmployee = GetSelectedEmployee();
             if (selectedEmployee == null) return;
 
+            ShowWarningBeforeDeleting(selectedEmployee);
+            
+            Library selectedLibrary = cboLibrary.SelectedItem as Library;
+            if (selectedLibrary != null) {
+                LoadEmployees(selectedLibrary);
+            }
+        }
+
+        private void ShowWarningBeforeDeleting(Employee selectedEmployee) {
+            MessageBoxResult result = MessageBox.Show("Sigurni ste da želite obrisati odabranog zaposlenika?", "Upozorenje", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+
+            switch (result) {
+                case MessageBoxResult.Yes:
+                    DeleteSelectedEmployee(selectedEmployee);
+                    break;
+                case MessageBoxResult.No:
+                    break;
+            }
+        }
+
+        private void DeleteSelectedEmployee(Employee selectedEmployee) {
             try {
                 service.DeleteEmployee(selectedEmployee);
             } catch (EmployeeException ex) {
                 MessageBox.Show(ex.Message);
                 return;
-            }
-            
-            Library selectedLibrary = cboLibrary.SelectedItem as Library;
-            if (selectedLibrary != null) {
-                LoadEmployees(selectedLibrary);
             }
         }
     }
