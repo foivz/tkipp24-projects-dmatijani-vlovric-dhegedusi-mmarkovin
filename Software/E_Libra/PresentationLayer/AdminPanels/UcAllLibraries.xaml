@@ -32,7 +32,7 @@
                     Click="btnLibraryEmployees_Click">Zaposlenici</Button>
                 <Image Source="../Resources/loader.gif" Width="25" x:Name="Loader"/>
             </StackPanel>
-            
+
 
             <StackPanel Grid.Column="1" Height="50"
                     Orientation="Horizontal" HorizontalAlignment="Right">
@@ -57,17 +57,30 @@
             </StackPanel>
         </Grid>
 
-        <DataGrid x:Name="dgAllLibraries" AutoGenerateColumns="False">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="ID" Binding="{Binding id}"/>
-                <DataGridTextColumn Header="Naziv" Binding="{Binding name}"/>
-                <DataGridTextColumn Header="OIB" Binding="{Binding OIB}"/>
-                <DataGridTextColumn Header="Telefon" Binding="{Binding phone}"/>
-                <DataGridTextColumn Header="E-pošta" Binding="{Binding email}"/>
-                <DataGridTextColumn Header="Cijena kašnjenja po danu" Binding="{Binding price_day_late}"/>
-                <DataGridTextColumn Header="Adresa" Binding="{Binding address}"/>
-                <DataGridTextColumn Header="Trajanje članarine" Binding="{Binding membership_duration, Converter={StaticResource MembershipDurationConverter}}"/>
-            </DataGrid.Columns>
-        </DataGrid>
+        <Grid>
+            <DataGrid x:Name="dgAllLibraries" AutoGenerateColumns="False">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="ID" Binding="{Binding id}"/>
+                    <DataGridTextColumn Header="Naziv" Binding="{Binding name}"/>
+                    <DataGridTextColumn Header="OIB" Binding="{Binding OIB}"/>
+                    <DataGridTextColumn Header="Telefon" Binding="{Binding phone}"/>
+                    <DataGridTextColumn Header="E-pošta" Binding="{Binding email}"/>
+                    <DataGridTextColumn Header="Cijena kašnjenja po danu" Binding="{Binding price_day_late}"/>
+                    <DataGridTextColumn Header="Adresa" Binding="{Binding address}"/>
+                    <DataGridTextColumn Header="Trajanje članarine" Binding="{Binding membership_duration, Converter={StaticResource MembershipDurationConverter}}"/>
+                </DataGrid.Columns>
+            </DataGrid>
+            <Border Background="LightGray"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Width="Auto" Height="Auto"
+                    Padding="5"
+                    CornerRadius="5"
+                    x:Name="txtNoLibraries">
+                <TextBlock Text="U sustavu nema knjižnica!" HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           FontSize="16"/>
+            </Border>
+        </Grid>
     </DockPanel>
 </UserControl>

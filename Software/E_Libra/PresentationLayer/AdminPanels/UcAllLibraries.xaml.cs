@@ -71,10 +71,14 @@ namespace PresentationLayer.AdminPanels {
         }
 
         private async Task ShowAllLibraries() {
+            txtNoLibraries.Visibility = Visibility.Hidden;
             var taskLibraries = service.GetAllLibrariesAsync();
             var libraries = await taskLibraries;
             dgAllLibraries.ItemsSource = libraries;
             Loader.Visibility = Visibility.Hidden;
+            if (libraries.Count == 0) {
+                txtNoLibraries.Visibility = Visibility.Visible;
+            }
         }
 
         private Library GetSelectedLibrary() {
