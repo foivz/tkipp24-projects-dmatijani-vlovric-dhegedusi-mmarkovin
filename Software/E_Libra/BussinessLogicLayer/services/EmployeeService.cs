@@ -50,6 +50,12 @@ namespace BussinessLogicLayer.services {
                     throw new EmployeeWithSameOIBException("Ne postoji zaposlenik sa odabranim OIB!");
                 }
 
+                var employeesWithUsername = repository.GetEmployeesByUsername(employee.username);
+                var otherEmployeesWithUsername = employeesWithUsername.ToList().FindAll(e => e.OIB != employee.OIB);
+                if (otherEmployeesWithUsername.Count > 0) {
+                    throw new EmployeeWithSameUsernameException("Zaposlenik sa tim korisničkim imenom već postoji!");
+                }
+
                 return repository.Update(employee);
             }
         }

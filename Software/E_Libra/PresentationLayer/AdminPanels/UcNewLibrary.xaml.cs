@@ -42,19 +42,23 @@ namespace PresentationLayer.AdminPanels {
         }
 
         private void SaveLibrary() {
-            int newLibraryID;
-            if (int.TryParse(tbLibraryID.Text, out newLibraryID)) {}
-            else {
+            if (!int.TryParse(tbLibraryID.Text, out int newLibraryID)) {
                 MessageBox.Show("ID treba biti cijeli broj!");
                 return;
             }
+            if (tbLibraryName.Text.Trim() == "") {
+                MessageBox.Show("Ime ne smije biti prazno!");
+                return;
+            }
             string newLibraryName = tbLibraryName.Text;
+            if (tbLibraryOIB.Text.Trim() == "") {
+                MessageBox.Show("OIB ne smije biti prazan!");
+                return;
+            }
             string newLibraryOIB = tbLibraryOIB.Text;
             string newLibraryPhone = tbLibraryPhone.Text;
             string newLibraryEmail = tbLibraryEmail.Text;
-            decimal newLibraryPriceDayLate;
-            if (decimal.TryParse(tbLibraryPriceDayLate.Text, out newLibraryPriceDayLate)) {}
-            else {
+            if (!decimal.TryParse(tbLibraryPriceDayLate.Text, out decimal newLibraryPriceDayLate)) {
                 MessageBox.Show("Cijena kašnjenja po danu treba biti decimalan broj!");
                 return;
             }
@@ -63,9 +67,7 @@ namespace PresentationLayer.AdminPanels {
                 return;
             }
             string newLibraryAddress = tbLibraryAddress.Text;
-            int newLibraryMembershipDurationDays;
-            if (int.TryParse(tbLibraryMembershipDuration.Text, out newLibraryMembershipDurationDays)) {}
-            else {
+            if (!int.TryParse(tbLibraryMembershipDuration.Text, out int newLibraryMembershipDurationDays)) {
                 MessageBox.Show("Broj dana trajanja članarine treba biti cijeli broj!");
                 return;
             }
@@ -74,7 +76,7 @@ namespace PresentationLayer.AdminPanels {
                 return;
             }
 
-            DateTime startDate = new DateTime(2024, 1, 1);
+            DateTime startDate = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Unspecified);
             DateTime newLibraryMembershipDuration = startDate.AddDays(newLibraryMembershipDurationDays - 1);
 
             Library newLibrary = new Library {

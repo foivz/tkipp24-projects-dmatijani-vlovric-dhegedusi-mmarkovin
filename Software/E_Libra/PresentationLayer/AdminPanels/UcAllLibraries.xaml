@@ -5,7 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:PresentationLayer.AdminPanels"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="450" d:DesignWidth="800"
+             Loaded="UserControl_Loaded">
     <UserControl.Resources>
         <local:MembershipDurationConverter x:Key="MembershipDurationConverter"/>
     </UserControl.Resources>
@@ -21,15 +22,16 @@
                 <ColumnDefinition Width="130"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-
-            <Button Width="120" Height="40" Margin="5"
+            
+                <Button Width="120" Height="40" Margin="5"
                     HorizontalAlignment="Left"
                     x:Name="btnLibraryEmployees"
                     Style="{StaticResource bigButton}"
                     Background="#637E78"
                     Click="btnLibraryEmployees_Click">Zaposlenici</Button>
 
-            <StackPanel Grid.Column="1" Height="50"
+
+                <StackPanel Grid.Column="1" Height="50"
                     Orientation="Horizontal" HorizontalAlignment="Right">
                 <Button Width="120" Height="40" Margin="0,5,5,5"
                     HorizontalAlignment="Right"
@@ -52,17 +54,31 @@
             </StackPanel>
         </Grid>
 
-        <DataGrid x:Name="dgAllLibraries" AutoGenerateColumns="False">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="ID" Binding="{Binding id}"/>
-                <DataGridTextColumn Header="Naziv" Binding="{Binding name}"/>
-                <DataGridTextColumn Header="OIB" Binding="{Binding OIB}"/>
-                <DataGridTextColumn Header="Telefon" Binding="{Binding phone}"/>
-                <DataGridTextColumn Header="E-pošta" Binding="{Binding email}"/>
-                <DataGridTextColumn Header="Cijena kašnjenja po danu" Binding="{Binding price_day_late}"/>
-                <DataGridTextColumn Header="Adresa" Binding="{Binding address}"/>
-                <DataGridTextColumn Header="Trajanje članarine" Binding="{Binding membership_duration, Converter={StaticResource MembershipDurationConverter}}"/>
-            </DataGrid.Columns>
-        </DataGrid>
+        <Grid>
+            <DataGrid x:Name="dgAllLibraries" AutoGenerateColumns="False">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="ID" Binding="{Binding id}"/>
+                    <DataGridTextColumn Header="Naziv" Binding="{Binding name}"/>
+                    <DataGridTextColumn Header="OIB" Binding="{Binding OIB}"/>
+                    <DataGridTextColumn Header="Telefon" Binding="{Binding phone}"/>
+                    <DataGridTextColumn Header="E-pošta" Binding="{Binding email}"/>
+                    <DataGridTextColumn Header="Cijena kašnjenja po danu" Binding="{Binding price_day_late}"/>
+                    <DataGridTextColumn Header="Adresa" Binding="{Binding address}"/>
+                    <DataGridTextColumn Header="Trajanje članarine" Binding="{Binding membership_duration, Converter={StaticResource MembershipDurationConverter}}"/>
+                </DataGrid.Columns>
+            </DataGrid>
+            <Border Background="LightGray"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Width="Auto" Height="Auto"
+                    Padding="5"
+                    CornerRadius="5"
+                    x:Name="txtNoLibraries">
+                <TextBlock Text="U sustavu nema knjižnica!" HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           FontSize="16"/>
+            </Border>
+            <Image Source="../Resources/loader.gif" Width="25" x:Name="Loader"/>
+        </Grid>
     </DockPanel>
 </UserControl>

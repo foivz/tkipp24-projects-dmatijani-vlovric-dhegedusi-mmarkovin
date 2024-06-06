@@ -111,7 +111,7 @@ namespace PresentationLayer {
             btnReturnBorrow.Visibility = Visibility.Visible;
         }
 
-        private void btnReturnBorrow_Click(object sender, RoutedEventArgs e) {
+        private async void btnReturnBorrow_Click(object sender, RoutedEventArgs e) {
             if (borrow == null) {
                 MessageBox.Show("Ne postoji posudba!");
                 return;
@@ -156,7 +156,7 @@ namespace PresentationLayer {
                 MessageBox.Show("Knjiga nije vraćena.");
             }
 
-            UpdateParentBorrows();
+            await UpdateParentBorrows();
             ReturnParentUserControl();
         }
 
@@ -199,19 +199,19 @@ namespace PresentationLayer {
             }
         }
 
-        private Employee GetEmployee() {
-            EmployeeService employeeService = new EmployeeService();
-            return employeeService.GetEmployeeByUsername(LoggedUser.Username);
-        }
-
         private Borrow GetBorrow(Book book, Member member) {
             BorrowService borrowService = new BorrowService();
-            return borrowService.GetBorrowsForMemberAndBook(member.id, book.id, LoggedUser.LibraryId).Where(b => b.borrow_status != (int)BorrowStatus.Returned
-            && b.borrow_status != (int)BorrowStatus.Waiting).FirstOrDefault();
+            try {
+                return borrowService.GetBorrowsForMemberAndBook(member.id, book.id, LoggedUser.LibraryId).Find(b => b.borrow_status != (int)BorrowStatus.Returned
+                    && b.borrow_status != (int)BorrowStatus.Waiting);
+            } catch (Exception) {
+                return null;
+            }
+            
         }
 
-        private void UpdateParentBorrows() {
-            parentUserControl.LoadAllBorrows();
+        private async Task UpdateParentBorrows() {
+            await parentUserControl.LoadAllBorrows();
             parentUserControl.tbcTabs.SelectedIndex = 3;
         }
     }
