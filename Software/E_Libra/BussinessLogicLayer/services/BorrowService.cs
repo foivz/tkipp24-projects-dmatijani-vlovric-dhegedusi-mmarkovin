@@ -68,9 +68,7 @@ namespace BussinessLogicLayer.services {
                 }
 
                 if (!reserved) {
-                    BookServices bookService = new BookServices();
-                    book.current_copies--;
-                    bookService.UpdateBook(book);
+                    LowerBookCopies(book);
                 }
             }
 
@@ -85,9 +83,7 @@ namespace BussinessLogicLayer.services {
                 if (book.current_copies < 1) {
                     throw new NoMoreBookCopiesException("Odabrane knjige trenutno nema na stanju!");
                 }
-                BookServices bookService = new BookServices();
-                book.current_copies--;
-                bookService.UpdateBook(book);
+                LowerBookCopies(book);
             } else if (borrow.borrow_status == (int)BorrowStatus.Returned) {
                 ReservationService reservationService = new ReservationService();
                 reservationService.SetReservationEndDateAndAddCopies(book, (int)book.current_copies, 1);
@@ -108,6 +104,12 @@ namespace BussinessLogicLayer.services {
             using (var context = new BorrowRepository()) {
                 return context.GetBorrowsForEmployee(employeeId).ToList();
             }
+        }
+
+        private void LowerBookCopies(Book book) {
+            BookServices bookService = new BookServices();
+            book.current_copies--;
+            bookService.UpdateBook(book);
         }
     }
 }
