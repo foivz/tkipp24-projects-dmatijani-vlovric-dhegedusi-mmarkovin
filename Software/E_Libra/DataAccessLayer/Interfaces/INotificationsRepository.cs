@@ -18,6 +18,6 @@ namespace DataAccessLayer.Interfaces
         int Add(Notification notification, bool saveChanges = true);
 
         int Update(Notification entity, bool saveChanges = true);
-
+        int Remove(Notification notification, bool saveChanges);
     }
 }
