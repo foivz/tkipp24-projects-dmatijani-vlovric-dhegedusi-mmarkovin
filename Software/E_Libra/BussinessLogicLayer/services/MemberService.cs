@@ -12,23 +12,27 @@ namespace BussinessLogicLayer.services {
     // David Matijanić: GetMemberByBarcodeId
     public class MemberService {
         private IMembersRepository membersRepository { get; set; }
+        private ILibraryRepository libraryRepository { get; set; }
         private EmployeeService employeeService { get; set; }
         private BorrowService borrowService { get; set; }
         private ReservationService reservationService { get; set; }
 
         public MemberService(
             IMembersRepository membersRepository,
+            ILibraryRepository libraryRepository,
             EmployeeService employeeService,
             BorrowService borrowService,
             ReservationService reservationService
         ) {
             this.membersRepository = membersRepository;
+            this.libraryRepository = libraryRepository;
             this.employeeService = employeeService;
             this.borrowService = borrowService;
             this.reservationService = reservationService;
         }
         public MemberService(): this(
             new MemberRepository(),
+            new LibraryRepository(),
             new EmployeeService(),
             new BorrowService(),
             new ReservationService()
@@ -48,8 +52,7 @@ namespace BussinessLogicLayer.services {
         public bool CheckMembershipDateLogin(string username, string password) {
             Member returned = membersRepository.GetMemberLogin(username, password).ToList().FirstOrDefault();
             if (returned != null) {
-                LibraryService libraryService = new LibraryService();
-                decimal membershipDuration = libraryService.GetLibraryMembershipDuration(returned.Library_id);
+                decimal membershipDuration = GetLibraryMembershipDuration(returned.Library_id);
 
                 DateTime? membershipRunOutDate = returned.membership_date.HasValue ? returned.membership_date.Value.AddDays(Convert.ToInt16(membershipDuration)) : (DateTime?)null;
                 DateTime dateNow = DateTime.Now;
@@ -147,8 +150,7 @@ namespace BussinessLogicLayer.services {
             return membersRepository.GetMembersByLibrary(LibraryId).ToList();
         }
         public bool RestoreMembership(Member member) {
-            LibraryService libraryService = new LibraryService();
-            decimal membershipDuration = libraryService.GetLibraryMembershipDuration(member.Library_id);
+            decimal membershipDuration = GetLibraryMembershipDuration(member.Library_id);
 
             DateTime? membershipRunOutDate = member.membership_date.HasValue ? member.membership_date.Value.AddDays(Convert.ToInt16(membershipDuration)) : (DateTime?)null;
             DateTime dateNow = DateTime.Now;
@@ -195,6 +197,14 @@ namespace BussinessLogicLayer.services {
 
         public List<Member> GetMembersByLibrary(int libraryId) {
             return membersRepository.GetMembersByLibrary(libraryId).ToList();
+        }
+
+        private decimal GetLibraryMembershipDuration(int libraryId) {
+            DateTime returnedValue = libraryRepository.GetLibraryMembershipDuration(libraryId);
+            return CalculateMembershipDurationFromDate(returnedValue);
+        }
+        private decimal CalculateMembershipDurationFromDate(DateTime date) {
+            return (date - new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Unspecified)).Days + 1;
         }
     }
 }
