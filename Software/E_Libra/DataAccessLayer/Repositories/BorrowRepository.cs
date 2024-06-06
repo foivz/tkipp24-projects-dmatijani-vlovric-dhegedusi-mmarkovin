@@ -1,4 +1,5 @@
 ﻿using DataAccessLayer.Exceptions;
+using DataAccessLayer.Interfaces;
 using EntitiesLayer;
 using System;
 using System.Collections.Generic;
@@ -10,9 +11,8 @@ using System.Threading.Tasks;
 
 namespace DataAccessLayer.Repositories {
     // David Matijanić: sve osim HasUserBorrowedBook
-    public class BorrowRepository : Repository<Borrow> {
+    public class BorrowRepository : Repository<Borrow>, IBorrowRepository {
         public BorrowRepository() : base(new DatabaseModel()) {
-
         }
 
         public IQueryable<Borrow> GetAllBorrowsForMember(int member_id, int library_id) {
