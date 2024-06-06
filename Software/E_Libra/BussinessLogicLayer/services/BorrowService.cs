@@ -12,13 +12,22 @@ namespace BussinessLogicLayer.services {
     // David Matijanić: osim HasUserBorrowedBook
     public class BorrowService {
         IBorrowRepository borrowRepository { get; set; }
+        ReservationService reservationService { get; set; }
+        BookServices bookService { get; set; }
 
-        public BorrowService(IBorrowRepository borrowRepository)
-        {
+        public BorrowService(
+            IBorrowRepository borrowRepository,
+            ReservationService reservationService,
+            BookServices bookService
+        ) {
             this.borrowRepository = borrowRepository;
+            this.reservationService = reservationService;
+            this.bookService = bookService;
         }
         public BorrowService() : this(
-            new BorrowRepository()
+            new BorrowRepository(),
+            new ReservationService(),
+            new BookServices()
         ) { }
 
         public List<Borrow> GetAllBorrowsForMember(int member_id, int library_id) {
@@ -54,7 +63,6 @@ namespace BussinessLogicLayer.services {
             bool reserved = false;
             if (borrow.borrow_status == (int)BorrowStatus.Borrowed) {
                 if (book.current_copies < 1) {
-                    ReservationService reservationService = new ReservationService();
                     Reservation existingReservation = reservationService.CheckValidReservationFroMember(borrow.Member.id, book.id);
                     if (existingReservation == null) {
                         throw new NoMoreBookCopiesException("Odabrane knjige trenutno nema na stanju!");
@@ -80,7 +88,6 @@ namespace BussinessLogicLayer.services {
                 }
                 LowerBookCopies(book);
             } else if (borrow.borrow_status == (int)BorrowStatus.Returned) {
-                ReservationService reservationService = new ReservationService();
                 reservationService.ReturnBook(book);
             }
 
@@ -96,7 +103,6 @@ namespace BussinessLogicLayer.services {
         }
 
         private void LowerBookCopies(Book book) {
-            BookServices bookService = new BookServices();
             book.current_copies--;
             bookService.UpdateBook(book);
         }
