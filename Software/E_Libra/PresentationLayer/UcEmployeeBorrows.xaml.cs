@@ -67,30 +67,26 @@ namespace PresentationLayer {
             string memberBarcode = "";
             string bookBarcode = "";
 
-            if (tbcTabs.SelectedIndex == 2) {
-                if (dgCurrentBorrows.SelectedItems.Count == 1) {
-                    Borrow borrow = dgCurrentBorrows.SelectedItem as Borrow;
-                    if (borrow != null) {
-                        MemberService memberService = new MemberService();
-                        BookServices bookService = new BookServices();
-                        if (borrow.Member_id != null) {
-                            memberBarcode = memberService.GetMemberBarcode((int)borrow.Member_id);
-                            bookBarcode = bookService.GetBookBarcode(borrow.Book_id);
-                            notSelected = false;
-                        }
+            if (tbcTabs.SelectedIndex == 2 && dgCurrentBorrows.SelectedItems.Count == 1) {
+                Borrow borrow = dgCurrentBorrows.SelectedItem as Borrow;
+                if (borrow != null) {
+                    MemberService memberService = new MemberService();
+                    BookServices bookService = new BookServices();
+                    if (borrow.Member_id != null) {
+                        memberBarcode = memberService.GetMemberBarcode((int)borrow.Member_id);
+                        bookBarcode = bookService.GetBookBarcode(borrow.Book_id);
+                        notSelected = false;
                     }
                 }
-            } else if (tbcTabs.SelectedIndex == 3) {
-                if (dgLateBorrows.SelectedItems.Count == 1) {
-                    Borrow borrow = dgLateBorrows.SelectedItem as Borrow;
-                    if (borrow != null) {
-                        MemberService memberService = new MemberService();
-                        BookServices bookService = new BookServices();
-                        if (borrow.Member_id != null) {
-                            memberBarcode = memberService.GetMemberBarcode((int)borrow.Member_id);
-                            bookBarcode = bookService.GetBookBarcode(borrow.Book_id);
-                            notSelected = false;
-                        }
+            } else if (tbcTabs.SelectedIndex == 3 && dgLateBorrows.SelectedItems.Count == 1) {
+                Borrow borrow = dgLateBorrows.SelectedItem as Borrow;
+                if (borrow != null) {
+                    MemberService memberService = new MemberService();
+                    BookServices bookService = new BookServices();
+                    if (borrow.Member_id != null) {
+                        memberBarcode = memberService.GetMemberBarcode((int)borrow.Member_id);
+                        bookBarcode = bookService.GetBookBarcode(borrow.Book_id);
+                        notSelected = false;
                     }
                 }
             }
@@ -108,17 +104,15 @@ namespace PresentationLayer {
             string memberBarcode = "";
             string bookBarcode = "";
 
-            if (tbcTabs.SelectedIndex == 1) {
-                if (dgPendingBorrows.SelectedItems.Count == 1) {
-                    Borrow borrow = dgPendingBorrows.SelectedItem as Borrow;
-                    if (borrow != null) {
-                        MemberService memberService = new MemberService();
-                        BookServices bookService = new BookServices();
-                        if (borrow.Member_id != null) {
-                            memberBarcode = memberService.GetMemberBarcode((int)borrow.Member_id);
-                            bookBarcode = bookService.GetBookBarcode(borrow.Book_id);
-                            notSelected = false;
-                        }
+            if (tbcTabs.SelectedIndex == 1 && dgPendingBorrows.SelectedItems.Count == 1) {
+                Borrow borrow = dgPendingBorrows.SelectedItem as Borrow;
+                if (borrow != null) {
+                    MemberService memberService = new MemberService();
+                    BookServices bookService = new BookServices();
+                    if (borrow.Member_id != null) {
+                        memberBarcode = memberService.GetMemberBarcode((int)borrow.Member_id);
+                        bookBarcode = bookService.GetBookBarcode(borrow.Book_id);
+                        notSelected = false;
                     }
                 }
             }

@@ -44,7 +44,11 @@ namespace PresentationLayer.AdminPanels {
             cboLibrary.ItemsSource = allLibraries;
 
             if (selectedLibrary != null) {
-                cboLibrary.SelectedItem = allLibraries.FirstOrDefault(l => l.id == selectedLibrary.id);
+                try {
+                    cboLibrary.SelectedItem = allLibraries.Find(l => l.id == selectedLibrary.id);
+                } catch (Exception ex) {
+                    MessageBox.Show(ex.Message);
+                }
             }
         }
 
@@ -121,7 +125,6 @@ namespace PresentationLayer.AdminPanels {
                 service.DeleteEmployee(selectedEmployee);
             } catch (EmployeeException ex) {
                 MessageBox.Show(ex.Message);
-                return;
             }
         }
     }
