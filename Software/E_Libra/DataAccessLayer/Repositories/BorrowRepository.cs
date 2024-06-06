@@ -12,10 +12,7 @@ using System.Threading.Tasks;
 namespace DataAccessLayer.Repositories {
     // David Matijanić: sve osim HasUserBorrowedBook
     public class BorrowRepository : Repository<Borrow>, IBorrowRepository {
-        private bool Busy { get; set; }
-
         public BorrowRepository() : base(new DatabaseModel()) {
-            Busy = false;
         }
 
         public IQueryable<Borrow> GetAllBorrowsForMember(int member_id, int library_id) {
@@ -117,14 +114,12 @@ namespace DataAccessLayer.Repositories {
         }
 
         public override int Add(Borrow borrow, bool saveChanges = true) {
-            Busy = true;
             var book = Context.Books.SingleOrDefault(b => b.id == borrow.Book.id);
             var member = Context.Members.SingleOrDefault(m => m.id == borrow.Member.id);
 
             var newBorrow = MakeNewBorrow(borrow, book, member);
 
             Entities.Add(newBorrow);
-            Busy = false;
             return saveChanges ? SaveChanges() : 0;
         }
 
@@ -228,7 +223,6 @@ namespace DataAccessLayer.Repositories {
         }
 
         private List<Borrow> GetAllBorrowsForLibrary(int libraryId) {
-            while (Busy) { }
             var allBorrows = from b in Entities.Include("Book")
                              where b.Book.Library_id == libraryId
                              select b;

@@ -48,8 +48,9 @@ namespace PresentationLayer {
             ReturnParentUserControl();
         }
 
-        private void ReturnParentUserControl() {
-            mainWindow.contentPanel.Content = parentUserControl;
+        private void ReturnParentUserControl(UserControl userControl = null) {
+            if (userControl == null) userControl = parentUserControl;
+            mainWindow.contentPanel.Content = userControl;
         }
 
         private void BorrowBook() {
@@ -97,7 +98,7 @@ namespace PresentationLayer {
                 }
 
                 UpdateParentBorrows();
-                ReturnParentUserControl();
+                ReturnParentUserControl(new UcEmployeeBorrows(mainWindow));
             } else {
                 waitingBorrow.borrow_status = (int)BorrowStatus.Borrowed;
                 waitingBorrow.borrow_date = DateTime.Now;
@@ -111,7 +112,7 @@ namespace PresentationLayer {
                 }
 
                 UpdateParentBorrows();
-                ReturnParentUserControl();
+                ReturnParentUserControl(new UcEmployeeBorrows(mainWindow));
             }
         }
 
