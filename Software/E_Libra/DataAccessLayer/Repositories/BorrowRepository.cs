@@ -86,29 +86,8 @@ namespace DataAccessLayer.Repositories {
         }
 
         private async Task UpdateBorrowStatusAsync(int library_id) {
-            var allBorrows = from b in Entities.Include("Book")
-                             where b.Book.Library_id == library_id
-                             select b;
-
-            List<Borrow> borrowsToRemove = new List<Borrow>();
-            List<Borrow> borrowsToUpdate = new List<Borrow>();
-
-            foreach (Borrow borrow in allBorrows) {
-                switch (borrow.borrow_status) {
-                    case ((int)BorrowStatus.Waiting):
-                        if (borrow.return_date < DateTime.Now) {
-                            borrowsToRemove.Add(borrow);
-                        }
-                        break;
-
-                    case ((int)BorrowStatus.Borrowed):
-                        if (borrow.return_date < DateTime.Now) {
-                            borrow.borrow_status = (int)BorrowStatus.Late;
-                            borrowsToUpdate.Add(borrow);
-                        }
-                        break;
-                }
-            }
+            var borrowsToUpdate = GetBorrowsToUpdate(library_id);
+            var borrowsToRemove = GetBorrowsToRemove(library_id);
 
             foreach (Borrow borrow in borrowsToRemove) {
                 Remove(borrow);
@@ -122,29 +101,8 @@ namespace DataAccessLayer.Repositories {
         }
 
         private void UpdateBorrowStatus(int library_id) {
-            var allBorrows = from b in Entities.Include("Book")
-                             where b.Book.Library_id == library_id
-                             select b;
-
-            List<Borrow> borrowsToRemove = new List<Borrow>();
-            List<Borrow> borrowsToUpdate = new List<Borrow>();
-
-            foreach (Borrow borrow in allBorrows) {
-                switch (borrow.borrow_status) {
-                    case ((int)BorrowStatus.Waiting):
-                        if (borrow.return_date < DateTime.Now) {
-                            borrowsToRemove.Add(borrow);
-                        }
-                        break;
-
-                    case ((int)BorrowStatus.Borrowed):
-                        if (borrow.return_date < DateTime.Now) {
-                            borrow.borrow_status = (int)BorrowStatus.Late;
-                            borrowsToUpdate.Add(borrow);
-                        }
-                        break;
-                }
-            }
+            var borrowsToUpdate = GetBorrowsToUpdate(library_id);
+            var borrowsToRemove = GetBorrowsToRemove(library_id);
 
             foreach (Borrow borrow in borrowsToRemove) {
                 Remove(borrow);
@@ -235,6 +193,41 @@ namespace DataAccessLayer.Repositories {
                         select b;
 
             return query;
+        }
+
+        private List<Borrow> GetBorrowsToUpdate(int libraryId) {
+            var allBorrows = GetAllBorrowsForLibrary(libraryId);
+            List<Borrow> borrowsToUpdate = new List<Borrow>();
+
+            foreach (Borrow borrow in allBorrows) {
+                if (borrow.borrow_status == (int)BorrowStatus.Borrowed && borrow.return_date < DateTime.Now) {
+                    borrow.borrow_status = (int)BorrowStatus.Late;
+                    borrowsToUpdate.Add(borrow);
+                }
+            }
+
+            return borrowsToUpdate;
+        }
+
+        private List<Borrow> GetBorrowsToRemove(int libraryId) {
+            var allBorrows = GetAllBorrowsForLibrary(libraryId);
+            List<Borrow> borrowsToRemove = new List<Borrow>();
+
+            foreach (Borrow borrow in allBorrows) {
+                if (borrow.borrow_status == (int)BorrowStatus.Waiting && borrow.return_date < DateTime.Now) {
+                    borrowsToRemove.Add(borrow);
+                }
+            }
+
+            return borrowsToRemove;
+        }
+
+        private List<Borrow> GetAllBorrowsForLibrary(int libraryId) {
+            var allBorrows = from b in Entities.Include("Book")
+                             where b.Book.Library_id == libraryId
+                             select b;
+
+            return allBorrows.ToList();
         }
     }
 }
