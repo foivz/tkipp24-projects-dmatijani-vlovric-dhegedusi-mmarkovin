@@ -10,7 +10,7 @@ namespace DataAccessLayer.Repositories {
         protected DatabaseModel Context { get; set; }
         protected DbSet<T> Entities { get; set; }
 
-        public Repository(DatabaseModel context) {
+        protected Repository(DatabaseModel context) {
             Context = context;
             Entities = Context.Set<T>();
         }

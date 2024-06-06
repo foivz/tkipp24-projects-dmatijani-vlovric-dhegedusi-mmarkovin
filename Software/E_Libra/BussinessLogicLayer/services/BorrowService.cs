@@ -58,7 +58,7 @@ namespace BussinessLogicLayer.services {
             if (borrow.borrow_status == (int)BorrowStatus.Borrowed) {
                 if (book.current_copies < 1) {
                     ReservationService reservationService = new ReservationService();
-                    Reservation existingReservation = reservationService.CheckValidReservationFroMember((int)borrow.Member.id, book.id);
+                    Reservation existingReservation = reservationService.CheckValidReservationFroMember(borrow.Member.id, book.id);
                     if (existingReservation == null) {
                         throw new NoMoreBookCopiesException("Odabrane knjige trenutno nema na stanju!");
                     } else {

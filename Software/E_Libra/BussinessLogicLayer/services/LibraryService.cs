@@ -96,8 +96,12 @@ namespace BussinessLogicLayer.services {
         public decimal GetLibraryMembershipDuration(int libraryId) {
             using (var repository = new LibraryRepository()) {
                 DateTime returnedValue = repository.GetLibraryMembershipDuration(libraryId);
-                return ((returnedValue - new DateTime(2024, 1, 1)).Days + 1);
+                return CalculateMembershipDurationFromDate(returnedValue);
             }
+        }
+
+        private decimal CalculateMembershipDurationFromDate(DateTime date) {
+            return (date - new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Unspecified)).Days + 1;
         }
     }
 }
