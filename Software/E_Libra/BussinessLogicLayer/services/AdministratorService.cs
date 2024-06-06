@@ -11,7 +11,7 @@ namespace BussinessLogicLayer.services
 {
     public class AdministratorService
     {
-        public IAdministratorRepository administratorRepository { get; set; }
+        private IAdministratorRepository administratorRepository { get; set; }
 
         public AdministratorService(IAdministratorRepository administratorRepository) {
             this.administratorRepository = administratorRepository;

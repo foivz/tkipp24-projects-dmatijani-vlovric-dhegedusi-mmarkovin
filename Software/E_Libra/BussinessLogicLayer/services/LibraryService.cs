@@ -12,14 +12,33 @@ namespace BussinessLogicLayer.services {
     // David Matijanić
     public class LibraryService {
 
-        public ILibraryRepository libraryRepository { get; set; }
+        private ILibraryRepository libraryRepository { get; set; }
+        private EmployeeService employeeService { get; set; }
+        private MemberService memberService { get; set; }
+        private BookServices bookService { get; set; }
+        private NotificationService notificationService { get; set; }
 
-        public LibraryService(ILibraryRepository libraryRepository)
-        {
+        public LibraryService(
+            ILibraryRepository libraryRepository,
+            EmployeeService employeeService,
+            MemberService memberService,
+            BookServices bookService,
+            NotificationService notificationService
+        ) {
             this.libraryRepository = libraryRepository;
+            this.employeeService = employeeService;
+            this.memberService = memberService;
+            this.bookService = bookService;
+            this.notificationService = notificationService;
         }
 
-        public LibraryService(): this(new LibraryRepository()) { }
+        public LibraryService(): this(
+            new LibraryRepository(),
+            new EmployeeService(),
+            new MemberService(),
+            new BookServices(),
+            new NotificationService()
+        ) { }
 
         public List<Library> GetAllLibraries() {
             return libraryRepository.GetAll().ToList();
@@ -44,22 +63,18 @@ namespace BussinessLogicLayer.services {
         }
 
         public int DeleteLibrary(Library library) {
-            EmployeeService employeeService = new EmployeeService();
             if (employeeService.GetEmployeesByLibrary(library).Count > 0) {
                 throw new LibraryHasEmployeesException("Odabrana knjižnica ima zaposlenike!");
             }
 
-            MemberService memberService = new MemberService();
             if (memberService.GetMembersByLibrary(library.id).Count > 0) {
                 throw new LibraryHasMembersException("Odabrana knjižnica ima članove!");
             }
 
-            BookServices bookService = new BookServices();
             if (bookService.GetBooksByLibrary(library.id).Count > 0) {
                 throw new LibraryHasBooksException("Odabrana knjižnica ima knjige!");
             }
 
-            NotificationService notificationService = new NotificationService();
             if (notificationService.GetAllNotificationByLibrary(library.id).Count > 0) {
                 throw new LibraryException("Odabrana knjižnica ima notifikacije!");
             }
