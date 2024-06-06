@@ -12,14 +12,24 @@ namespace BussinessLogicLayer.services {
     // David Matijanić: GetEmployeesByLibrary, AddEmployee, UpdateEmployee, DeleteEmployee, GetEmployeeByUsername
     public class EmployeeService {
 
-        public IEmpoloyeeRepositroy employeeRepository;
+        private IEmpoloyeeRepositroy employeeRepository;
+        private BorrowService borrowService { get; set; }
+        private ArchiveServices archiveService { get; set; }
 
-        public EmployeeService(IEmpoloyeeRepositroy employeeRepository)
-        {
+        public EmployeeService(
+            IEmpoloyeeRepositroy employeeRepository,
+            BorrowService borrowService,
+            ArchiveServices archiveService
+        ) {
             this.employeeRepository = employeeRepository;
+            this.borrowService = borrowService;
+            this.archiveService = archiveService;
         }
-        public EmployeeService(): this(new EmployeeRepository())
-        {
+        public EmployeeService(): this(
+            new EmployeeRepository(),
+            new BorrowService(),
+            new ArchiveServices()
+        ) {
             
         }
         public List<Employee> GetEmployeesByLibrary(Library library) {
@@ -68,12 +78,10 @@ namespace BussinessLogicLayer.services {
         }
 
         public int DeleteEmployee(Employee employee) {
-            BorrowService borrowService = new BorrowService();
             if (borrowService.GetBorrowsForEmployee(employee.id).Count > 0) {
                 throw new EmployeeException("Zaposlenik ima pohranjenih posudbi!");
             }
 
-            ArchiveServices archiveService = new ArchiveServices();
             if (archiveService.GetArchivesForEmployee(employee.id).Count > 0) {
                 throw new EmployeeException("Zaposlenik je arhivirao neke knjige!");
             }
