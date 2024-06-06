@@ -1,4 +1,5 @@
 ﻿using BussinessLogicLayer.Exceptions;
+using DataAccessLayer.Interfaces;
 using DataAccessLayer.Repositories;
 using EntitiesLayer;
 using System;
@@ -10,85 +11,80 @@ using System.Threading.Tasks;
 namespace BussinessLogicLayer.services {
     // David Matijanić: GetMemberByBarcodeId
     public class MemberService {
+        public IMembersRepository membersRepository;
+
         EmployeeService employeeService = new EmployeeService();
         BorrowService borrowService = new BorrowService();
         ReservationService reservationService = new ReservationService();
-        
-        public void CheckLoginCredentials(string username, string password) {
-            using (var memberRepo = new MemberRepository()) {
-                var returned = memberRepo.GetMemberLogin(username, password).ToList();
 
-                if (returned.Count() == 1) {
-                    LoggedUser.Username = username;
-                    LoggedUser.UserType = Role.Member;
-                    LoggedUser.LibraryId = returned[0].Library_id;
-                }
-            }
+        public MemberService(IMembersRepository membersRepository)
+        {
+            this.membersRepository = membersRepository;
         }
-        public bool CheckMembershipDateLogin(string username, string password) {
-            using (var memberRepo = new MemberRepository())
-            {
-                LibraryService libraryService = new LibraryService();
-                Member returned = memberRepo.GetMemberLogin(username, password).ToList().FirstOrDefault();
-                if(returned != null){
-                    decimal membershipDuration = libraryService.GetLibraryMembershipDuration(returned.Library_id);
+        public MemberService(): this(new MemberRepository())
+        {
+            
+        }
 
-                    DateTime? membershipRunOutDate = returned.membership_date.HasValue ? returned.membership_date.Value.AddDays(Convert.ToInt16(membershipDuration)) : (DateTime?)null;
-                    DateTime dateNow = DateTime.Now;
-                    if (dateNow > membershipRunOutDate)
-                    {
-                        return true;
-                    }
-                }
-                return false;
+        public void CheckLoginCredentials(string username, string password) {
+            var returned = membersRepository.GetMemberLogin(username, password).ToList();
+
+            if (returned.Count() == 1) {
+                LoggedUser.Username = username;
+                LoggedUser.UserType = Role.Member;
+                LoggedUser.LibraryId = returned[0].Library_id;
             }
+    }
+        public bool CheckMembershipDateLogin(string username, string password) {
+            LibraryService libraryService = new LibraryService();
+            Member returned = membersRepository.GetMemberLogin(username, password).ToList().FirstOrDefault();
+            if(returned != null){
+                decimal membershipDuration = libraryService.GetLibraryMembershipDuration(returned.Library_id);
+
+                DateTime? membershipRunOutDate = returned.membership_date.HasValue ? returned.membership_date.Value.AddDays(Convert.ToInt16(membershipDuration)) : (DateTime?)null;
+                DateTime dateNow = DateTime.Now;
+                if (dateNow > membershipRunOutDate)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
         public bool CheckExistingUsername(Member member)
         {
-            using (var memberRepo = new MemberRepository())
+            List<Member> existingMembers = membersRepository.GetAll().ToList();
+            foreach (var m in existingMembers)
             {
-                List<Member> existingMembers = memberRepo.GetAll().ToList();
-                foreach (var m in existingMembers)
-                {
-                    if(m.username == member.username)
-                        return true;
-                }
+                if(m.username == member.username)
+                    return true;
             }
             return false;
         }
         public bool CheckBarcodeUnoque(Member member)
         {
-            using (var memberRepo = new MemberRepository())
+            List<Member> existingMembers = membersRepository.GetAll().ToList();
+            foreach (var m in existingMembers)
             {
-                List<Member> existingMembers = memberRepo.GetAll().ToList();
-                foreach (var m in existingMembers)
-                {
-                    if (m.barcode_id == member.barcode_id)
-                        return true;
-                }
+                if (m.barcode_id == member.barcode_id)
+                    return true;
             }
             return false;
         }
         public bool CheckOibUnoque(Member member)
         {
-            using (var memberRepo = new MemberRepository())
+            List<Member> existingMembers = membersRepository.GetAll().ToList();
+            foreach (var m in existingMembers)
             {
-                List<Member> existingMembers = memberRepo.GetAll().ToList();
-                foreach (var m in existingMembers)
-                {
-                    if (m.OIB == member.OIB)
-                        return true;
-                }
+                if (m.OIB == member.OIB)
+                    return true;
             }
             return false;
         }
         public bool AddNewMember(Member member)
         {
-            using (var memberRepo = new MemberRepository())
-            {
-                memberRepo.Add(member);
-                return true;
-            }
+            membersRepository.Add(member);
+            return true;
+
         }
         public bool UpdateMember(Member member)
         {

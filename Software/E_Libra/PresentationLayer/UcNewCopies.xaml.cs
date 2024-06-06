@@ -77,6 +77,7 @@ namespace PresentationLayer
             BookServices services = new BookServices();
             int number = TryParseInt(txtNumberCopies.Text);
             var book = dgvBookNamesArchive.SelectedItem as Book;
+
             if(services.InsertNewCopies(number, book))
             {
                 MessageBox.Show("Uspješno!");
@@ -92,6 +93,10 @@ namespace PresentationLayer
         {
             if (int.TryParse(input, out int result))
             {
+                if (result < 0)
+                {
+                    throw new BookException("Broj stranica ili primjeraka mora biti pozitivan!");
+                }
                 return result;
             }
             else

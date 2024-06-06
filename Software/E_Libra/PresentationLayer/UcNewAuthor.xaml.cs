@@ -40,7 +40,7 @@ namespace PresentationLayer
         {
             if (txtName.Text == "")
             {
-                MessageBox.Show("Morate unijeti ime knjige!");
+                MessageBox.Show("Morate unijeti ime autora!");
                 return;
             }
             if (txtSurname.Text == "")

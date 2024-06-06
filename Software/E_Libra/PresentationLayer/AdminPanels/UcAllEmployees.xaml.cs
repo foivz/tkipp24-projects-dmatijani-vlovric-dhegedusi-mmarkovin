@@ -27,6 +27,8 @@ namespace PresentationLayer.AdminPanels {
 
             if (selectedLibrary != null) {
                 LoadEmployees(selectedLibrary);
+            } else {
+                txtNoEmployees.Visibility = Visibility.Hidden;
             }
         }
 
@@ -38,17 +40,16 @@ namespace PresentationLayer.AdminPanels {
 
         private void PopulateComboBox(Library selectedLibrary = null) {
             var libraryService = new LibraryService();
-            Task.Run(() => {
-                var allLibraries = libraryService.GetAllLibraries();
+            var allLibraries = libraryService.GetAllLibraries();
+            cboLibrary.ItemsSource = allLibraries;
 
-                Application.Current.Dispatcher.Invoke(() => {
-                    cboLibrary.ItemsSource = allLibraries;
-
-                    if (selectedLibrary != null) {
-                        cboLibrary.SelectedItem = allLibraries.FirstOrDefault(l => l.id == selectedLibrary.id);
-                    }
-                });
-            });
+            if (selectedLibrary != null) {
+                try {
+                    cboLibrary.SelectedItem = allLibraries.Find(l => l.id == selectedLibrary.id);
+                } catch (Exception ex) {
+                    MessageBox.Show(ex.Message);
+                }
+            }
         }
 
         private void cboLibrary_SelectionChanged(object sender, SelectionChangedEventArgs e) {
@@ -57,18 +58,17 @@ namespace PresentationLayer.AdminPanels {
         }
         
         private void LoadEmployees(Library selectedLibrary) {
+            txtNoEmployees.Visibility = Visibility.Hidden;
             if (selectedLibrary == null) {
                 dgAllEmployees.ItemsSource = new List<Library>();
                 return;
             }
 
-            Task.Run(() => {
-                List<Employee> employees = service.GetEmployeesByLibrary(selectedLibrary);
-
-                Application.Current.Dispatcher.Invoke(() => {
-                    dgAllEmployees.ItemsSource = employees;
-                });
-            });
+            List<Employee> employees = service.GetEmployeesByLibrary(selectedLibrary);
+            dgAllEmployees.ItemsSource = employees;
+            if (employees.Count == 0) {
+                txtNoEmployees.Visibility = Visibility.Visible;
+            }
         }
 
         private void btnEditEmployee_Click(object sender, RoutedEventArgs e) {
@@ -100,16 +100,31 @@ namespace PresentationLayer.AdminPanels {
             Employee selectedEmployee = GetSelectedEmployee();
             if (selectedEmployee == null) return;
 
-            try {
-                service.DeleteEmployee(selectedEmployee);
-            } catch (EmployeeException ex) {
-                MessageBox.Show(ex.Message);
-                return;
-            }
+            ShowWarningBeforeDeleting(selectedEmployee);
             
             Library selectedLibrary = cboLibrary.SelectedItem as Library;
             if (selectedLibrary != null) {
                 LoadEmployees(selectedLibrary);
+            }
+        }
+
+        private void ShowWarningBeforeDeleting(Employee selectedEmployee) {
+            MessageBoxResult result = MessageBox.Show("Sigurni ste da želite obrisati odabranog zaposlenika?", "Upozorenje", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+
+            switch (result) {
+                case MessageBoxResult.Yes:
+                    DeleteSelectedEmployee(selectedEmployee);
+                    break;
+                case MessageBoxResult.No:
+                    break;
+            }
+        }
+
+        private void DeleteSelectedEmployee(Employee selectedEmployee) {
+            try {
+                service.DeleteEmployee(selectedEmployee);
+            } catch (EmployeeException ex) {
+                MessageBox.Show(ex.Message);
             }
         }
     }

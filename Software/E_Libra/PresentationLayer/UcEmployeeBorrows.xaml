@@ -5,7 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:PresentationLayer"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="450" d:DesignWidth="800"
+             Loaded="UserControl_Loaded">
     <UserControl.Resources>
         <local:BorrowStatusConverter x:Key="BorrowStatusConverter"/>
     </UserControl.Resources>
@@ -35,16 +36,30 @@
                         Sve posudbe
                     </TextBlock>
 
-                    <DataGrid x:Name="dgAllBorrows" AutoGenerateColumns="False">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="ID" Binding="{Binding idBorrow}"/>
-                            <DataGridTextColumn Header="Datum posudbe" Binding="{Binding borrow_date}"/>
-                            <DataGridTextColumn Header="Datum vraćanja/rok" Binding="{Binding return_date}"/>
-                            <DataGridTextColumn Header="Status posudbe" Binding="{Binding borrow_status, Converter={StaticResource BorrowStatusConverter}}"/>
-                            <DataGridTextColumn Header="Posuđena knjiga" Binding="{Binding Book}"/>
-                            <DataGridTextColumn Header="Član" Binding="{Binding Member}"/>
-                        </DataGrid.Columns>
-                    </DataGrid>
+                    <Grid>
+                        <DataGrid x:Name="dgAllBorrows" AutoGenerateColumns="False">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="ID" Binding="{Binding idBorrow}"/>
+                                <DataGridTextColumn Header="Datum posudbe" Binding="{Binding borrow_date}"/>
+                                <DataGridTextColumn Header="Datum vraćanja/rok" Binding="{Binding return_date}"/>
+                                <DataGridTextColumn Header="Status posudbe" Binding="{Binding borrow_status, Converter={StaticResource BorrowStatusConverter}}"/>
+                                <DataGridTextColumn Header="Posuđena knjiga" Binding="{Binding Book}"/>
+                                <DataGridTextColumn Header="Član" Binding="{Binding Member}"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                        <Border Background="LightGray"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Width="Auto" Height="Auto"
+                            Padding="5"
+                            CornerRadius="5"
+                            x:Name="txtNoAllBorrows">
+                            <TextBlock Text="U sustavu nema niti jedna posudba!" HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           FontSize="16"/>
+                        </Border>
+                        <Image Source="Resources/loader.gif" Width="25" x:Name="imgLoaderAllBorrows"/>
+                    </Grid>
                 </DockPanel>
             </TabItem>
 
@@ -56,15 +71,29 @@
                         Posudbe na čekanju
                     </TextBlock>
 
-                    <DataGrid x:Name="dgPendingBorrows" AutoGenerateColumns="False">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="ID" Binding="{Binding idBorrow}"/>
-                            <DataGridTextColumn Header="Datum posudbe" Binding="{Binding borrow_date}"/>
-                            <DataGridTextColumn Header="Rok za dolazak po knjigu" Binding="{Binding return_date}"/>
-                            <DataGridTextColumn Header="Posuđena knjiga" Binding="{Binding Book}"/>
-                            <DataGridTextColumn Header="Član" Binding="{Binding Member}"/>
-                        </DataGrid.Columns>
-                    </DataGrid>
+                    <Grid>
+                        <DataGrid x:Name="dgPendingBorrows" AutoGenerateColumns="False">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="ID" Binding="{Binding idBorrow}"/>
+                                <DataGridTextColumn Header="Datum posudbe" Binding="{Binding borrow_date}"/>
+                                <DataGridTextColumn Header="Rok za dolazak po knjigu" Binding="{Binding return_date}"/>
+                                <DataGridTextColumn Header="Posuđena knjiga" Binding="{Binding Book}"/>
+                                <DataGridTextColumn Header="Član" Binding="{Binding Member}"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                        <Border Background="LightGray"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Width="Auto" Height="Auto"
+                            Padding="5"
+                            CornerRadius="5"
+                            x:Name="txtNoPendingBorrows">
+                            <TextBlock Text="U sustavu nema niti jedna posudba na čekanju!" HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           FontSize="16"/>
+                        </Border>
+                        <Image Source="Resources/loader.gif" Width="25" x:Name="imgLoaderPendingBorrows"/>
+                    </Grid>
                 </DockPanel>
             </TabItem>
 
@@ -76,16 +105,30 @@
                         Trenutne posudbe
                     </TextBlock>
 
-                    <DataGrid x:Name="dgCurrentBorrows" AutoGenerateColumns="False">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="ID" Binding="{Binding idBorrow}"/>
-                            <DataGridTextColumn Header="Datum posudbe" Binding="{Binding borrow_date}"/>
-                            <DataGridTextColumn Header="Rok za vraćanje" Binding="{Binding return_date}"/>
-                            <DataGridTextColumn Header="Posuđena knjiga" Binding="{Binding Book}"/>
-                            <DataGridTextColumn Header="Član" Binding="{Binding Member}"/>
-                            <DataGridTextColumn Header="Zaposlenik kod kojeg je posuđena" Binding="{Binding Employee}"/>
-                        </DataGrid.Columns>
-                    </DataGrid>
+                    <Grid>
+                        <DataGrid x:Name="dgCurrentBorrows" AutoGenerateColumns="False">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="ID" Binding="{Binding idBorrow}"/>
+                                <DataGridTextColumn Header="Datum posudbe" Binding="{Binding borrow_date}"/>
+                                <DataGridTextColumn Header="Rok za vraćanje" Binding="{Binding return_date}"/>
+                                <DataGridTextColumn Header="Posuđena knjiga" Binding="{Binding Book}"/>
+                                <DataGridTextColumn Header="Član" Binding="{Binding Member}"/>
+                                <DataGridTextColumn Header="Zaposlenik kod kojeg je posuđena" Binding="{Binding Employee}"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                        <Border Background="LightGray"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Width="Auto" Height="Auto"
+                            Padding="5"
+                            CornerRadius="5"
+                            x:Name="txtNoCurrentBorrows">
+                            <TextBlock Text="U sustavu nema niti jedna trenutna posudba!" HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           FontSize="16"/>
+                        </Border>
+                        <Image Source="Resources/loader.gif" Width="25" x:Name="imgLoaderCurrentBorrows"/>
+                    </Grid>
                 </DockPanel>
             </TabItem>
 
@@ -97,16 +140,30 @@
                         Posudbe koje kasne
                     </TextBlock>
 
-                    <DataGrid x:Name="dgLateBorrows" AutoGenerateColumns="False">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="ID" Binding="{Binding idBorrow}"/>
-                            <DataGridTextColumn Header="Datum posudbe" Binding="{Binding borrow_date}"/>
-                            <DataGridTextColumn Header="Datum do kojega se trebalo vratiti" Binding="{Binding return_date}"/>
-                            <DataGridTextColumn Header="Posuđena knjiga" Binding="{Binding Book}"/>
-                            <DataGridTextColumn Header="Član" Binding="{Binding Member}"/>
-                            <DataGridTextColumn Header="Zaposlenik kod kojeg je posuđena" Binding="{Binding Employee}"/>
-                        </DataGrid.Columns>
-                    </DataGrid>
+                    <Grid>
+                        <DataGrid x:Name="dgLateBorrows" AutoGenerateColumns="False">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="ID" Binding="{Binding idBorrow}"/>
+                                <DataGridTextColumn Header="Datum posudbe" Binding="{Binding borrow_date}"/>
+                                <DataGridTextColumn Header="Datum do kojega se trebalo vratiti" Binding="{Binding return_date}"/>
+                                <DataGridTextColumn Header="Posuđena knjiga" Binding="{Binding Book}"/>
+                                <DataGridTextColumn Header="Član" Binding="{Binding Member}"/>
+                                <DataGridTextColumn Header="Zaposlenik kod kojeg je posuđena" Binding="{Binding Employee}"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                        <Border Background="LightGray"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Width="Auto" Height="Auto"
+                            Padding="5"
+                            CornerRadius="5"
+                            x:Name="txtNoLateBorrows">
+                            <TextBlock Text="U sustavu nema niti jedna zakašnjela posudba!" HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           FontSize="16"/>
+                        </Border>
+                        <Image Source="Resources/loader.gif" Width="25" x:Name="imgLoaderLateBorrows"/>
+                    </Grid>
                 </DockPanel>
             </TabItem>
 
@@ -118,17 +175,31 @@
                         Prethodne posudbe
                     </TextBlock>
 
-                    <DataGrid x:Name="dgDoneBorrows" AutoGenerateColumns="False">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="ID" Binding="{Binding idBorrow}"/>
-                            <DataGridTextColumn Header="Datum posudbe" Binding="{Binding borrow_date}"/>
-                            <DataGridTextColumn Header="Datum vraćanja" Binding="{Binding return_date}"/>
-                            <DataGridTextColumn Header="Posuđena knjiga" Binding="{Binding Book}"/>
-                            <DataGridTextColumn Header="Član" Binding="{Binding Member}"/>
-                            <DataGridTextColumn Header="Zaposlenik kod kojeg je posuđena" Binding="{Binding Employee}"/>
-                            <DataGridTextColumn Header="Zaposlenik kod kojeg je posuđena" Binding="{Binding Employee1}"/>
-                        </DataGrid.Columns>
-                    </DataGrid>
+                    <Grid>
+                        <DataGrid x:Name="dgDoneBorrows" AutoGenerateColumns="False">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="ID" Binding="{Binding idBorrow}"/>
+                                <DataGridTextColumn Header="Datum posudbe" Binding="{Binding borrow_date}"/>
+                                <DataGridTextColumn Header="Datum vraćanja" Binding="{Binding return_date}"/>
+                                <DataGridTextColumn Header="Posuđena knjiga" Binding="{Binding Book}"/>
+                                <DataGridTextColumn Header="Član" Binding="{Binding Member}"/>
+                                <DataGridTextColumn Header="Zaposlenik kod kojeg je posuđena" Binding="{Binding Employee}"/>
+                                <DataGridTextColumn Header="Zaposlenik kod kojeg je posuđena" Binding="{Binding Employee1}"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                        <Border Background="LightGray"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Width="Auto" Height="Auto"
+                            Padding="5"
+                            CornerRadius="5"
+                            x:Name="txtNoDoneBorrows">
+                            <TextBlock Text="U sustavu nema niti jedna prethodna posudba!" HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           FontSize="16"/>
+                        </Border>
+                        <Image Source="Resources/loader.gif" Width="25" x:Name="imgLoaderDoneBorrows"/>
+                    </Grid>
                 </DockPanel>
             </TabItem>
         </TabControl>
