@@ -1,4 +1,5 @@
 ﻿using BussinessLogicLayer.Exceptions;
+using DataAccessLayer.Interfaces;
 using DataAccessLayer.Repositories;
 using EntitiesLayer;
 using System;
@@ -12,6 +13,17 @@ namespace BussinessLogicLayer.services
     //Magdalena Markovinocić
     public class NotificationService
     {
+        public INotificationsRepository notificationsRepo;
+
+        public NotificationService(INotificationsRepository notificationsRepo)
+        {
+            this.notificationsRepo = notificationsRepo;
+        }
+        public NotificationService() : this(new NotificationsRepository())
+        {
+            
+        }
+
         MemberService memberService = new MemberService();
         public List<Notification> GetAllNotificationByLibrary(int id)
         {
