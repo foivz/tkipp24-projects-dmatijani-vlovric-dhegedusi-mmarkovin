@@ -49,8 +49,20 @@ namespace DataAccessLayer.Repositories {
             }
         }
 
+        protected virtual void Dispose(bool disposing) {
+            if (disposing && Context != null) {
+                Context.Dispose();
+                Context = null;
+            }
+        }
+
+        ~Repository() {
+            Dispose(false);
+        }
+
         public void Dispose() {
-            Context.Dispose();
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
     }
 }
