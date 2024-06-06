@@ -1,4 +1,5 @@
 ﻿using BussinessLogicLayer.Exceptions;
+using DataAccessLayer.Interfaces;
 using DataAccessLayer.Repositories;
 using EntitiesLayer;
 using System;
@@ -10,54 +11,60 @@ using System.Threading.Tasks;
 namespace BussinessLogicLayer.services {
     // David Matijanić: GetEmployeesByLibrary, AddEmployee, UpdateEmployee, DeleteEmployee, GetEmployeeByUsername
     public class EmployeeService {
+
+        public IEmpoloyeeRepositroy employeeRepository;
+
+        public EmployeeService(IEmpoloyeeRepositroy employeeRepository)
+        {
+            this.employeeRepository = employeeRepository;
+        }
+        public EmployeeService(): this(new EmployeeRepository())
+        {
+            
+        }
         public List<Employee> GetEmployeesByLibrary(Library library) {
-            using (var repository = new EmployeeRepository()) {
-                return repository.GetEmployeesByLibrary(library).ToList();
-            }
+                return employeeRepository.GetEmployeesByLibrary(library).ToList();
+
         }
 
         public int AddEmployee(Employee newEmployee) {
-            using (var repository = new EmployeeRepository()) {
-                var employeesWithId = repository.GetEmployeesById(newEmployee.id);
+                var employeesWithId = employeeRepository.GetEmployeesById(newEmployee.id);
                 if (employeesWithId.ToList().Count > 0) {
                     throw new EmployeeWithSameIDException("Zaposlenik sa istim ID već postoji!");
                 }
 
-                var employeesWithUsername = repository.GetEmployeesByUsername(newEmployee.username);
+                var employeesWithUsername = employeeRepository.GetEmployeesByUsername(newEmployee.username);
                 if (employeesWithUsername.ToList().Count > 0) {
                     throw new EmployeeWithSameUsernameException("Zaposlenik sa istim korisničkim imenom već postoji!");
                 }
 
-                var employeesWithOIB = repository.GetEmployeesByOIB(newEmployee.OIB);
+                var employeesWithOIB = employeeRepository.GetEmployeesByOIB(newEmployee.OIB);
                 if (employeesWithOIB.ToList().Count > 0) {
                     throw new EmployeeWithSameOIBException("Zaposlenik sa istim OIB već postoji!");
                 }
 
-                return repository.Add(newEmployee);
-            }
+            return employeeRepository.Add(newEmployee);
         }
 
-        public int UpdateEmployee(Employee employee) {
-            using (var repository = new EmployeeRepository()) {
-                var employeesWithId = repository.GetEmployeesById(employee.id);
+        public int UpdateEmployee(Employee employee) { 
+                var employeesWithId = employeeRepository.GetEmployeesById(employee.id);
                 var otherEmployeesWithId = employeesWithId.ToList().FindAll(e => e.OIB != employee.OIB);
                 if (otherEmployeesWithId.Count > 0) {
                     throw new EmployeeWithSameIDException("Zaposlenik sa tim ID već postoji!");
                 }
 
-                var employeesWithOIB = repository.GetEmployeesByOIB(employee.OIB);
+                var employeesWithOIB = employeeRepository.GetEmployeesByOIB(employee.OIB);
                 if (employeesWithOIB.ToList().Count == 0) {
                     throw new EmployeeWithSameOIBException("Ne postoji zaposlenik sa odabranim OIB!");
                 }
 
-                var employeesWithUsername = repository.GetEmployeesByUsername(employee.username);
+                var employeesWithUsername = employeeRepository.GetEmployeesByUsername(employee.username);
                 var otherEmployeesWithUsername = employeesWithUsername.ToList().FindAll(e => e.OIB != employee.OIB);
                 if (otherEmployeesWithUsername.Count > 0) {
                     throw new EmployeeWithSameUsernameException("Zaposlenik sa tim korisničkim imenom već postoji!");
                 }
 
-                return repository.Update(employee);
-            }
+                return employeeRepository.Update(employee);
         }
 
         public int DeleteEmployee(Employee employee) {
@@ -71,39 +78,30 @@ namespace BussinessLogicLayer.services {
                 throw new EmployeeException("Zaposlenik je arhivirao neke knjige!");
             }
 
-            using (var repository = new EmployeeRepository()) {
-                return repository.Remove(employee);
-            }
+            return employeeRepository.Remove(employee);
+            
         }
 
         public void CheckLoginCredentials(string username, string password) {
-            using (var employeeRepo = new EmployeeRepository()) {
-                var returned = employeeRepo.GetEmployeeLogin(username, password).ToList();
+                var returned = employeeRepository.GetEmployeeLogin(username, password).ToList();
 
                 if (returned.Count() == 1) {
                     LoggedUser.Username = username;
                     LoggedUser.UserType = Role.Employee;
                     LoggedUser.LibraryId = returned[0].Library_id;
                 }
-            }
         }
 
         public int GetEmployeeLibraryId(string username) {
-            using (var employeeRepo = new EmployeeRepository()) {
-                return employeeRepo.GetEmployeeLibraryId(username);
-            }
+            return employeeRepository.GetEmployeeLibraryId(username);
         }
 
         public int GetEmployeeId(string username) {
-            using (var employeeRepo = new EmployeeRepository()) {
-                return employeeRepo.GetEmployeeId(username);
-            }
+            return employeeRepository.GetEmployeeId(username);
         }
 
         public Employee GetEmployeeByUsername(string username) {
-            using (var repository = new EmployeeRepository()) {
-                return repository.GetEmployeesById(GetEmployeeId(username)).FirstOrDefault();
-            }
+            return employeeRepository.GetEmployeesById(GetEmployeeId(username)).FirstOrDefault();
         }
     }
 }
