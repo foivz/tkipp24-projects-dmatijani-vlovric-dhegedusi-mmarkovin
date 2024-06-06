@@ -1,0 +1,31 @@
+﻿<Window x:Class="PresentationLayer.EmployeePanel"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PresentationLayer"
+        mc:Ignorable="d" WindowStartupLocation="CenterScreen" Background="#FFEFE8"
+        Title="MyLibra" Height="450" Width="800">
+    <DockPanel>
+        <Grid x:Name="navPanel" DockPanel.Dock="Left" Width="200" Background="#637E60">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <StackPanel Grid.Row="0">
+                <TextBlock x:Name="menu" Text="Izbornik" Style="{StaticResource titleText}" FontSize="30" Foreground="#F8DFD4" Margin="0 20"/>
+                <Button x:Name="btnMembership" Content="Upravljanje članstvom" Style="{StaticResource navButton}" Click="btnMembership_Click"/>
+                <Button x:Name="btnBookCatalog" Content="Katalog knjiga" Style="{StaticResource navButton}" Click="btnBookCatalog_Click"/>
+                <Button x:Name="btnBorrow" Content="Posudbe" Style="{StaticResource navButton}" Click="btnBorrow_Click" />
+                <Button x:Name="btnNotifications" Content="Pisanje obavijesti" Style="{StaticResource navButton}" Click="btnNotifications_Click" />
+                <Button x:Name="btnStatistics" Content="Statistika poslovanja" Style="{StaticResource navButton}" Click="btnStatistics_Click"/>
+            </StackPanel>
+            <StackPanel Grid.Row="1"/>
+            <Button x:Name="btnLogout" Grid.Row="2" Content="Odjava" Style="{StaticResource navButton}" Click="btnLogout_Click"/>
+        </Grid>
+
+        <ContentControl x:Name="contentPanel" DockPanel.Dock="Right">
+        </ContentControl>
+    </DockPanel>
+</Window>

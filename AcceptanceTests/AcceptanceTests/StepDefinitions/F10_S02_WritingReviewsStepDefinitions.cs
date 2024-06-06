@@ -402,7 +402,42 @@ namespace AcceptanceTests.StepDefinitions
         public void ThenTheApplicationDoesNotOpenAFormForWritingANewReview()
         {
             var driver = GuiDriver.GetOrCreateDriver();
-            driver.SwitchTo().Window(driver.WindowHandles.Last());
+            GuiDriver.Dispose();
+            driver = GuiDriver.GetOrCreateDriver();
+
+
+
+            var txtUsername = driver.FindElementByAccessibilityId("txtUsername");
+            var txtPassword = driver.FindElementByAccessibilityId("txtPassword");
+
+            txtUsername.SendKeys("mpranjic23");
+            txtPassword.SendKeys("pranjicka98");
+
+
+            var btnLogin = driver.FindElementByAccessibilityId("btnLogin");
+            btnLogin.Click();
+            driver.SwitchTo().Window(driver.WindowHandles.First());
+
+            driver.Manage().Window.Maximize();
+            var btnSearch = driver.FindElementByAccessibilityId("btnSearch");
+            btnSearch.Click();
+
+
+            var txtSearch = driver.FindElementByAccessibilityId("txtSearch");
+            txtSearch.SendKeys("Romeo");
+
+
+            var dgvBookSearch = driver.FindElementByAccessibilityId("dgvBookSearch");
+            var cellsInFirstRow = dgvBookSearch.FindElementsByClassName("DataGridCell");
+            cellsInFirstRow[0].Click();
+
+            var btnDetails = driver.FindElementByAccessibilityId("btnDetails");
+            btnDetails.Click();
+
+            var btnReviews = driver.FindElementByAccessibilityId("btnAddReview");
+            btnReviews.Click();
+
+            driver.SwitchTo().Window(driver.WindowHandles.First());
 
             bool dgReviews = driver.FindElementByAccessibilityId("dgReviews") != null;
             Assert.IsTrue(dgReviews);
@@ -413,6 +448,8 @@ namespace AcceptanceTests.StepDefinitions
         public void ThenAnErrorWindowAppearsWithTheMessageMorasPosuditiKnjiguPrijePisanjaRecenzije()
         {
             var driver = GuiDriver.GetOrCreateDriver();
+            var btnReviews = driver.FindElementByAccessibilityId("btnAddReview");
+            btnReviews.Click();
             driver.SwitchTo().Window(driver.WindowHandles.First());
             bool isBtnOk = driver.FindElementByAccessibilityId("2") != null;
             Assert.IsTrue(isBtnOk);
