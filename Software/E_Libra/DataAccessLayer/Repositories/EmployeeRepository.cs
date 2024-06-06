@@ -1,4 +1,5 @@
-﻿using EntitiesLayer;
+﻿using DataAccessLayer.Interfaces;
+using EntitiesLayer;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -10,7 +11,7 @@ namespace DataAccessLayer.Repositories {
     //Magdalena Markovinović, metode: GetEmployeeLogin, 
     // David Matijanić: GetEmployeesByLibrary, GetEmployeesById, GetEmployeesByUsername, GetEmployeesByOIB,
     // Add, Update, GetEmployeeLibraryId, GetEmployeeId
-    public class EmployeeRepository : Repository<Employee> {
+    public class EmployeeRepository : Repository<Employee>, IEmpoloyeeRepositroy{
         public EmployeeRepository() : base(new DatabaseModel()) {
 
         }
@@ -100,6 +101,11 @@ namespace DataAccessLayer.Repositories {
         public int GetEmployeeId(string username) {
             var sql = (from e in Entities.Include("Library") where e.username == username select e.id).FirstOrDefault();
             return sql;
+        }
+
+        public int Remove(Employee employee)
+        {
+            return base.Remove(employee);
         }
     }
 }
