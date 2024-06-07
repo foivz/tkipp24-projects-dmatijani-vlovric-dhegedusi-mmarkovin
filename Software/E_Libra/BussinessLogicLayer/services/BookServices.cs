@@ -17,21 +17,21 @@ namespace BussinessLogicLayer.services
     {
         public IBookRepository bookRepository { get; set; }
         private IReservationRepository reservationRepository { get; set; }
-        private MemberService memberService { get; set; }
+        private IMembersRepository memberRepository { get; set; }
         public BookServices(
             IBookRepository bookRepository,
             IReservationRepository reservationRepository,
-            MemberService memberService
+            IMembersRepository memberRepository
         )
         {
             this.bookRepository = bookRepository;
             this.reservationRepository = reservationRepository;
-            this.memberService = memberService;
+            this.memberRepository = memberRepository;
         }
         public BookServices() : this(
             new BookRepository(),
             new ReservationRepository(),
-            new MemberService()
+            new MemberRepository()
         )
         {}
 
@@ -126,12 +126,12 @@ namespace BussinessLogicLayer.services
             return bookRepository.GetWishlistBooksForMember(LoggedUser.Username).ToList();
         }
         public bool AddBookToWishlist(int bookId) {
-            int userId = memberService.GetMemberId(LoggedUser.Username);
+            int userId = memberRepository.GetMemberId(LoggedUser.Username);
 
             return bookRepository.AddBookToWishlist(userId, bookId);
         }
         public bool RemoveBookFromWishlist(int bookId) {
-            int userId = memberService.GetMemberId(LoggedUser.Username);
+            int userId = memberRepository.GetMemberId(LoggedUser.Username);
 
             return bookRepository.RemoveBookFromWishlist(userId, bookId);
         }
