@@ -39,12 +39,13 @@ namespace PresentationLayer.AdminPanels {
         }
 
         private void PopulateComboBox(Library selectedLibrary = null) {
-            var libraryService = new LibraryService();
-            var allLibraries = libraryService.GetAllLibraries();
-            cboLibrary.ItemsSource = allLibraries;
+            using (var libraryService = new LibraryService()) {
+                var allLibraries = libraryService.GetAllLibraries();
+                cboLibrary.ItemsSource = allLibraries;
 
-            if (selectedLibrary != null) {
-                cboLibrary.SelectedItem = allLibraries.FirstOrDefault(l => l.id == selectedLibrary.id);
+                if (selectedLibrary != null) {
+                    cboLibrary.SelectedItem = allLibraries.FirstOrDefault(l => l.id == selectedLibrary.id);
+                }
             }
         }
 
@@ -86,6 +87,7 @@ namespace PresentationLayer.AdminPanels {
             };
 
             try {
+                //TODO: ovdje staviti using() za EmployeeService kad se implementira (@mmarkovin21)
                 EmployeeService service = new EmployeeService();
 
                 if (!editing) {

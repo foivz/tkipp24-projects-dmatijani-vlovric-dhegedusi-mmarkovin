@@ -118,27 +118,30 @@ namespace PresentationLayer {
             }
 
             if (borrow.borrow_status == (int)BorrowStatus.Late) {
-                LibraryService libraryService = new LibraryService();
-                decimal priceDayLate = libraryService.GetLibraryPriceDayLate(LoggedUser.LibraryId);
-                TimeSpan difference = DateTime.Now - (DateTime)borrow.return_date;
-                int daysLate = Convert.ToInt16(Math.Ceiling(difference.TotalDays));
+                using (var libraryService = new LibraryService()) {
+                    decimal priceDayLate = libraryService.GetLibraryPriceDayLate(LoggedUser.LibraryId);
+                    TimeSpan difference = DateTime.Now - (DateTime)borrow.return_date;
+                    int daysLate = Convert.ToInt16(Math.Ceiling(difference.TotalDays));
 
-                decimal priceToPay = priceDayLate * daysLate;
+                    decimal priceToPay = priceDayLate * daysLate;
 
-                MessageBoxResult result = MessageBox.Show($"Potreban iznos za platiti kašnjenje: {priceToPay}." + Environment.NewLine + "Je li član platio iznos?", "Kašnjenje", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                    MessageBoxResult result = MessageBox.Show($"Potreban iznos za platiti kašnjenje: {priceToPay}." + Environment.NewLine + "Je li član platio iznos?", "Kašnjenje", MessageBoxButton.YesNo, MessageBoxImage.Question);
 
-                if (result == MessageBoxResult.No) {
-                    MessageBox.Show("Knjiga neće biti vraćena.");
-                    return;
+                    if (result == MessageBoxResult.No) {
+                        MessageBox.Show("Knjiga neće biti vraćena.");
+                        return;
+                    }
                 }
             }
 
+            //TODO: ovdje staviti using za employeeService kad realizira sučelje IDisposable (@mmarkoovin21)
             EmployeeService employeeService = new EmployeeService();
             Employee thisEmployee = employeeService.GetEmployeeByUsername(LoggedUser.Username);
             if (thisEmployee == null) {
                 return;
             }
 
+            //TODO: ovdje staviti using za borrowService kad realizira sučelje IDisposable (@dmatijani)
             BorrowService borrowService = new BorrowService();
             Borrow updatedBorrow = new Borrow {
                 idBorrow = borrow.idBorrow,
@@ -178,6 +181,7 @@ namespace PresentationLayer {
         }
 
         private Member GetEnteredMember() {
+            //TODO: ovdje staviti using za memberService kad realizira sučelje IDisposable (@mmarkoovin21)
             MemberService memberService = new MemberService();
             try {
                 Member enteredMember = memberService.GetMemberByBarcodeId(LoggedUser.LibraryId, tbMemberBarcode.Text);
@@ -189,6 +193,7 @@ namespace PresentationLayer {
         }
 
         private Book GetEnteredBook() {
+            //TODO: ovdje staviti using za bookService kad realizira sučelje IDisposable (@vlovric21)
             BookServices bookService = new BookServices();
             try {
                 Book enteredBook = bookService.GetBookByBarcodeId(LoggedUser.LibraryId, tbBookBarcode.Text);
@@ -200,6 +205,7 @@ namespace PresentationLayer {
         }
 
         private Borrow GetBorrow(Book book, Member member) {
+            //TODO: ovdje staviti using za borrowService kad realizira sučelje IDisposable (@vlovric21)
             BorrowService borrowService = new BorrowService();
             try {
                 return borrowService.GetBorrowsForMemberAndBook(member.id, book.id, LoggedUser.LibraryId).Find(b => b.borrow_status != (int)BorrowStatus.Returned

@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace DataAccessLayer.Interfaces {
-    public interface ILibraryRepository {
+    public interface ILibraryRepository : IDisposable {
         IQueryable<Library> GetAll();
 
         Task<List<Library>> GetAllLibrariesAsync();

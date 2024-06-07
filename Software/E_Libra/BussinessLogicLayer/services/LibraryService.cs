@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace BussinessLogicLayer.services {
     // David Matijanić
-    public class LibraryService {
+    public class LibraryService : IDisposable {
 
         private ILibraryRepository libraryRepository { get; set; }
         private EmployeeService employeeService { get; set; }
@@ -112,6 +112,26 @@ namespace BussinessLogicLayer.services {
 
         private decimal CalculateMembershipDurationFromDate(DateTime date) {
             return (date - new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Unspecified)).Days + 1;
+        }
+
+        ~LibraryService() {
+            Dispose(false);
+        }
+
+        private void Dispose(bool disposing) {
+            if (disposing) {
+                libraryRepository?.Dispose();
+                //TODO: implementirati kada ti servisi budu realizirali sučelje IDisposable
+                //employeeService?.Dispose();
+                //memberService?.Dispose();
+                //bookService?.Dispose();
+                //notificationService?.Dispose();
+            }
+        }
+
+        public void Dispose() {
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
     }
 }
