@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace DataAccessLayer.Interfaces {
-    public interface IBorrowRepository {
+    public interface IBorrowRepository : IDisposable {
         IQueryable<Borrow> GetAllBorrowsForMember(int member_id, int library_id);
 
         IQueryable<Borrow> GetBorrowsForMemberByStatus(int member_id, int library_id, BorrowStatus status);

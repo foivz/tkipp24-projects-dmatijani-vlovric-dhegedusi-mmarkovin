@@ -24,6 +24,8 @@ namespace PresentationLayer {
         private UcEmployeeBorrows parentUserControl { get; set; }
         private Borrow borrow = null;
 
+        private BorrowService borrowService = new BorrowService();
+
         public UcReturnBook(EmployeePanel _mainWindow, UcEmployeeBorrows _parentUserControl) {
             InitializeComponent();
 
@@ -141,8 +143,6 @@ namespace PresentationLayer {
                 return;
             }
 
-            //TODO: ovdje staviti using za borrowService kad realizira sučelje IDisposable (@dmatijani)
-            BorrowService borrowService = new BorrowService();
             Borrow updatedBorrow = new Borrow {
                 idBorrow = borrow.idBorrow,
                 borrow_date = borrow.borrow_date,
@@ -158,7 +158,6 @@ namespace PresentationLayer {
             if (updateResult == 0) {
                 MessageBox.Show("Knjiga nije vraćena.");
             }
-
             await UpdateParentBorrows();
             ReturnParentUserControl();
         }
@@ -205,20 +204,21 @@ namespace PresentationLayer {
         }
 
         private Borrow GetBorrow(Book book, Member member) {
-            //TODO: ovdje staviti using za borrowService kad realizira sučelje IDisposable (@vlovric21)
-            BorrowService borrowService = new BorrowService();
             try {
                 return borrowService.GetBorrowsForMemberAndBook(member.id, book.id, LoggedUser.LibraryId).Find(b => b.borrow_status != (int)BorrowStatus.Returned
                     && b.borrow_status != (int)BorrowStatus.Waiting);
             } catch (Exception) {
                 return null;
             }
-            
         }
 
         private async Task UpdateParentBorrows() {
             await parentUserControl.LoadAllBorrows();
             parentUserControl.tbcTabs.SelectedIndex = 3;
+        }
+
+        private void UserControl_Unloaded(object sender, RoutedEventArgs e) {
+            borrowService.Dispose();
         }
     }
 }

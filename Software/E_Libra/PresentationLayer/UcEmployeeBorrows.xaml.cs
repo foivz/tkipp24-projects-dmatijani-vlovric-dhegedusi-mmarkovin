@@ -19,7 +19,6 @@ using System.Windows.Shapes;
 namespace PresentationLayer {
     // David Matijanić
     public partial class UcEmployeeBorrows : UserControl {
-        private BorrowService borrowService = new BorrowService();
         private EmployeePanel mainWindow { get; set; }
 
         public UcEmployeeBorrows(EmployeePanel _mainWindow) {
@@ -34,14 +33,17 @@ namespace PresentationLayer {
         }
 
         private async Task GetAllBorrowsForLibrary(int libraryId) {
-            imgLoaderAllBorrows.Visibility = Visibility.Visible;
-            txtNoAllBorrows.Visibility = Visibility.Hidden;
-            var borrows = await borrowService.GetAllBorrowsForLibraryAsync(libraryId);
-            dgAllBorrows.ItemsSource = borrows;
-            if (borrows.Count == 0) {
-                txtNoAllBorrows.Visibility = Visibility.Visible;
+            using (var borrowService = new BorrowService()) {
+                imgLoaderAllBorrows.Visibility = Visibility.Visible;
+                txtNoAllBorrows.Visibility = Visibility.Hidden;
+                var borrows = await borrowService.GetAllBorrowsForLibraryAsync(libraryId);
+                dgAllBorrows.ItemsSource = borrows;
+                if (borrows.Count == 0) {
+                    txtNoAllBorrows.Visibility = Visibility.Visible;
+                }
+                imgLoaderAllBorrows.Visibility = Visibility.Hidden;
             }
-            imgLoaderAllBorrows.Visibility = Visibility.Hidden;
+            
         }
 
         private async Task GetBorrowsForEachStatus(int libraryId) {
@@ -52,14 +54,16 @@ namespace PresentationLayer {
         }
 
         private async Task GetBorrowsForOneStatus(int libraryId, BorrowStatus status, Border msgNone, Image loader, DataGrid grid) {
-            loader.Visibility = Visibility.Visible;
-            msgNone.Visibility = Visibility.Hidden;
-            var borrows = await borrowService.GetBorrowsForLibraryByStatusAsync(libraryId, status);
-            grid.ItemsSource = borrows;
-            if (borrows.Count == 0) {
-                msgNone.Visibility = Visibility.Visible;
+            using (var borrowService = new BorrowService()) {
+                loader.Visibility = Visibility.Visible;
+                msgNone.Visibility = Visibility.Hidden;
+                var borrows = await borrowService.GetBorrowsForLibraryByStatusAsync(libraryId, status);
+                grid.ItemsSource = borrows;
+                if (borrows.Count == 0) {
+                    msgNone.Visibility = Visibility.Visible;
+                }
+                loader.Visibility = Visibility.Hidden;
             }
-            loader.Visibility = Visibility.Hidden;
         }
 
         private void btnReturnBook_Click(object sender, RoutedEventArgs e) {
@@ -70,6 +74,7 @@ namespace PresentationLayer {
             if (tbcTabs.SelectedIndex == 2 && dgCurrentBorrows.SelectedItems.Count == 1) {
                 Borrow borrow = dgCurrentBorrows.SelectedItem as Borrow;
                 if (borrow != null) {
+                    //TODO: koristiti using kada MemberService i BookService budu realizirali sučelje IDisposable (@mmarkoovin21 i @vlovric21), ili još bolje, izvaditi u konstruktor i disposati u Unloaded
                     MemberService memberService = new MemberService();
                     BookServices bookService = new BookServices();
                     if (borrow.Member_id != null) {
@@ -81,6 +86,7 @@ namespace PresentationLayer {
             } else if (tbcTabs.SelectedIndex == 3 && dgLateBorrows.SelectedItems.Count == 1) {
                 Borrow borrow = dgLateBorrows.SelectedItem as Borrow;
                 if (borrow != null) {
+                    //TODO: koristiti using kada MemberService i BookService budu realizirali sučelje IDisposable (@mmarkoovin21 i @vlovric21), ili još bolje, izvaditi u konstruktor i disposati u Unloaded
                     MemberService memberService = new MemberService();
                     BookServices bookService = new BookServices();
                     if (borrow.Member_id != null) {
@@ -107,6 +113,7 @@ namespace PresentationLayer {
             if (tbcTabs.SelectedIndex == 1 && dgPendingBorrows.SelectedItems.Count == 1) {
                 Borrow borrow = dgPendingBorrows.SelectedItem as Borrow;
                 if (borrow != null) {
+                    //TODO: koristiti using kada MemberService i BookService budu realizirali sučelje IDisposable (@mmarkoovin21 i @vlovric21), ili još bolje, izvaditi u konstruktor i disposati u Unloaded
                     MemberService memberService = new MemberService();
                     BookServices bookService = new BookServices();
                     if (borrow.Member_id != null) {

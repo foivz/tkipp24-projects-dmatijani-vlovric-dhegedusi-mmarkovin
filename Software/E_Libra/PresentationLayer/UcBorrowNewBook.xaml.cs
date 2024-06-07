@@ -68,51 +68,51 @@ namespace PresentationLayer {
                 return;
             }
 
-            var borrowService = new BorrowService();
+            using (var borrowService = new BorrowService()) {
+                List<Borrow> existingBorrows = borrowService.GetBorrowsForMemberAndBook(enteredMember.id, enteredBook.id, LoggedUser.LibraryId);
 
-            List<Borrow> existingBorrows = borrowService.GetBorrowsForMemberAndBook(enteredMember.id, enteredBook.id, LoggedUser.LibraryId);
-
-            Borrow alreadyExistingBorrow = existingBorrows.FindAll(b => (b.borrow_status == (int)BorrowStatus.Borrowed || b.borrow_status == (int)BorrowStatus.Late)).FirstOrDefault();
-            if (alreadyExistingBorrow != null) {
-                MessageBox.Show("Član je već posudio tu knjigu!");
-                return;
-            }
-
-            Employee thisEmployee = GetEmployee();
-
-            Borrow waitingBorrow = existingBorrows.Find(b => b.borrow_status == (int)BorrowStatus.Waiting);
-            if (waitingBorrow == null) {
-                Borrow newBorrow = new Borrow {
-                    Book = enteredBook,
-                    Member = enteredMember,
-                    borrow_status = (int)BorrowStatus.Borrowed,
-                    borrow_date = DateTime.Now,
-                    return_date = DateTime.Now.AddDays(int.Parse(tbBorrowDuration.Text)),
-                    Employee = thisEmployee
-                };
-
-                try {
-                    borrowService.AddNewBorrow(newBorrow);
-                } catch (BookException ex) {
-                    MessageBox.Show(ex.Message);
+                Borrow alreadyExistingBorrow = existingBorrows.FindAll(b => (b.borrow_status == (int)BorrowStatus.Borrowed || b.borrow_status == (int)BorrowStatus.Late)).FirstOrDefault();
+                if (alreadyExistingBorrow != null) {
+                    MessageBox.Show("Član je već posudio tu knjigu!");
+                    return;
                 }
 
-                UpdateParentBorrows();
-                ReturnParentUserControl(new UcEmployeeBorrows(mainWindow));
-            } else {
-                waitingBorrow.borrow_status = (int)BorrowStatus.Borrowed;
-                waitingBorrow.borrow_date = DateTime.Now;
-                waitingBorrow.return_date = DateTime.Now.AddDays(int.Parse(tbBorrowDuration.Text));
-                waitingBorrow.Employee = thisEmployee;
+                Employee thisEmployee = GetEmployee();
 
-                try {
-                    borrowService.UpdateBorrow(waitingBorrow);
-                } catch (BookException ex) {
-                    MessageBox.Show(ex.Message);
+                Borrow waitingBorrow = existingBorrows.Find(b => b.borrow_status == (int)BorrowStatus.Waiting);
+                if (waitingBorrow == null) {
+                    Borrow newBorrow = new Borrow {
+                        Book = enteredBook,
+                        Member = enteredMember,
+                        borrow_status = (int)BorrowStatus.Borrowed,
+                        borrow_date = DateTime.Now,
+                        return_date = DateTime.Now.AddDays(int.Parse(tbBorrowDuration.Text)),
+                        Employee = thisEmployee
+                    };
+
+                    try {
+                        borrowService.AddNewBorrow(newBorrow);
+                    } catch (BookException ex) {
+                        MessageBox.Show(ex.Message);
+                    }
+
+                    UpdateParentBorrows();
+                    ReturnParentUserControl(new UcEmployeeBorrows(mainWindow));
+                } else {
+                    waitingBorrow.borrow_status = (int)BorrowStatus.Borrowed;
+                    waitingBorrow.borrow_date = DateTime.Now;
+                    waitingBorrow.return_date = DateTime.Now.AddDays(int.Parse(tbBorrowDuration.Text));
+                    waitingBorrow.Employee = thisEmployee;
+
+                    try {
+                        borrowService.UpdateBorrow(waitingBorrow);
+                    } catch (BookException ex) {
+                        MessageBox.Show(ex.Message);
+                    }
+
+                    UpdateParentBorrows();
+                    ReturnParentUserControl(new UcEmployeeBorrows(mainWindow));
                 }
-
-                UpdateParentBorrows();
-                ReturnParentUserControl(new UcEmployeeBorrows(mainWindow));
             }
         }
 
@@ -147,6 +147,7 @@ namespace PresentationLayer {
         }
 
         private Member GetEnteredMember() {
+            //TODO: koristiti using za MemberService kada bude realizirao sučelje IDisposable (@mmarkoovin21)
             MemberService memberService = new MemberService();
             try {
                 Member enteredMember = memberService.GetMemberByBarcodeId(LoggedUser.LibraryId, tbMemberBarcode.Text);
@@ -158,6 +159,7 @@ namespace PresentationLayer {
         }
 
         private Book GetEnteredBook() {
+            //TODO: koristiti using za BookService kada bude realizirao sučelje IDisposable (@vlovric21)
             BookServices bookService = new BookServices();
             try {
                 Book enteredBook = bookService.GetBookByBarcodeId(LoggedUser.LibraryId, tbBookBarcode.Text);
@@ -169,6 +171,7 @@ namespace PresentationLayer {
         }
 
         private Employee GetEmployee() {
+            //TODO: koristiti using za EmployeeService kada bude realizirao sučelje IDisposable (@mmarkoovin21)
             EmployeeService employeeService = new EmployeeService();
             return employeeService.GetEmployeeByUsername(LoggedUser.Username);
         }

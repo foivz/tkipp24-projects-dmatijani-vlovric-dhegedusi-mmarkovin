@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace BussinessLogicLayer.services {
     // David Matijanić: osim HasUserBorrowedBook
-    public class BorrowService {
+    public class BorrowService : IDisposable {
         IBorrowRepository borrowRepository { get; set; }
         ReservationService reservationService { get; set; }
         BookServices bookService { get; set; }
@@ -105,6 +105,24 @@ namespace BussinessLogicLayer.services {
         private void LowerBookCopies(Book book) {
             book.current_copies--;
             bookService.UpdateBook(book);
+        }
+
+        ~BorrowService() {
+            Dispose(false);
+        }
+
+        private void Dispose(bool disposing) {
+            if (disposing) {
+                borrowRepository?.Dispose();
+                //TODO: otkomentirati kada se realizira IDisposable sučelje u ovim servisima (@vlovric21)
+                //reservationService?.Dispose();
+                //bookService?.Dispose();
+            }
+        }
+
+        public void Dispose() {
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
     }
 }
