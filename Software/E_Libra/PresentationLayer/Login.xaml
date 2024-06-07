@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PresentationLayer"
         mc:Ignorable="d"  WindowStartupLocation="CenterScreen" WindowStyle="none" AllowsTransparency="True" Background="Transparent"
-        Title="Login" Height="500" Width="800">
+        Title="Login" Height="500" Width="800"
+        Unloaded="Window_Unloaded">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>

@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace DataAccessLayer.Interfaces {
-    public interface IAdministratorRepository {
+    public interface IAdministratorRepository : IDisposable {
         IQueryable<Administrator> GetAdministratorLogin(string username, string password);
 
         int Update(Administrator entity, bool saveChanges = true);
