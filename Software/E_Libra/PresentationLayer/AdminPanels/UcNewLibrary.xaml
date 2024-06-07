@@ -5,7 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:PresentationLayer.AdminPanels"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="450" d:DesignWidth="800"
+             Unloaded="UserControl_Unloaded">
     <DockPanel Background="#FFEFE8">
         <TextBlock Background="#637E78" DockPanel.Dock="Top" Height="40"
                Style="{StaticResource titleText}" FontSize="20" Padding="5"

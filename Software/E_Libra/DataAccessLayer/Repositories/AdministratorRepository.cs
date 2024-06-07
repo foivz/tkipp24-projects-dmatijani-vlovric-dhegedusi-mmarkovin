@@ -1,4 +1,5 @@
-﻿using EntitiesLayer;
+﻿using DataAccessLayer.Interfaces;
+using EntitiesLayer;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace DataAccessLayer.Repositories
 {
-    public class AdministratorRepository: Repository<Administrator>
+    public class AdministratorRepository: Repository<Administrator>, IAdministratorRepository
     {
         public DbSet<Administrator> Administrator{ get; set; }
         public AdministratorRepository() :base(new DatabaseModel())

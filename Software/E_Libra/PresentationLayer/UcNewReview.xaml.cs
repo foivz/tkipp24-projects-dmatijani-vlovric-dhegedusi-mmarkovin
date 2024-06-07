@@ -51,7 +51,7 @@ namespace PresentationLayer {
                     date = DateTime.Today
                 };
 
-                int result = reviewService.AddReview(newReview);
+                reviewService.AddReview(newReview);
 
                 ucReviewsList ucReviews = new ucReviewsList(bookId);
                 (Window.GetWindow(this) as MemberPanel).contentPanel.Content = ucReviews;

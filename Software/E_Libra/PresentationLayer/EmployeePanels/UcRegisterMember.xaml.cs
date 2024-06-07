@@ -28,6 +28,7 @@ namespace PresentationLayer.EmployeePanels
             InitializeComponent();
             memberService = new MemberService();
             employeeService = new EmployeeService();
+            txtDate.Text = (DateTime.Now).ToString();
         }
 
         private void btnCancel_Click(object sender, RoutedEventArgs e)
@@ -37,7 +38,7 @@ namespace PresentationLayer.EmployeePanels
         private void btnSave_Click(object sender, RoutedEventArgs e)
         {
             CheckOIBIsNumber();
-            if (txtOIB.Text != "" && txtPassword.Password != "" && txtUsername.Text != "" && txtBarcode.Text != "")
+            if (txtOIB.Text != "" && txtPassword.Password != "" && txtUsername.Text != "" && txtBarcode.Text != "" && txtDate.Text != "")
             {
                 Member newMember = MakeNewMember();
                 bool checkedConstraints = CheckUniqueConstraints(newMember);
@@ -62,7 +63,7 @@ namespace PresentationLayer.EmployeePanels
                 OIB = (txtOIB.Text).Length <= 11 ? txtOIB.Text : (txtOIB.Text).Substring(0, 11),
                 username = (txtUsername.Text).Length <= 45 ? txtUsername.Text : (txtUsername.Text).Substring(0, 45),
                 password = (txtPassword.Password).Length <= 45 ? txtPassword.Password : (txtPassword.Password).Substring(0, 45),
-                membership_date = txtDate.SelectedDate,
+                membership_date = DateTime.Now,
                 barcode_id = (txtBarcode.Text).Length <= 45 ? txtBarcode.Text : (txtBarcode.Text).Substring(0, 45),
                 Library_id = LibraryId
             };
