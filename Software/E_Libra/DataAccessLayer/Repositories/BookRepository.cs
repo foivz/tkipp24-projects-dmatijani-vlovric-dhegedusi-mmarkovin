@@ -1,4 +1,5 @@
-﻿using EntitiesLayer;
+﻿using DataAccessLayer.Interfaces;
+using EntitiesLayer;
 using EntitiesLayer.Entities;
 using System;
 using System.Collections.Generic;
@@ -15,7 +16,7 @@ namespace DataAccessLayer.Repositories
     // Domagoj Hegedušić, metode: GetMostPopularBookss
     // David Matijanić: GetBookByBarcodeId, Update, GetBookBarcode, GetBooksByLibrary
 
-    public class BookRepository : Repository<Book>
+    public class BookRepository : Repository<Book>, IBookRepository
     {
         public BookRepository(): base(new DatabaseModel())
         {
