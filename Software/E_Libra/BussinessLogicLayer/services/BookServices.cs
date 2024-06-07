@@ -16,11 +16,24 @@ namespace BussinessLogicLayer.services
     public class BookServices
     {
         public IBookRepository bookRepository { get; set; }
-        public BookServices(IBookRepository bookRepository)
+        private ReservationService reservationService { get; set; }
+        private MemberService memberService { get; set; }
+        public BookServices(
+            IBookRepository bookRepository,
+            ReservationService reservationService,
+            MemberService memberService
+        )
         {
             this.bookRepository = bookRepository;
+            this.reservationService = reservationService;
+            this.memberService = memberService;
         }
-        public BookServices() : this(new BookRepository()){}
+        public BookServices() : this(
+            new BookRepository(),
+            new ReservationService(),
+            new MemberService()
+        )
+        {}
 
         public bool AddBook(Book book, Author author)
         {
@@ -57,7 +70,6 @@ namespace BussinessLogicLayer.services
         public bool InsertNewCopies(int number, Book book)
         {
             var numCopies = number;
-            var reservationService = new ReservationService();
 
             int currentCopies = bookRepository.GetBookCurrentCopies(book.id);
             bool imaRezervacije;
@@ -114,14 +126,12 @@ namespace BussinessLogicLayer.services
             return bookRepository.GetWishlistBooksForMember(LoggedUser.Username).ToList();
         }
         public bool AddBookToWishlist(int bookId) {
-            MemberRepository memberRepository = new MemberRepository();
-            int userId = memberRepository.GetMemberId(LoggedUser.Username);
+            int userId = memberService.GetMemberId(LoggedUser.Username);
 
             return bookRepository.AddBookToWishlist(userId, bookId);
         }
         public bool RemoveBookFromWishlist(int bookId) {
-            MemberRepository memberRepository = new MemberRepository();
-            int userId = memberRepository.GetMemberId(LoggedUser.Username);
+            int userId = memberService.GetMemberId(LoggedUser.Username);
 
             return bookRepository.RemoveBookFromWishlist(userId, bookId);
         }

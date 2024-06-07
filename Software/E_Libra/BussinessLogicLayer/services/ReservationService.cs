@@ -14,11 +14,19 @@ namespace BussinessLogicLayer.services
     public class ReservationService
     {
         public IReservationRepository reservationRepository { get; set; }
-        public ReservationService(IReservationRepository reservationRepository)
+        private BookServices bookService { get; set; }
+        public ReservationService(
+            IReservationRepository reservationRepository,
+            BookServices bookServices
+        )
         {
             this.reservationRepository = reservationRepository;
+            this.bookService = bookServices;
         }
-        public ReservationService() : this(new ReservationRepository()) { }
+        public ReservationService() : this(
+            new ReservationRepository(),
+            new BookServices()
+        ) { }
 
 
         public int CheckNumberOfReservations(int id)
@@ -52,7 +60,6 @@ namespace BussinessLogicLayer.services
         public void CheckReservationDates()
         {
             var overdueReservations = reservationRepository.GetOverdueReservations();
-            var bookService = new BookServices();
             foreach (var reservation in overdueReservations)
             {
 
@@ -63,8 +70,7 @@ namespace BussinessLogicLayer.services
         }
         public void ReturnBook(Book book)
         {
-            var bookServices = new BookServices();
-            bookServices.InsertOneCopy(book);
+            bookService.InsertOneCopy(book);
             reservationRepository.EnterDateForReservation(book);
         }
         public int GetReservationId(int memberId, int bookId)
@@ -90,8 +96,6 @@ namespace BussinessLogicLayer.services
         }
         public bool RemoveReservationFromList(int reservationId)
         {
-            var bookService = new BookServices();
-
             var reservation = reservationRepository.GetReservationById(reservationId);
             Book book = reservation.Book;
             if (reservation.reservation_date == null)
