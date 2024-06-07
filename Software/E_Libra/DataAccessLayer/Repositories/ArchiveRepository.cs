@@ -1,4 +1,5 @@
-﻿using EntitiesLayer;
+﻿using DataAccessLayer.Interfaces;
+using EntitiesLayer;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 namespace DataAccessLayer.Repositories
 {
     //Viktor Lovrić
-    public class ArchiveRepository : Repository<Archive>
+    public class ArchiveRepository : Repository<Archive>, IArchiveRepository
     {
         public ArchiveRepository(): base(new DatabaseModel())
         {

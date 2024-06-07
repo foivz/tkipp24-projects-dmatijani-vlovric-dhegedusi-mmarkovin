@@ -1,4 +1,5 @@
-﻿using EntitiesLayer;
+﻿using DataAccessLayer.Interfaces;
+using EntitiesLayer;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -13,7 +14,7 @@ namespace DataAccessLayer.Repositories
 {
     //Viktor Lovrić
     //Magdalena markovinović, metoda: GetReservationsForMemberNormal
-    public class ReservationRepository: Repository<Reservation>
+    public class ReservationRepository: Repository<Reservation>, IReservationRepository
     {
         public ReservationRepository() : base(new DatabaseModel())
         {
