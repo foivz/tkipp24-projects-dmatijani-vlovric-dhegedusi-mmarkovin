@@ -76,6 +76,12 @@ namespace PresentationLayer {
             }
         }
 
+        private void UserControl_Unloaded(object sender, RoutedEventArgs e) {
+            //TODO: otkomentirati kada ReviewService i MemberService budu realizirali sučelje IDisposable (@mmarkoovin21, dhegedusi21)
+            //services.Dispose();
+            //memberService.Dispose();
+            borrowService.Dispose();
+        }
     }
 
 }

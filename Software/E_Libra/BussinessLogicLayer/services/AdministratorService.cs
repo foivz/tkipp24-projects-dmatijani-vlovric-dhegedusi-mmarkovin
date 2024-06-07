@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace BussinessLogicLayer.services
 {
-    public class AdministratorService
+    public class AdministratorService : IDisposable
     {
         private IAdministratorRepository administratorRepository { get; set; }
 
@@ -28,6 +28,21 @@ namespace BussinessLogicLayer.services
                 LoggedUser.Username = username;
                 LoggedUser.UserType = Role.Admin;
             }
+        }
+
+        ~AdministratorService() {
+            Dispose(false);
+        }
+
+        private void Dispose(bool disposing) {
+            if (disposing && administratorRepository != null) {
+                administratorRepository.Dispose();
+            }
+        }
+
+        public void Dispose() {
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
     }
 }
