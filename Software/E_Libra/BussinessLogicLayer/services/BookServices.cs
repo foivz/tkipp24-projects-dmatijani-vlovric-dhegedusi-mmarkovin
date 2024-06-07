@@ -16,21 +16,21 @@ namespace BussinessLogicLayer.services
     public class BookServices
     {
         public IBookRepository bookRepository { get; set; }
-        private ReservationService reservationService { get; set; }
+        private IReservationRepository reservationRepository { get; set; }
         private MemberService memberService { get; set; }
         public BookServices(
             IBookRepository bookRepository,
-            ReservationService reservationService,
+            IReservationRepository reservationRepository,
             MemberService memberService
         )
         {
             this.bookRepository = bookRepository;
-            this.reservationService = reservationService;
+            this.reservationRepository = reservationRepository;
             this.memberService = memberService;
         }
         public BookServices() : this(
             new BookRepository(),
-            new ReservationService(),
+            new ReservationRepository(),
             new MemberService()
         )
         {}
@@ -77,7 +77,7 @@ namespace BussinessLogicLayer.services
             {
                 do
                 {
-                    imaRezervacije = reservationService.EnterDateForReservation(book); //daj osobi datum na rezervaciju
+                    imaRezervacije = reservationRepository.EnterDateForReservation(book); //daj osobi datum na rezervaciju
                     if (imaRezervacije)
                     {
                         bookRepository.InsertNewCopies(1, book);
