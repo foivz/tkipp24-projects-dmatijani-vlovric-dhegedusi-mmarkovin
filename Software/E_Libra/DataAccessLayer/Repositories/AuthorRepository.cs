@@ -1,4 +1,5 @@
-﻿using EntitiesLayer;
+﻿using DataAccessLayer.Interfaces;
+using EntitiesLayer;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 namespace DataAccessLayer.Repositories
 {
     //Viktor Lovrić
-    public class AuthorRepository: Repository<Author>
+    public class AuthorRepository: Repository<Author>, IAuthorRepository
     {
         public AuthorRepository(): base(new DatabaseModel())
         {

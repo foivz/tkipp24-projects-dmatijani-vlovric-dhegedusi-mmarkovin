@@ -1,4 +1,5 @@
-﻿using DataAccessLayer.Repositories;
+﻿using DataAccessLayer.Interfaces;
+using DataAccessLayer.Repositories;
 using EntitiesLayer;
 using System;
 using System.Collections.Generic;
@@ -11,21 +12,23 @@ namespace BussinessLogicLayer.services
     //Viktor Lovrić
     public class AuthorService
     {
-        public List<Author> GetAllAuthors()
+        public IAuthorRepository authorRepository { get; set; }
+        public AuthorService(IAuthorRepository authorRepository)
         {
-            using (var repo = new AuthorRepository())
-            {
-                return repo.GetAll().ToList();
-            }
+            this.authorRepository = authorRepository;
+        }
+        public AuthorService() : this(new AuthorRepository()) { }
+        public List<Author> GetAllAuthors() 
+        {
+            return authorRepository.GetAll().ToList();
         }
         public bool AddAuthor(Author author)
         {
             bool isSuccesful = false;
-            using(var repo = new AuthorRepository())
-            {
-                int affectedRows = repo.Add(author);
-                isSuccesful |= affectedRows > 0;
-            }
+
+            int affectedRows = authorRepository.Add(author);
+            isSuccesful |= affectedRows > 0;
+
             return isSuccesful;
         }
     }
