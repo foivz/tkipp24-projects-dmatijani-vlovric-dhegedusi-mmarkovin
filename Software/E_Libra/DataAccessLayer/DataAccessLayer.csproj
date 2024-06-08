@@ -63,6 +63,8 @@
     <Compile Include="Interfaces\IAuthorRepository.cs" />
     <Compile Include="Interfaces\IBookRepository.cs" />
     <Compile Include="Interfaces\IReservationRepository.cs" />
+    <Compile Include="Interfaces\IReviewRepository.cs" />
+    <Compile Include="Interfaces\IStatisticsRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\AdministratorRepository.cs" />
     <Compile Include="Repositories\ArchiveRepository.cs" />

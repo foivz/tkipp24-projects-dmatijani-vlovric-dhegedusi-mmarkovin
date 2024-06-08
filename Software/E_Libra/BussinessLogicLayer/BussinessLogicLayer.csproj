@@ -73,6 +73,10 @@
     <Compile Include="services\StatisticsService.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\DataAccessLayer\DataAccessLayer.csproj">
+      <Project>{35D148D2-ED6D-4188-95BD-E67D6C7B8FE2}</Project>
+      <Name>DataAccessLayer</Name>
+    </ProjectReference>
     <ProjectReference Include="..\EntitiesLayer\EntitiesLayer.csproj">
       <Project>{334B2EF2-CC21-4264-86B0-5177E914E1E2}</Project>
       <Name>EntitiesLayer</Name>
