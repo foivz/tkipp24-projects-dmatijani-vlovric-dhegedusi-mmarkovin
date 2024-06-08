@@ -39,15 +39,16 @@ namespace PresentationLayer.AdminPanels {
         }
 
         private void PopulateComboBox(Library selectedLibrary = null) {
-            var libraryService = new LibraryService();
-            var allLibraries = libraryService.GetAllLibraries();
-            cboLibrary.ItemsSource = allLibraries;
+            using (var libraryService = new LibraryService()) {
+                var allLibraries = libraryService.GetAllLibraries();
+                cboLibrary.ItemsSource = allLibraries;
 
-            if (selectedLibrary != null) {
-                try {
-                    cboLibrary.SelectedItem = allLibraries.Find(l => l.id == selectedLibrary.id);
-                } catch (Exception ex) {
-                    MessageBox.Show(ex.Message);
+                if (selectedLibrary != null) {
+                    try {
+                        cboLibrary.SelectedItem = allLibraries.Find(l => l.id == selectedLibrary.id);
+                    } catch (Exception ex) {
+                        MessageBox.Show(ex.Message);
+                    }
                 }
             }
         }
@@ -126,6 +127,11 @@ namespace PresentationLayer.AdminPanels {
             } catch (EmployeeException ex) {
                 MessageBox.Show(ex.Message);
             }
+        }
+
+        private void UserControl_Unloaded(object sender, RoutedEventArgs e) {
+            //TODO: ovo odkomentirati kad se realizira IDisposable u EmployeeService (@mmarkovin21)
+            //service.Dispose();
         }
     }
 }

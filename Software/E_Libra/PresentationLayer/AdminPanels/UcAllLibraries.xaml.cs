@@ -115,5 +115,9 @@ namespace PresentationLayer.AdminPanels {
                 MessageBox.Show(ex.Message);
             }
         }
+
+        private void UserControl_Unloaded(object sender, RoutedEventArgs e) {
+            service.Dispose();
+        }
     }
 }

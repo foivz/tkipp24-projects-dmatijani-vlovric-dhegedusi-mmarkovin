@@ -125,5 +125,9 @@ namespace PresentationLayer.AdminPanels {
             tbLibraryAddress.Text = library.address;
             tbLibraryMembershipDuration.Text = service.GetLibraryMembershipDuration(library.id).ToString();
         }
+
+        private void UserControl_Unloaded(object sender, RoutedEventArgs e) {
+            service.Dispose();
+        }
     }
 }

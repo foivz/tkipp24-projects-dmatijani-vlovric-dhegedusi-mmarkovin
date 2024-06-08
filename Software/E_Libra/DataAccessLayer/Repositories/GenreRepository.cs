@@ -1,4 +1,5 @@
-﻿using EntitiesLayer;
+﻿using DataAccessLayer.Interfaces;
+using EntitiesLayer;
 using EntitiesLayer.Entities;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ namespace DataAccessLayer.Repositories
 {
     //Viktor Lovrić, metode: GetAll, Add
     //Domagoj Hegedušić, metode: GetMostPopularGenres
-    public class GenreRepository: Repository<Genre>
+    public class GenreRepository: Repository<Genre>, IGenreRepository
     {
         public GenreRepository(): base(new DatabaseModel())
         {

@@ -41,5 +41,11 @@ namespace PresentationLayer.MemberPanels {
             dgLateBorrows.ItemsSource = borrowService.GetBorrowsForMemberByStatus(memberId, libraryId, BorrowStatus.Late);
             dgDoneBorrows.ItemsSource = borrowService.GetBorrowsForMemberByStatus(memberId, libraryId, BorrowStatus.Returned);
         }
+
+        private void UserControl_Unloaded(object sender, RoutedEventArgs e) {
+            borrowService.Dispose();
+            //TODO: odkomentirati liniju kada MemberService bude realizirao sučelje IDisposable (@mmarkoovin21)
+            //memberService.Dispose();
+        }
     }
 }

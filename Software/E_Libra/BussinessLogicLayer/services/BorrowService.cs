@@ -1,4 +1,5 @@
 ﻿using BussinessLogicLayer.Exceptions;
+using DataAccessLayer.Interfaces;
 using DataAccessLayer.Repositories;
 using EntitiesLayer;
 using System;
@@ -9,47 +10,52 @@ using System.Threading.Tasks;
 
 namespace BussinessLogicLayer.services {
     // David Matijanić: osim HasUserBorrowedBook
-    public class BorrowService {
+    public class BorrowService : IDisposable {
+        IBorrowRepository borrowRepository { get; set; }
+        ReservationService reservationService { get; set; }
+        BookServices bookService { get; set; }
+
+        public BorrowService(
+            IBorrowRepository borrowRepository,
+            ReservationService reservationService,
+            BookServices bookService
+        ) {
+            this.borrowRepository = borrowRepository;
+            this.reservationService = reservationService;
+            this.bookService = bookService;
+        }
+        public BorrowService() : this(
+            new BorrowRepository(),
+            new ReservationService(),
+            new BookServices()
+        ) { }
+
         public List<Borrow> GetAllBorrowsForMember(int member_id, int library_id) {
-            using (var context = new BorrowRepository()) {
-                return context.GetAllBorrowsForMember(member_id, library_id).ToList();
-            }
+            return borrowRepository.GetAllBorrowsForMember(member_id, library_id).ToList();
         }
 
         public List<Borrow> GetBorrowsForMemberByStatus(int member_id, int library_id, BorrowStatus status) {
-            using (var context = new BorrowRepository()) {
-                return context.GetBorrowsForMemberByStatus(member_id, library_id, status).ToList();
-            }
+            return borrowRepository.GetBorrowsForMemberByStatus(member_id, library_id, status).ToList();
         }
 
         public List<Borrow> GetBorrowsForMemberAndBook(int member_id, int book_id, int library_id) {
-            using (var context = new BorrowRepository()) {
-                return context.GetBorrowsForMemberAndBook(member_id, book_id, library_id).ToList();
-            }
+            return borrowRepository.GetBorrowsForMemberAndBook(member_id, book_id, library_id).ToList();
         }
 
         public async Task<List<Borrow>> GetAllBorrowsForLibraryAsync(Library library) {
-            using (var context = new BorrowRepository()) {
-                return await context.GetAllBorrowsForLibraryAsync(library);
-            }
+            return await borrowRepository.GetAllBorrowsForLibraryAsync(library);
         }
 
         public async Task<List<Borrow>> GetAllBorrowsForLibraryAsync(int library_id) {
-            using (var context = new BorrowRepository()) {
-                return await context.GetAllBorrowsForLibraryAsync(library_id);
-            }
+            return await borrowRepository.GetAllBorrowsForLibraryAsync(library_id);
         }
 
         public async Task<List<Borrow>> GetBorrowsForLibraryByStatusAsync(Library library, BorrowStatus status) {
-            using (var context = new BorrowRepository()) {
-                return await context.GetBorrowsForLibraryByStatusAsync(library, status);
-            }
+            return await borrowRepository.GetBorrowsForLibraryByStatusAsync(library, status);
         }
 
         public async Task<List<Borrow>> GetBorrowsForLibraryByStatusAsync(int library_id, BorrowStatus status) {
-            using (var context = new BorrowRepository()) {
-                return await context.GetBorrowsForLibraryByStatusAsync(library_id, status);
-            }
+            return await borrowRepository.GetBorrowsForLibraryByStatusAsync(library_id, status);
         }
 
         public int AddNewBorrow(Borrow borrow) {
@@ -57,7 +63,6 @@ namespace BussinessLogicLayer.services {
             bool reserved = false;
             if (borrow.borrow_status == (int)BorrowStatus.Borrowed) {
                 if (book.current_copies < 1) {
-                    ReservationService reservationService = new ReservationService();
                     Reservation existingReservation = reservationService.CheckValidReservationFroMember(borrow.Member.id, book.id);
                     if (existingReservation == null) {
                         throw new NoMoreBookCopiesException("Odabrane knjige trenutno nema na stanju!");
@@ -72,9 +77,7 @@ namespace BussinessLogicLayer.services {
                 }
             }
 
-            using (var context = new BorrowRepository()) {
-                return context.Add(borrow);
-            }
+            return borrowRepository.Add(borrow);
         }
 
         public int UpdateBorrow(Borrow borrow) {
@@ -85,31 +88,41 @@ namespace BussinessLogicLayer.services {
                 }
                 LowerBookCopies(book);
             } else if (borrow.borrow_status == (int)BorrowStatus.Returned) {
-                ReservationService reservationService = new ReservationService();
                 reservationService.ReturnBook(book);
             }
 
-            using (var context = new BorrowRepository()) {
-                return context.Update(borrow);
-            }
+            return borrowRepository.Update(borrow);
         }
 
         public bool HasUserBorrowedBook(int userId, int bookId) {
-            using (var context = new BorrowRepository()) {
-                return context.HasUserBorrowedBook(userId, bookId);
-            }
+            return borrowRepository.HasUserBorrowedBook(userId, bookId);
         }
 
         public List<Borrow> GetBorrowsForEmployee(int employeeId) {
-            using (var context = new BorrowRepository()) {
-                return context.GetBorrowsForEmployee(employeeId).ToList();
-            }
+            return borrowRepository.GetBorrowsForEmployee(employeeId).ToList();
         }
 
         private void LowerBookCopies(Book book) {
-            BookServices bookService = new BookServices();
             book.current_copies--;
             bookService.UpdateBook(book);
+        }
+
+        ~BorrowService() {
+            Dispose(false);
+        }
+
+        private void Dispose(bool disposing) {
+            if (disposing) {
+                borrowRepository?.Dispose();
+                //TODO: otkomentirati kada se realizira IDisposable sučelje u ovim servisima (@vlovric21)
+                //reservationService?.Dispose();
+                //bookService?.Dispose();
+            }
+        }
+
+        public void Dispose() {
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
     }
 }

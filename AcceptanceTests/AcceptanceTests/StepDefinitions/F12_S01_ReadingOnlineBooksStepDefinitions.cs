@@ -4,6 +4,7 @@ using OpenQA.Selenium.Appium.Windows;
 using System;
 using System.Linq;
 using System.Net;
+using System.Threading;
 using TechTalk.SpecFlow;
 using static System.Net.WebRequestMethods;
 
@@ -206,8 +207,10 @@ namespace AcceptanceTests.StepDefinitions
         {
             var driver = GuiDriver.GetOrCreateDriver();
             driver.SwitchTo().Window(driver.WindowHandles.First());
+            Thread.Sleep(25000);
 
-            bool btnOk = driver.FindElementByAccessibilityId("2") != null;
+            bool btnOk = driver.FindElementByName("OK") != null;
+
             Assert.IsTrue(btnOk);
         }
     }

@@ -52,8 +52,17 @@
   <ItemGroup>
     <Compile Include="DatabaseModel.cs" />
     <Compile Include="Exceptions\BorrowException.cs" />
-    <Compile Include="Interfaces\IReviewRepository.cs" />
-    <Compile Include="Interfaces\IStatisticsRepository.cs" />
+    <Compile Include="Interfaces\IEmpoloyeeRepositroy.cs" />
+    <Compile Include="Interfaces\IGenreRepository.cs" />
+    <Compile Include="Interfaces\IMembersRepository.cs" />
+    <Compile Include="Interfaces\INotificationsRepository.cs" />
+    <Compile Include="Interfaces\IAdministratorRepository.cs" />
+    <Compile Include="Interfaces\IBorrowRepository.cs" />
+    <Compile Include="Interfaces\ILibraryRepository.cs" />
+    <Compile Include="Interfaces\IArchiveRepository.cs" />
+    <Compile Include="Interfaces\IAuthorRepository.cs" />
+    <Compile Include="Interfaces\IBookRepository.cs" />
+    <Compile Include="Interfaces\IReservationRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\AdministratorRepository.cs" />
     <Compile Include="Repositories\ArchiveRepository.cs" />
@@ -80,5 +89,6 @@
       <Name>EntitiesLayer</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

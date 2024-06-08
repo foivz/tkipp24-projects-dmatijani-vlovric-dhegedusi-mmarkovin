@@ -1,4 +1,5 @@
-﻿using EntitiesLayer;
+﻿using DataAccessLayer.Interfaces;
+using EntitiesLayer;
 using System;
 using System.CodeDom;
 using System.Collections.Generic;
@@ -12,7 +13,7 @@ namespace DataAccessLayer.Repositories
     // Viktor Lovrić, metode: GetMemberId
     // Magdalena Markovinović, metode: GetMemberByBarcodeId, GetMemberBarcode, GetAllMembersByFilter, UpdateMembershipDate, DeleteMember, GetMemberLogin
     // Domagoj Hegedušić, metode: GetMemberCount
-    public class MemberRepository : Repository<Member>
+    public class MemberRepository : Repository<Member>, IMembersRepository
     {
         public DbSet<Member> Member { get; set; }
         public MemberRepository() : base(new DatabaseModel())
@@ -136,6 +137,16 @@ namespace DataAccessLayer.Repositories
                         select m.barcode_id;
 
             return query;
+        }
+
+        IQueryable<Member> IMembersRepository.GetAll()
+        {
+            return base.GetAll();
+        }
+
+        public int Add(Member member)
+        {
+            return base.Add(member);
         }
     }
 }

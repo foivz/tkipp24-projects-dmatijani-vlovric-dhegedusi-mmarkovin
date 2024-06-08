@@ -1,4 +1,5 @@
 ﻿using BussinessLogicLayer.Exceptions;
+using DataAccessLayer.Interfaces;
 using DataAccessLayer.Repositories;
 using EntitiesLayer;
 using System;
@@ -12,54 +13,47 @@ namespace BussinessLogicLayer.services
     //Magdalena Markovinocić
     public class NotificationService
     {
+        public INotificationsRepository notificationsRepository;
+
+        public NotificationService(INotificationsRepository notificationsRepo)
+        {
+            this.notificationsRepository = notificationsRepo;
+        }
+        public NotificationService() : this(new NotificationsRepository())
+        {
+            
+        }
+
         MemberService memberService = new MemberService();
         public List<Notification> GetAllNotificationByLibrary(int id)
         {
-            using (var notificationsRepo = new NotificationsRepository())
-            {
-                return notificationsRepo.GetAllNotificationsForLibrary(id).ToList();
-            }
+            return notificationsRepository.GetAllNotificationsForLibrary(id).ToList();
         }
         public bool AddNewNotification(Notification notification)
         {
-            using (var notificationsRepo = new NotificationsRepository())
-            {
-                var added = notificationsRepo.Add(notification);
-                if (added != 0) return true;
-            }
+            var added = notificationsRepository.Add(notification);
+            if (added != 0) return true;
             return false;
         }
         public bool AddNotificationRead(Notification notification)
         {
             Member member = memberService.GetMemberByUsername(LoggedUser.Username);
-            using (var notificationsRepo = new NotificationsRepository())
-            {
-                notificationsRepo.AddReadNotification(notification, member);
-                return true;
-
-            }
+            notificationsRepository.AddReadNotification(notification, member);
+            return true;
         }
         public bool EditNotification(Notification notification)
         {
-            using (var notificationsRepo = new NotificationsRepository())
-            {
-                notificationsRepo.Update(notification);
-                return true;
-            }
+            notificationsRepository.Update(notification);
+            return true;
         }
 
         public List<Notification> GetReadNotificationsForMember(Member member)
         {
-            using (var notificationsRepo = new NotificationsRepository())
-            {
-                return notificationsRepo.GetReadNotificationsForMember(member).ToList();
-            }
+            return notificationsRepository.GetReadNotificationsForMember(member).ToList();
         }
 
         public int Remove(Notification notification, bool saveChanges = true) {
-            using (var context = new NotificationsRepository()) {
-                return context.Remove(notification, saveChanges);
-            }
+            return notificationsRepository.Remove(notification, saveChanges);
         }
     }
 }
