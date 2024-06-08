@@ -1,4 +1,5 @@
-﻿using EntitiesLayer;
+﻿using DataAccessLayer.Interfaces;
+using EntitiesLayer;
 using EntitiesLayer.Entities;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace DataAccessLayer.Repositories {
     // Domagoj Hegedušić
-    public class ReviewRepository : Repository<Review> {
+    public class ReviewRepository : Repository<Review>, IReviewRepository {
         public ReviewRepository() : base(new DatabaseModel()) {
         }
 
