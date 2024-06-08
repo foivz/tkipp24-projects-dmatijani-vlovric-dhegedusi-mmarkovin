@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace DataAccessLayer.Interfaces {
-    internal interface IStatisticsRepository {
+    public interface IStatisticsRepository {
         List<MostPopularBooks> GetMostPopularBooks(int Library_id);
         List<MostPopularGenres> GetMostPopularGenres(int Library_id);
         List<ReviewStatistics> GetReviewCount(int Library_id);
