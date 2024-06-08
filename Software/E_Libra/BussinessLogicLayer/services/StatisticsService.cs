@@ -21,38 +21,28 @@ namespace BussinessLogicLayer.services {
 
 
         public int GetMemberCount(int Library_id) {
-            using (var repo = new StatisticsRepository()) {
-                var result = repo.GetMemberCount(Library_id);
+                var result = statisticsRepository.GetMemberCount(Library_id);
                     return result;
-            }
         }
 
         public List<MostPopularBooks> GetMostPopularBooks(int Library_id) {
-            using (var repo = new StatisticsRepository()) {
-                var result = repo.GetMostPopularBooks(Library_id);
+                var result = statisticsRepository.GetMostPopularBooks(Library_id);
                 return result;
-            }
         }
 
         public List<MostPopularGenres> GetMostPopularGenres(int Library_id) {
-            using (var repo = new StatisticsRepository()) {
-                var result = repo.GetMostPopularGenres(Library_id);
+                var result = statisticsRepository.GetMostPopularGenres(Library_id);
                 return result;
-            }
         }
 
         public List<ReviewStatistics> GetReviewCount(int Library_id) {
-            using (var repo = new StatisticsRepository()) {
-                var result = repo.GetReviewCount(Library_id);
+                var result = statisticsRepository.GetReviewCount(Library_id);
                 return result;
-            }
         }
 
         public int CalculateTotalIncome(int Library_id) {
-            using (var repo = new StatisticsRepository()) {
-                var result = repo.GetMemberCount(Library_id);
+                var result = statisticsRepository.GetMemberCount(Library_id);
                 return result*12;
-            }
         }
 
         public IncomeStatistics GetIncomeStatistics(int Library_id) {
