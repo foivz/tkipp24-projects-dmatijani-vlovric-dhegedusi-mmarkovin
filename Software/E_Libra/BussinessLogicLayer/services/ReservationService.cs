@@ -62,11 +62,11 @@ namespace BussinessLogicLayer.services
             var overdueReservations = reservationRepository.GetOverdueReservations();
             foreach (var reservation in overdueReservations)
             {
-
-                reservationRepository.Remove(reservation);
                 bookService.InsertOneCopy(reservation.Book);
                 reservationRepository.EnterDateForReservation(reservation.Book);
+                reservationRepository.Remove(reservation, false);
             }
+            reservationRepository.SaveChanges();
         }
         public void ReturnBook(Book book)
         {
