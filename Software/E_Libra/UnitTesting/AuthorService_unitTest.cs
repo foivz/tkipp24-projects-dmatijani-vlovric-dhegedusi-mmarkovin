@@ -67,5 +67,17 @@ namespace UnitTesting
             Assert.NotNull(testService.authorRepository);
             Assert.IsType<AuthorRepository>(testService.authorRepository);
         }
+
+        [Fact]
+        public void Dispose_GivenFunctionIsCalled_ReturnsNothing()
+        {
+            //Arrange
+
+            //Act
+            service.Dispose();
+
+            //Assert
+            A.CallTo(() => repo.Dispose()).MustHaveHappened();
+        }
     }
 }
