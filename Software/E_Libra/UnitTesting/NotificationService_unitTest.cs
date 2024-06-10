@@ -4,6 +4,7 @@ using EntitiesLayer;
 using FakeItEasy;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -87,6 +88,48 @@ namespace UnitTesting
 
             // Act
             var result = notificationService.AddNewNotification(notification);
+
+            // Assert
+            Assert.False(result);
+        }
+        [Fact]
+        public void EditNotification_GivenNotificationIsEdited_ReturnsTrue()
+        {
+            // Arrange
+            INotificationsRepository notificationsRepository = A.Fake<INotificationsRepository>();
+            var notificationService = new NotificationService(notificationsRepository);
+            Notification notification = new Notification
+            {
+                id = 3,
+                title = "Novi naslov 3",
+                description = "Novi opis 3",
+                Library_id = 1,
+            };
+            A.CallTo(() => notificationsRepository.Update(notification, true)).Returns(1);
+
+            // Act
+            var result = notificationService.EditNotification(notification);
+
+            // Assert
+            Assert.True(result);
+        }
+        [Fact]
+        public void EditNotification_GivenInvalidEditedNotification_ReturnsFalse()
+        {
+            // Arrange
+            INotificationsRepository notificationsRepository = A.Fake<INotificationsRepository>();
+            var notificationService = new NotificationService(notificationsRepository);
+            Notification notification = new Notification
+            {
+                id = 3,
+                title = "Novi naslov 3",
+                description = "Novi opis 3",
+                Library_id = 1,
+            };
+            A.CallTo(() => notificationsRepository.Update(notification, false)).Returns(0);
+
+            // Act
+            var result = notificationService.EditNotification(notification);
 
             // Assert
             Assert.False(result);
