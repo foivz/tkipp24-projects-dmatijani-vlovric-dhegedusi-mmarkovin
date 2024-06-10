@@ -16,6 +16,7 @@ namespace BussinessLogicLayer.services
     {
         public INotificationsRepository notificationsRepository;
 
+        MemberService memberService = new MemberService();
         public NotificationService(INotificationsRepository notificationsRepo)
         {
             this.notificationsRepository = notificationsRepo;
@@ -25,7 +26,6 @@ namespace BussinessLogicLayer.services
             
         }
 
-        MemberService memberService = new MemberService();
         public List<Notification> GetAllNotificationByLibrary(int id)
         {
             return notificationsRepository.GetAllNotificationsForLibrary(id).ToList();
@@ -39,8 +39,9 @@ namespace BussinessLogicLayer.services
         public bool AddNotificationRead(Notification notification)
         {
             Member member = memberService.GetMemberByUsername(LoggedUser.Username);
-            notificationsRepository.AddReadNotification(notification, member);
-            return true;
+            var added = notificationsRepository.AddReadNotification(notification, member);
+            if (added != 0) return true;
+            return false;
         }
         public bool EditNotification(Notification notification)
         {
