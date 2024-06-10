@@ -36,9 +36,9 @@ namespace UnitTesting {
                     borrow_status = (int)BorrowStatus.Borrowed,
                     Book_id = 3,
                     Member_id = members[0].id,
-                    Employee_borrow_id = 56,
+                    Employee_borrow_id = 111,
                     Book = new Book { id = 3, Library_id = 1, current_copies = 5 },
-                    Employee = new Employee { id = 56 },
+                    Employee = new Employee { id = 111 },
                     Member = members[0]
                 },
                 new Borrow {
@@ -48,9 +48,9 @@ namespace UnitTesting {
                     borrow_status = (int)BorrowStatus.Late,
                     Book_id = 5,
                     Member_id = members[0].id,
-                    Employee_borrow_id = 22,
+                    Employee_borrow_id = 111,
                     Book = new Book { id = 5, Library_id = 1 },
-                    Employee = new Employee { id = 22 },
+                    Employee = new Employee { id = 111 },
                     Member = members[0]
                 },
                 new Borrow {
@@ -60,9 +60,9 @@ namespace UnitTesting {
                     borrow_status = (int)BorrowStatus.Late,
                     Book_id = 8,
                     Member_id = members[1].id,
-                    Employee_borrow_id = 22,
+                    Employee_borrow_id = 333,
                     Book = new Book { id = 8, Library_id = 2 },
-                    Employee = new Employee { id = 22 },
+                    Employee = new Employee { id = 333 },
                     Member = members[1]
                 },
                 new Borrow {
@@ -72,11 +72,11 @@ namespace UnitTesting {
                     borrow_status = (int)BorrowStatus.Returned,
                     Book_id = 13,
                     Member_id = members[1].id,
-                    Employee_borrow_id = 22,
-                    Employee_return_id = 33,
+                    Employee_borrow_id = 333,
+                    Employee_return_id = 444,
                     Book = new Book { id = 13, Library_id = 2 },
-                    Employee = new Employee { id = 22 },
-                    Employee1 = new Employee { id = 33 },
+                    Employee = new Employee { id = 333 },
+                    Employee1 = new Employee { id = 444 },
                     Member = members[1]
                 },
                 new Borrow {
@@ -86,9 +86,9 @@ namespace UnitTesting {
                     borrow_status = (int)BorrowStatus.Waiting,
                     Book_id = 21,
                     Member_id = members[2].id,
-                    Employee_borrow_id = 33,
+                    Employee_borrow_id = 555,
                     Book = new Book { id = 21, Library_id = 3 },
-                    Employee = new Employee { id = 33 },
+                    Employee = new Employee { id = 555 },
                     Member = members[2]
                 },
                 new Borrow {
@@ -98,11 +98,11 @@ namespace UnitTesting {
                     borrow_status = (int)BorrowStatus.Returned,
                     Book_id = 55,
                     Member_id = members[2].id,
-                    Employee_borrow_id = 22,
-                    Employee_return_id = 33,
+                    Employee_borrow_id = 555,
+                    Employee_return_id = 555,
                     Book = new Book { id = 13, Library_id = 3 },
-                    Employee = new Employee { id = 22 },
-                    Employee1 = new Employee { id = 33 },
+                    Employee = new Employee { id = 555 },
+                    Employee1 = new Employee { id = 555 },
                     Member = members[2]
                 },
                 new Borrow {
@@ -112,11 +112,11 @@ namespace UnitTesting {
                     borrow_status = (int)BorrowStatus.Returned,
                     Book_id = 21,
                     Member_id = members[3].id,
-                    Employee_borrow_id = 22,
-                    Employee_return_id = 33,
+                    Employee_borrow_id = 6666,
+                    Employee_return_id = 555,
                     Book = new Book { id = 21, Library_id = 3 },
-                    Employee = new Employee { id = 22 },
-                    Employee1 = new Employee { id = 33 },
+                    Employee = new Employee { id = 6666 },
+                    Employee1 = new Employee { id = 555 },
                     Member = members[3]
                 },
                 new Borrow {
@@ -126,9 +126,9 @@ namespace UnitTesting {
                     borrow_status = (int)BorrowStatus.Waiting,
                     Book_id = 34,
                     Member_id = members[3].id,
-                    Employee_borrow_id = 22,
+                    Employee_borrow_id = 555,
                     Book = new Book { id = 34, Library_id = 3 },
-                    Employee = new Employee { id = 22 },
+                    Employee = new Employee { id = 555 },
                     Member = members[3]
                 },
                 new Borrow {
@@ -138,9 +138,9 @@ namespace UnitTesting {
                     borrow_status = (int)BorrowStatus.Borrowed,
                     Book_id = 7,
                     Member_id = members[0].id,
-                    Employee_borrow_id = 44,
+                    Employee_borrow_id = 222,
                     Book = new Book { id = 7, Library_id = 1 },
-                    Employee = new Employee { id = 44 },
+                    Employee = new Employee { id = 222 },
                     Member = members[0]
                 },
                 new Borrow {
@@ -150,9 +150,9 @@ namespace UnitTesting {
                     borrow_status = (int)BorrowStatus.Borrowed,
                     Book_id = 9,
                     Member_id = members[1].id,
-                    Employee_borrow_id = 45,
+                    Employee_borrow_id = 444,
                     Book = new Book { id = 9, Library_id = 2 },
-                    Employee = new Employee { id = 45 },
+                    Employee = new Employee { id = 444 },
                     Member = members[1]
                 }
             }.AsQueryable();
@@ -610,6 +610,36 @@ namespace UnitTesting {
 
             //Assert
             Assert.Equal(currentCopies - 1, borrow.Book.current_copies);
+        }
+
+        [Fact]
+        public void GetAllBorrowsForEmployee_GivenThereAreNoBorrows_NoBorrowsRetrieved() {
+            //Arrange
+            A.CallTo(() => borrowRepository.GetBorrowsForEmployee(1233)).Returns(new List<Borrow>().AsQueryable());
+
+            //Act
+            var borrowsForEmployee = borrowService.GetBorrowsForEmployee(1233);
+
+            //Assert
+            Assert.Equal(borrowsForEmployee, new List<Borrow>());
+        }
+
+        [Theory]
+        [InlineData(111)]
+        [InlineData(222)]
+        [InlineData(333)]
+        [InlineData(444)]
+        [InlineData(555)]
+        [InlineData(6666)]
+        public void GetAllBorrowsForEmployee_GivenTheCorrectEmployeeIdIsEntered_BorrowsRetrieved(int employeeId) {
+            //Arrange
+            A.CallTo(() => borrowRepository.GetBorrowsForEmployee(employeeId)).Returns(borrows.Where(b => b.Employee.id == employeeId || (b.Employee1 != null ? (b.Employee1.id == employeeId) : false)));
+
+            //Act
+            var borrowsForEmployee = borrowService.GetBorrowsForEmployee(employeeId);
+
+            //Assert
+            Assert.Equal(borrowsForEmployee, borrows.Where(b => b.Employee.id == employeeId || (b.Employee1 != null ? (b.Employee1.id == employeeId) : false)).ToList());
         }
 
         private Borrow PrepareNewBorrow(BorrowStatus borrowStatus = BorrowStatus.Borrowed) {
