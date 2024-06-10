@@ -16,17 +16,18 @@ namespace UnitTesting
     public class NotificationService_unitTest
     {
         private MemberService memberService;
-
+        private NotificationService notificationService;
+        private INotificationsRepository notificationsRepository;
         public NotificationService_unitTest()
         {
             memberService = new MemberService();
+            notificationsRepository = A.Fake<INotificationsRepository>();
+            notificationService = new NotificationService(notificationsRepository, memberService);
         }
         [Fact]
         public void GetAllNotificationByLibrary_GivenMemberIsFromLibraryOne_ReturnsAllNotificationsForLibraryOne()
         {
             // Arrange
-            var notificationsRepository = A.Fake<INotificationsRepository>();
-            var notificationService = new NotificationService(notificationsRepository, memberService);
             var expectedNotifications = new List<Notification>
         {
             new Notification
@@ -58,8 +59,6 @@ namespace UnitTesting
         public void AddNewNotification_GivenNotificationIsAdded_ReturnsTrue()
         {
             // Arrange
-            INotificationsRepository notificationsRepository = A.Fake<INotificationsRepository>();
-            var notificationService = new NotificationService(notificationsRepository, memberService);
             Notification notification = new Notification
             {
                 id = 3,
@@ -79,7 +78,6 @@ namespace UnitTesting
         public void AddNewNotification_GivenInvalidNotification_ReturnsFalse()
         {
             // Arrange
-            var notificationsRepository = A.Fake<INotificationsRepository>();
             var notification = new Notification
             {
                 id = 3,
@@ -90,7 +88,6 @@ namespace UnitTesting
 
             A.CallTo(() => notificationsRepository.Add(notification, false)).Returns(0);
 
-            var notificationService = new NotificationService(notificationsRepository, memberService);
 
             // Act
             var result = notificationService.AddNewNotification(notification);
@@ -102,7 +99,6 @@ namespace UnitTesting
         public void EditNotification_GivenNotificationIsEdited_ReturnsTrue()
         {
             // Arrange
-            INotificationsRepository notificationsRepository = A.Fake<INotificationsRepository>();
             var notificationService = new NotificationService(notificationsRepository, memberService);
             Notification notification = new Notification
             {
@@ -123,8 +119,6 @@ namespace UnitTesting
         public void EditNotification_GivenInvalidEditedNotification_ReturnsFalse()
         {
             // Arrange
-            INotificationsRepository notificationsRepository = A.Fake<INotificationsRepository>();
-            var notificationService = new NotificationService(notificationsRepository, memberService);
             Notification notification = new Notification
             {
                 id = 3,
@@ -145,8 +139,6 @@ namespace UnitTesting
         public void Remove_NotificationExists_ReturnsOne()
         {
             // Arrange
-            var notificationsRepository = A.Fake<INotificationsRepository>();
-            var notificationService = new NotificationService(notificationsRepository, memberService);
             var notificationToRemove = new Notification();
             A.CallTo(() => notificationsRepository.Remove(notificationToRemove, true)).Returns(1);
 
@@ -161,8 +153,6 @@ namespace UnitTesting
         public void Remove_NotificationDoesNotExist_ReturnsZero()
         {
             // Arrange
-            var notificationsRepository = A.Fake<INotificationsRepository>();
-            var notificationService = new NotificationService(notificationsRepository, memberService);
             var notificationToRemove = new Notification(); // Create a notification object
             A.CallTo(() => notificationsRepository.Remove(notificationToRemove, true)).Returns(0);
 
@@ -176,8 +166,6 @@ namespace UnitTesting
         public void AddNotificationRead_ValidNotification_ReturnsTrue()
         {
             // Arrange
-            var notificationsRepository = A.Fake<INotificationsRepository>();
-            var notificationService = new NotificationService(notificationsRepository, memberService);
             A.CallTo(() => memberService.GetMemberByUsername(A<string>._))
                 .Returns(new Member { username = "testuser" });
             A.CallTo(() => notificationsRepository.AddReadNotification(A<Notification>._, A<Member>._, true))
