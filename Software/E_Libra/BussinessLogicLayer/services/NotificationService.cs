@@ -5,6 +5,7 @@ using EntitiesLayer;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -43,8 +44,9 @@ namespace BussinessLogicLayer.services
         }
         public bool EditNotification(Notification notification)
         {
-            notificationsRepository.Update(notification);
-            return true;
+            var updated = notificationsRepository.Update(notification);
+            if (updated != 0) return true;
+            else return false;
         }
 
         public List<Notification> GetReadNotificationsForMember(Member member)
