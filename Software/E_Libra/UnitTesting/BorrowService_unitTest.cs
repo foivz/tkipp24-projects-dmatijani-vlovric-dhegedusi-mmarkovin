@@ -33,7 +33,7 @@ namespace UnitTesting {
                     Book_id = 3,
                     Member_id = members[0].id,
                     Employee_borrow_id = 56,
-                    Book = new Book { id = 3, Library_id = 1 },
+                    Book = new Book { id = 3, Library_id = 456 },
                     Employee = new Employee { id = 56 },
                     Member = members[0]
                 },
@@ -45,7 +45,7 @@ namespace UnitTesting {
                     Book_id = 5,
                     Member_id = members[0].id,
                     Employee_borrow_id = 22,
-                    Book = new Book { id = 5, Library_id = 1 },
+                    Book = new Book { id = 5, Library_id = 456 },
                     Employee = new Employee { id = 22 },
                     Member = members[0]
                 },
@@ -57,7 +57,7 @@ namespace UnitTesting {
                     Book_id = 8,
                     Member_id = members[1].id,
                     Employee_borrow_id = 22,
-                    Book = new Book { id = 8, Library_id = 1 },
+                    Book = new Book { id = 8, Library_id = 456 },
                     Employee = new Employee { id = 22 },
                     Member = members[1]
                 },
@@ -70,7 +70,7 @@ namespace UnitTesting {
                     Member_id = members[1].id,
                     Employee_borrow_id = 22,
                     Employee_return_id = 33,
-                    Book = new Book { id = 13, Library_id = 1 },
+                    Book = new Book { id = 13, Library_id = 456 },
                     Employee = new Employee { id = 22 },
                     Employee1 = new Employee { id = 33 },
                     Member = members[1]
@@ -83,7 +83,7 @@ namespace UnitTesting {
                     Book_id = 21,
                     Member_id = members[2].id,
                     Employee_borrow_id = 33,
-                    Book = new Book { id = 21, Library_id = 1 },
+                    Book = new Book { id = 21, Library_id = 456 },
                     Employee = new Employee { id = 33 },
                     Member = members[2]
                 },
@@ -96,7 +96,7 @@ namespace UnitTesting {
                     Member_id = members[2].id,
                     Employee_borrow_id = 22,
                     Employee_return_id = 33,
-                    Book = new Book { id = 13, Library_id = 1 },
+                    Book = new Book { id = 13, Library_id = 456 },
                     Employee = new Employee { id = 22 },
                     Employee1 = new Employee { id = 33 },
                     Member = members[2]
@@ -110,7 +110,7 @@ namespace UnitTesting {
                     Member_id = members[3].id,
                     Employee_borrow_id = 22,
                     Employee_return_id = 33,
-                    Book = new Book { id = 21, Library_id = 1 },
+                    Book = new Book { id = 21, Library_id = 456 },
                     Employee = new Employee { id = 22 },
                     Employee1 = new Employee { id = 33 },
                     Member = members[3]
@@ -123,7 +123,7 @@ namespace UnitTesting {
                     Book_id = 34,
                     Member_id = members[3].id,
                     Employee_borrow_id = 22,
-                    Book = new Book { id = 34, Library_id = 1 },
+                    Book = new Book { id = 34, Library_id = 456 },
                     Employee = new Employee { id = 22 },
                     Member = members[3]
                 },
@@ -135,7 +135,7 @@ namespace UnitTesting {
                     Book_id = 7,
                     Member_id = members[0].id,
                     Employee_borrow_id = 44,
-                    Book = new Book { id = 7, Library_id = 1 },
+                    Book = new Book { id = 7, Library_id = 456 },
                     Employee = new Employee { id = 44 },
                     Member = members[0]
                 },
@@ -147,7 +147,7 @@ namespace UnitTesting {
                     Book_id = 9,
                     Member_id = members[1].id,
                     Employee_borrow_id = 45,
-                    Book = new Book { id = 9, Library_id = 1 },
+                    Book = new Book { id = 9, Library_id = 456 },
                     Employee = new Employee { id = 45 },
                     Member = members[1]
                 }
@@ -159,6 +159,18 @@ namespace UnitTesting {
             var service = new BorrowService(repository, null, null);
 
             return service;
+        }
+
+        [Fact]
+        public void GetAllBorrowsForMember_GivenThereAreNoBorrows_NoBorrowsRetrieved() {
+            //Arrange
+            A.CallTo(() => borrowRepository.GetAllBorrowsForMember(1, 1)).Returns(new List<Borrow>().AsQueryable());
+
+            //Act
+            var borrowsForMember = borrowService.GetAllBorrowsForMember(1, 1);
+
+            // Assert
+            Assert.Equal(borrowsForMember, new List<Borrow>());
         }
 
         [Theory]
@@ -179,6 +191,22 @@ namespace UnitTesting {
         }
 
         [Theory]
+        [InlineData(BorrowStatus.Waiting)]
+        [InlineData(BorrowStatus.Borrowed)]
+        [InlineData(BorrowStatus.Late)]
+        [InlineData(BorrowStatus.Returned)]
+        public void GetBorrowsForMemberByStatus_GivenThereAreNoBorrows_NoBorrowsRetrieved(BorrowStatus borrowStatus) {
+            //Arrange
+            A.CallTo(() => borrowRepository.GetBorrowsForMemberByStatus(1, 1, borrowStatus)).Returns(new List<Borrow>().AsQueryable());
+
+            //Act
+            var borrowsForMember = borrowService.GetBorrowsForMemberByStatus(1, 1, borrowStatus);
+
+            // Assert
+            Assert.Equal(borrowsForMember, new List<Borrow>());
+        }
+
+        [Theory]
         [InlineData(123, BorrowStatus.Waiting)]
         [InlineData(123, BorrowStatus.Late)]
         [InlineData(123, BorrowStatus.Returned)]
@@ -196,6 +224,18 @@ namespace UnitTesting {
 
             //Assert
             Assert.Equal(borrowsForMember, borrows.Where(b => b.Member.id == memberId && b.borrow_status == (int)borrowStatus).ToList());
+        }
+
+        [Fact]
+        public void GetBorrowsForMemberAndBook_GivenThereAreNoBorrows_NoBorrowsRetrieved() {
+            //Arrange
+            A.CallTo(() => borrowRepository.GetBorrowsForMemberAndBook(1, 1, 1)).Returns(new List<Borrow>().AsQueryable());
+
+            //Act
+            var borrowsForMember = borrowService.GetBorrowsForMemberAndBook(1, 1, 1);
+
+            // Assert
+            Assert.Equal(borrowsForMember, new List<Borrow>());
         }
 
         [Theory]
