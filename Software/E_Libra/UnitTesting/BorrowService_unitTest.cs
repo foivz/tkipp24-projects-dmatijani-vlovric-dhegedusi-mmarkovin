@@ -159,10 +159,13 @@ namespace UnitTesting {
             borrowService = InitialiseBorrowService(borrowRepository);
         }
 
-        private BorrowService InitialiseBorrowService(IBorrowRepository repository) {
-            var service = new BorrowService(repository, null, null);
+        [Fact]
+        public void Constructor_WhenBorrowServiceIsInstantiated_ItIsNotNull() {
+            //Arrange & act
+            var service = new BorrowService();
 
-            return service;
+            //Assert
+            Assert.NotNull(service);
         }
 
         [Fact]
@@ -173,7 +176,7 @@ namespace UnitTesting {
             //Act
             var borrowsForMember = borrowService.GetAllBorrowsForMember(1, 1);
 
-            // Assert
+            //Assert
             Assert.Equal(borrowsForMember, new List<Borrow>());
         }
 
@@ -206,7 +209,7 @@ namespace UnitTesting {
             //Act
             var borrowsForMember = borrowService.GetBorrowsForMemberByStatus(1, 1, borrowStatus);
 
-            // Assert
+            //Assert
             Assert.Equal(borrowsForMember, new List<Borrow>());
         }
 
@@ -238,7 +241,7 @@ namespace UnitTesting {
             //Act
             var borrowsForMember = borrowService.GetBorrowsForMemberAndBook(1, 1, 1);
 
-            // Assert
+            //Assert
             Assert.Equal(borrowsForMember, new List<Borrow>());
         }
 
@@ -531,6 +534,12 @@ namespace UnitTesting {
             }).Returns(1);
 
             return new BorrowService(borrowRepository, new ReservationService(reservationRepository, null), bookService);
+        }
+        
+        private BorrowService InitialiseBorrowService(IBorrowRepository repository) {
+            var service = new BorrowService(repository, null, null);
+
+            return service;
         }
     }
 }
