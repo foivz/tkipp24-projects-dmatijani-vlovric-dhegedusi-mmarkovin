@@ -286,5 +286,21 @@ namespace UnitTesting {
             //Arrange
             Assert.Equal(borrowsForLibrary, borrows.Where(b => b.Member.Library_id == libraryId).ToList());
         }
+
+        [Theory]
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(3)]
+        public async Task GetAllBorrowsForLibraryAsync_GivenAnExistingLibraryIsEntered_CorrectBorrowsRetrieved(int libraryId) {
+            //Arrange
+            var library = new Library { id = libraryId };
+            A.CallTo(() => borrowRepository.GetAllBorrowsForLibraryAsync(library.id)).Returns(Task.FromResult(borrows.Where(b => b.Book.Library_id == library.id).ToList()));
+
+            //Act
+            var borrowsForLibrary = await borrowService.GetAllBorrowsForLibraryAsync(library.id);
+
+            //Arrange
+            Assert.Equal(borrowsForLibrary, borrows.Where(b => b.Member.Library_id == library.id).ToList());
+        }
     }
 }
