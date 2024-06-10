@@ -57,6 +57,18 @@ namespace UnitTesting
 
             //Assert
             Assert.Equal(archives, result);
-        }   
+        }
+
+        [Fact]
+        public void Constructor_InitializesAuthorRepository()
+        {
+            //Arrange
+            var testService = new ArchiveServices();
+            //Act
+
+            //Assert
+            Assert.NotNull(testService.archiveRepository);
+            Assert.IsType<ArchiveRepository>(testService.archiveRepository);
+        }
     }
 }

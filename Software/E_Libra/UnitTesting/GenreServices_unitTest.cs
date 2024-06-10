@@ -1,5 +1,6 @@
 ﻿using BussinessLogicLayer.services;
 using DataAccessLayer.Interfaces;
+using DataAccessLayer.Repositories;
 using EntitiesLayer;
 using FakeItEasy;
 using System;
@@ -55,6 +56,18 @@ namespace UnitTesting
 
             //Assert
             Assert.True(result);
+        }
+
+        [Fact]
+        public void Constructor_InitializesAuthorRepository()
+        {
+            //Arrange
+            var testService = new GenreServices();
+            //Act
+
+            //Assert
+            Assert.NotNull(testService.genreRepository);
+            Assert.IsType<GenreRepository>(testService.genreRepository);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using BussinessLogicLayer.services;
 using DataAccessLayer.Interfaces;
+using DataAccessLayer.Repositories;
 using EntitiesLayer;
 using FakeItEasy;
 using System;
@@ -296,6 +297,24 @@ namespace UnitTesting
             A.CallTo(() => reservationRepo.Remove(reservation, true)).MustHaveHappened();
             A.CallTo(() => bookRepo.InsertOneCopy(book, true)).MustHaveHappened();
             A.CallTo(() => reservationRepo.EnterDateForReservation(book)).MustHaveHappened();
+        }
+
+        [Fact]
+        public void Constructor_InitializesAll()
+        {
+            //Arrange
+            var testService = new ReservationService();
+            //Act
+
+            //Assert
+            Action[] actions =
+            {
+                () => Assert.NotNull(testService.reservationRepository),
+                () => Assert.NotNull(testService.bookService),
+                () => Assert.IsType<ReservationRepository>(testService.reservationRepository),
+                () => Assert.IsType<BookServices>(testService.bookService)
+            };
+            Assert.Multiple(actions);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using BussinessLogicLayer.services;
 using DataAccessLayer.Interfaces;
+using DataAccessLayer.Repositories;
 using EntitiesLayer;
 using FakeItEasy;
 using System;
@@ -328,6 +329,26 @@ namespace UnitTesting
 
             // Assert
             Assert.True(result);
+        }
+
+        [Fact]
+        public void Constructor_InitializesAll()
+        {
+            //Arrange
+            var testService = new BookServices();
+            //Act
+
+            //Assert
+            Action[] actions =
+            {
+                () => Assert.NotNull(testService.bookRepository),
+                () => Assert.NotNull(testService.reservationRepository),
+                () => Assert.NotNull(testService.memberRepository),
+                () => Assert.IsType<BookRepository>(testService.bookRepository),
+                () => Assert.IsType<ReservationRepository>(testService.reservationRepository),
+                () => Assert.IsType<MemberRepository>(testService.memberRepository),
+            };
+            Assert.Multiple(actions);
         }
         //TODO GetBookByBarcodeId
         //TODO UpdateBook
