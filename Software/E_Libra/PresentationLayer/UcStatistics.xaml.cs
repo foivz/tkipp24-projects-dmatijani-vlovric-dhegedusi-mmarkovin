@@ -321,5 +321,8 @@ namespace PresentationLayer {
             dgMostPopularBooks.ItemsSource = statisticsService.GetMostPopularBooks(Library_id);
         }
 
+        private void UserControl_Unloaded(object sender, RoutedEventArgs e) {
+            statisticsService.Dispose();
+        }
     }
 }
