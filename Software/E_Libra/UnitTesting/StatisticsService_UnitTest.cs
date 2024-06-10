@@ -1,5 +1,6 @@
 ﻿using BussinessLogicLayer.services;
 using DataAccessLayer.Interfaces;
+using DataAccessLayer.Repositories;
 using EntitiesLayer.Entities;
 using FakeItEasy;
 using System;
@@ -141,6 +142,14 @@ namespace UnitTesting {
             A.CallTo(() => repo.Dispose()).MustHaveHappened();
         }
 
+        [Fact]
+        public void DefaultConstructor_InitializesStatisticsRepository() {
+            // Act
+            var realService = new StatisticsService();
 
+            // Assert
+            Assert.NotNull(realService.statisticsRepository);
+            Assert.IsType<StatisticsRepository>(realService.statisticsRepository);
+        }
     }
 }
