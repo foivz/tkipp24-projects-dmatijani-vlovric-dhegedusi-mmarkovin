@@ -18,10 +18,10 @@ namespace UnitTesting {
         public BorrowService_unitTest() {
             borrowRepository = A.Fake<IBorrowRepository>();
             List<Member> members = new List<Member> {
-                new Member { id = 123 },
-                new Member { id = 456 },
-                new Member { id = 789 },
-                new Member { id = 12 }
+                new Member { id = 123, Library_id = 1 },
+                new Member { id = 456, Library_id = 2 },
+                new Member { id = 789, Library_id = 3 },
+                new Member { id = 12, Library_id = 3 }
             };
 
             borrows = new List<Borrow> {
@@ -33,7 +33,7 @@ namespace UnitTesting {
                     Book_id = 3,
                     Member_id = members[0].id,
                     Employee_borrow_id = 56,
-                    Book = new Book { id = 3, Library_id = 456 },
+                    Book = new Book { id = 3, Library_id = 1 },
                     Employee = new Employee { id = 56 },
                     Member = members[0]
                 },
@@ -45,7 +45,7 @@ namespace UnitTesting {
                     Book_id = 5,
                     Member_id = members[0].id,
                     Employee_borrow_id = 22,
-                    Book = new Book { id = 5, Library_id = 456 },
+                    Book = new Book { id = 5, Library_id = 1 },
                     Employee = new Employee { id = 22 },
                     Member = members[0]
                 },
@@ -57,7 +57,7 @@ namespace UnitTesting {
                     Book_id = 8,
                     Member_id = members[1].id,
                     Employee_borrow_id = 22,
-                    Book = new Book { id = 8, Library_id = 456 },
+                    Book = new Book { id = 8, Library_id = 2 },
                     Employee = new Employee { id = 22 },
                     Member = members[1]
                 },
@@ -70,7 +70,7 @@ namespace UnitTesting {
                     Member_id = members[1].id,
                     Employee_borrow_id = 22,
                     Employee_return_id = 33,
-                    Book = new Book { id = 13, Library_id = 456 },
+                    Book = new Book { id = 13, Library_id = 2 },
                     Employee = new Employee { id = 22 },
                     Employee1 = new Employee { id = 33 },
                     Member = members[1]
@@ -83,7 +83,7 @@ namespace UnitTesting {
                     Book_id = 21,
                     Member_id = members[2].id,
                     Employee_borrow_id = 33,
-                    Book = new Book { id = 21, Library_id = 456 },
+                    Book = new Book { id = 21, Library_id = 3 },
                     Employee = new Employee { id = 33 },
                     Member = members[2]
                 },
@@ -92,11 +92,11 @@ namespace UnitTesting {
                     borrow_date = DateTime.Now,
                     return_date = DateTime.Now.AddDays(14),
                     borrow_status = (int)BorrowStatus.Returned,
-                    Book_id = 13,
+                    Book_id = 55,
                     Member_id = members[2].id,
                     Employee_borrow_id = 22,
                     Employee_return_id = 33,
-                    Book = new Book { id = 13, Library_id = 456 },
+                    Book = new Book { id = 13, Library_id = 3 },
                     Employee = new Employee { id = 22 },
                     Employee1 = new Employee { id = 33 },
                     Member = members[2]
@@ -110,7 +110,7 @@ namespace UnitTesting {
                     Member_id = members[3].id,
                     Employee_borrow_id = 22,
                     Employee_return_id = 33,
-                    Book = new Book { id = 21, Library_id = 456 },
+                    Book = new Book { id = 21, Library_id = 3 },
                     Employee = new Employee { id = 22 },
                     Employee1 = new Employee { id = 33 },
                     Member = members[3]
@@ -123,7 +123,7 @@ namespace UnitTesting {
                     Book_id = 34,
                     Member_id = members[3].id,
                     Employee_borrow_id = 22,
-                    Book = new Book { id = 34, Library_id = 456 },
+                    Book = new Book { id = 34, Library_id = 3 },
                     Employee = new Employee { id = 22 },
                     Member = members[3]
                 },
@@ -135,7 +135,7 @@ namespace UnitTesting {
                     Book_id = 7,
                     Member_id = members[0].id,
                     Employee_borrow_id = 44,
-                    Book = new Book { id = 7, Library_id = 456 },
+                    Book = new Book { id = 7, Library_id = 1 },
                     Employee = new Employee { id = 44 },
                     Member = members[0]
                 },
@@ -147,7 +147,7 @@ namespace UnitTesting {
                     Book_id = 9,
                     Member_id = members[1].id,
                     Employee_borrow_id = 45,
-                    Book = new Book { id = 9, Library_id = 456 },
+                    Book = new Book { id = 9, Library_id = 2 },
                     Employee = new Employee { id = 45 },
                     Member = members[1]
                 }
@@ -174,17 +174,17 @@ namespace UnitTesting {
         }
 
         [Theory]
-        [InlineData(123)]
-        [InlineData(456)]
-        [InlineData(789)]
-        [InlineData(012)]
-        [InlineData(0)]
-        public void GetAllBorrowsForMember_GivenTheCorrectMemberAndLibraryIdIsEntered_BorrowsRetrieved(int memberId) {
+        [InlineData(123, 1)]
+        [InlineData(456, 2)]
+        [InlineData(789, 3)]
+        [InlineData(012, 3)]
+        [InlineData(0, 4)]
+        public void GetAllBorrowsForMember_GivenTheCorrectMemberAndLibraryIdIsEntered_BorrowsRetrieved(int memberId, int libraryId) {
             //Arrange
-            A.CallTo(() => borrowRepository.GetAllBorrowsForMember(memberId, 456)).Returns(borrows.Where(b => b.Member.id == memberId));
+            A.CallTo(() => borrowRepository.GetAllBorrowsForMember(memberId, libraryId)).Returns(borrows.Where(b => b.Member.id == memberId && b.Member.Library_id == libraryId));
 
             //Act
-            var borrowsForMember = borrowService.GetAllBorrowsForMember(memberId, 456);
+            var borrowsForMember = borrowService.GetAllBorrowsForMember(memberId, libraryId);
 
             //Assert
             Assert.Equal(borrowsForMember, borrows.Where(b => b.Member.id == memberId).ToList());
@@ -207,20 +207,20 @@ namespace UnitTesting {
         }
 
         [Theory]
-        [InlineData(123, BorrowStatus.Waiting)]
-        [InlineData(123, BorrowStatus.Late)]
-        [InlineData(123, BorrowStatus.Returned)]
-        [InlineData(789, BorrowStatus.Waiting)]
-        [InlineData(789, BorrowStatus.Borrowed)]
-        [InlineData(789, BorrowStatus.Late)]
-        [InlineData(0, BorrowStatus.Borrowed)]
-        [InlineData(0, BorrowStatus.Returned)]
-        public void GetBorrowsForMemberByStatus_GivenTheCorrectMemberAndBorrowStatusIsEntered_CorrectBorrowsRetrieved(int memberId, BorrowStatus borrowStatus) {
+        [InlineData(123, 1, BorrowStatus.Waiting)]
+        [InlineData(123, 1, BorrowStatus.Late)]
+        [InlineData(123, 1, BorrowStatus.Returned)]
+        [InlineData(789, 3, BorrowStatus.Waiting)]
+        [InlineData(789, 3, BorrowStatus.Borrowed)]
+        [InlineData(789, 3, BorrowStatus.Late)]
+        [InlineData(0, 0, BorrowStatus.Borrowed)]
+        [InlineData(0, 0, BorrowStatus.Returned)]
+        public void GetBorrowsForMemberByStatus_GivenTheCorrectMemberAndBorrowStatusIsEntered_CorrectBorrowsRetrieved(int memberId, int libraryId, BorrowStatus borrowStatus) {
             //Arrange
-            A.CallTo(() => borrowRepository.GetBorrowsForMemberByStatus(memberId, 456, borrowStatus)).Returns(borrows.Where(b => b.Member.id == memberId && b.borrow_status == (int)borrowStatus));
+            A.CallTo(() => borrowRepository.GetBorrowsForMemberByStatus(memberId, libraryId, borrowStatus)).Returns(borrows.Where(b => b.Member.id == memberId && b.borrow_status == (int)borrowStatus && b.Member.Library_id == libraryId));
 
             //Act
-            var borrowsForMember = borrowService.GetBorrowsForMemberByStatus(memberId, 456, borrowStatus);
+            var borrowsForMember = borrowService.GetBorrowsForMemberByStatus(memberId, libraryId, borrowStatus);
 
             //Assert
             Assert.Equal(borrowsForMember, borrows.Where(b => b.Member.id == memberId && b.borrow_status == (int)borrowStatus).ToList());
@@ -239,22 +239,22 @@ namespace UnitTesting {
         }
 
         [Theory]
-        [InlineData(123, 3)]
-        [InlineData(123, 5)]
-        [InlineData(456, 8)]
-        [InlineData(456, 13)]
-        [InlineData(789, 21)]
-        [InlineData(789, 13)]
-        [InlineData(12, 21)]
-        [InlineData(12, 34)]
-        [InlineData(123, 7)]
-        [InlineData(456, 9)]
-        public void GetBorrowForMemberAndBook_GivenTheCorrectMemberAndBookIdIsEntered_CorrectBorrowIsRetrieved(int memberId, int bookId) {
+        [InlineData(123, 1, 3)]
+        [InlineData(123, 1, 5)]
+        [InlineData(456, 2, 8)]
+        [InlineData(456, 2, 13)]
+        [InlineData(789, 3, 21)]
+        [InlineData(789, 3, 55)]
+        [InlineData(12, 3, 21)]
+        [InlineData(12, 3, 34)]
+        [InlineData(123, 1, 7)]
+        [InlineData(456, 2, 9)]
+        public void GetBorrowForMemberAndBook_GivenTheCorrectMemberAndBookIdIsEntered_CorrectBorrowIsRetrieved(int memberId, int libraryId, int bookId) {
             //Arrange
-            A.CallTo(() => borrowRepository.GetBorrowsForMemberAndBook(memberId, 456, bookId)).Returns(borrows.Where(b => b.Member.id == memberId && b.Book.id == bookId));
+            A.CallTo(() => borrowRepository.GetBorrowsForMemberAndBook(memberId, libraryId, bookId)).Returns(borrows.Where(b => b.Member.id == memberId && b.Book.id == bookId && b.Member.Library_id == libraryId));
 
             //Act
-            var borrowsForMember = borrowService.GetBorrowsForMemberAndBook(memberId, 456, bookId);
+            var borrowsForMember = borrowService.GetBorrowsForMemberAndBook(memberId, libraryId, bookId);
 
             //Assert
             Assert.Equal(borrowsForMember, borrows.Where(b => b.Member.id == memberId && b.Book.id == bookId).ToList());
