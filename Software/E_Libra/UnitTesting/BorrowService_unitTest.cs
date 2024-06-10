@@ -642,6 +642,15 @@ namespace UnitTesting {
             Assert.Equal(borrowsForEmployee, borrows.Where(b => b.Employee.id == employeeId || (b.Employee1 != null ? (b.Employee1.id == employeeId) : false)).ToList());
         }
 
+        [Fact]
+        public void Dispose_CallsDisposeOnRepository() {
+            //Act
+            borrowService.Dispose();
+
+            //Assert
+            A.CallTo(() => borrowRepository.Dispose()).MustHaveHappened();
+        }
+
         private Borrow PrepareNewBorrow(BorrowStatus borrowStatus = BorrowStatus.Borrowed) {
             int libraryId = 20;
             Member member = new Member {
