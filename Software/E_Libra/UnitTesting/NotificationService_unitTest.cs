@@ -18,10 +18,12 @@ namespace UnitTesting
         private MemberService memberService;
         private NotificationService notificationService;
         private INotificationsRepository notificationsRepository;
+        private IMembersRepository memberRepository;
         public NotificationService_unitTest()
         {
-            memberService = new MemberService();
             notificationsRepository = A.Fake<INotificationsRepository>();
+            memberRepository = A.Fake<IMembersRepository>();
+            memberService = new MemberService(memberRepository, null, null, null, null);
             notificationService = new NotificationService(notificationsRepository, memberService);
         }
 
@@ -167,9 +169,13 @@ namespace UnitTesting
         public void AddNotificationRead_ValidNotification_ReturnsTrue()
         {
             // Arrange
-            A.CallTo(() => memberService.GetMemberByUsername(A<string>._))
-                .Returns(new Member { username = "testuser" });
-            A.CallTo(() => notificationsRepository.AddReadNotification(A<Notification>._, A<Member>._, true))
+            var members = new List<Member> { new Member { username = "testuser" } }.AsQueryable();
+            var test1 = A.CallTo(() => memberRepository.GetMembersByUsername(A<string>._))
+             .Returns(new List<Member> { new Member { username = "testuser" } }.AsQueryable());
+            var test2 = A.CallTo(() => memberRepository.GetMembersByUsername(A<string>._))
+                .Returns(members);
+
+            var test3 = A.CallTo(() => notificationsRepository.AddReadNotification(A<Notification>._, A<Member>._, true))
                 .Returns(1);
 
             // Act
