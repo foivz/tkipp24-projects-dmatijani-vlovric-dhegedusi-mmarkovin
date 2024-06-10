@@ -139,8 +139,8 @@ namespace UnitTesting
         }
 
         [Theory]
-        [InlineData(0)]
         [InlineData(1)]
+        [InlineData(2)]
         [InlineData(5)]
         public void InsertNewCopies_ReservationsDoNotExist_AddsToCopies(int currCopies)
         {
@@ -152,17 +152,44 @@ namespace UnitTesting
 
             // Assert
             A.CallTo(() => bookRepo.GetBookCurrentCopies(book.id)).MustHaveHappened();
-            A.CallTo(() => bookRepo.InsertNewCopies(5, book, true)).MustHaveHappened();
+            A.CallTo(() => bookRepo.InsertNewCopies(A<int>.Ignored, book, true)).MustHaveHappened(1, Times.Exactly);
         }
 
-        //[Theory]
+        [Fact]
+        public void InsertNewCopies_ReservationsExistMoreRezervationsThanCopies_ConfirmsReservations()
+        {
+            // Arrange
+            A.CallTo(() => bookRepo.GetBookCurrentCopies(book.id)).Returns(-5);
+            A.CallTo(() => reservationRepo.EnterDateForReservation(book)).Returns(true);
 
-        //public void InsertNewCopies_ReservationExistMoreRezervationsThanCopies_ReturnsTrue()
-        //public void InsertNewCopies_ReservationExistLessRezervationsThanCopies_ReturnsTrue()
+            // Act
+            bookServices.InsertNewCopies(4, book);
 
-        //nema rezervacija tj currentCopies >= 0
-        //ima rezervacija, currentCopies <0 i abs(currentCopies) > numCopies
-        //ima rezervacija, currentCopies <0 i abs(currentCopies) < numCopies
+            // Assert
+            A.CallTo(() => bookRepo.GetBookCurrentCopies(book.id)).MustHaveHappened();
+            A.CallTo(() => reservationRepo.EnterDateForReservation(book)).MustHaveHappened(4, Times.Exactly);
+            A.CallTo(() => bookRepo.InsertNewCopies(1, book, true)).MustHaveHappened(4, Times.Exactly);
+        }
+
+        [Fact]
+        public void InsertNewCopies_ReservationExistLessRezervationsThanCopies_ConfirmsReservationsAndAddsCopies()
+        {
+            // Arrange
+            int currCopies = -3;
+            A.CallTo(() => bookRepo.GetBookCurrentCopies(book.id)).Returns(-3);
+            A.CallTo(() => reservationRepo.EnterDateForReservation(book))
+                .Invokes(() => currCopies++)
+                .ReturnsLazily(() => currCopies <= 0);
+
+            // Act
+            bookServices.InsertNewCopies(5, book);
+
+            // Assert
+            A.CallTo(() => bookRepo.GetBookCurrentCopies(book.id)).MustHaveHappened();
+            A.CallTo(() => reservationRepo.EnterDateForReservation(book)).MustHaveHappened(4, Times.Exactly);
+            A.CallTo(() => bookRepo.InsertNewCopies(1, book, true)).MustHaveHappened(3, Times.Exactly);
+            A.CallTo(() => bookRepo.InsertNewCopies(2, book, true)).MustHaveHappened(1, Times.Exactly);
+        }
 
         [Fact]
         public void ArchiveBook_GivenBookAndArchive_ReturnsTrue()
