@@ -37,7 +37,7 @@ namespace UnitTesting {
                     Book_id = 3,
                     Member_id = members[0].id,
                     Employee_borrow_id = 56,
-                    Book = new Book { id = 3, Library_id = 1 },
+                    Book = new Book { id = 3, Library_id = 1, current_copies = 5 },
                     Employee = new Employee { id = 56 },
                     Member = members[0]
                 },
@@ -476,6 +476,140 @@ namespace UnitTesting {
 
             //Assert
             Assert.Equal(0, newBorrow.Book.current_copies);
+        }
+
+        [Fact]
+        public void UpdateBorrow_WaitingBorrowDoesntExist_NoBorrowIsUpdated() {
+            //Arrange
+            Member member = new Member { id = 123, Library_id = 1 };
+            Borrow borrow = new Borrow {
+                idBorrow = 1,
+                borrow_date = DateTime.Now,
+                return_date = DateTime.Now.AddDays(7),
+                borrow_status = (int)BorrowStatus.Waiting,
+                Book_id = 300,
+                Member_id = member.id,
+                Employee_borrow_id = 56,
+                Book = new Book { id = 3, Library_id = 1 },
+                Employee = new Employee { id = 56 },
+                Member = member
+            };
+            A.CallTo(() => borrowRepository.Update(borrow, true)).Returns(borrows.Contains(borrow) ? 1 : 0);
+
+            //Act
+            int updatedBorrowNumber = borrowService.UpdateBorrow(borrow);
+
+            //Assert
+            Assert.Equal(0, updatedBorrowNumber);
+        }
+
+        [Fact]
+        public void UpdateBorrow_BorrowExists_BorrowIsUpdated() {
+            //Arrange
+            Borrow borrow = borrows.First();
+            borrow.borrow_status = (int)BorrowStatus.Late;
+            A.CallTo(() => borrowRepository.Update(borrow, true)).Returns(borrows.Contains(borrow) ? 1 : 0);
+
+            //Act
+            int updatedBorrowNumber = borrowService.UpdateBorrow(borrow);
+
+            //Assert
+            Assert.Equal(1, updatedBorrowNumber);
+        }
+
+        [Fact]
+        public void UpdateBorrow_BorrowHasStatusReturned_OneCopyIsInserted() {
+            //Arrange
+            Borrow borrow = borrows.First();
+            borrow.borrow_status = (int)BorrowStatus.Returned;
+            int current_copies = (int)borrow.Book.current_copies;
+            A.CallTo(() => borrowRepository.Update(borrow, true)).Returns(borrows.Contains(borrow) ? 1 : 0);
+
+            IBookRepository bookRepository = A.Fake<IBookRepository>();
+            A.CallTo(() => bookRepository.InsertOneCopy(borrow.Book, true)).Invokes(call => {
+                borrow.Book.current_copies++;
+            }).Returns(1);
+
+            BookServices bookService = new BookServices(bookRepository, null, null);
+
+            IReservationRepository reservationRepository = A.Fake<IReservationRepository>();
+            A.CallTo(() => reservationRepository.EnterDateForReservation(borrow.Book)).Returns(true);
+
+            ReservationService reservationService = new ReservationService(reservationRepository, bookService);
+
+            borrowService = new BorrowService(borrowRepository, reservationService, null);
+
+            //Act
+            borrowService.UpdateBorrow(borrow);
+
+            //Assert
+            Assert.Equal(current_copies + 1, borrow.Book.current_copies);
+        }
+
+        [Fact]
+        public void UpdateBorrow_BorrowHasStatusBorrowedAndNoMoreCurrentCopies_ThrowsNoMoreBookCopiesException() {
+            //Arrange
+            Borrow borrow = new Borrow {
+                idBorrow = 1,
+                borrow_date = DateTime.Now,
+                return_date = DateTime.Now.AddDays(7),
+                borrow_status = (int)BorrowStatus.Borrowed,
+                Book_id = 3,
+                Member_id = 33,
+                Employee_borrow_id = 56,
+                Book = new Book { id = 3, Library_id = 1, current_copies = 0 },
+                Employee = new Employee { id = 56 },
+                Member = new Member {
+                    id = 33,
+                    Library_id = 1
+                }
+            };
+
+            //Act & assert
+            Assert.Throws<NoMoreBookCopiesException>(() => borrowService.UpdateBorrow(borrow));
+        }
+
+        [Fact]
+        public void UpdateBorrow_BorrowHasStatusBorrowedAndHasCopies_BorrowIsUpdated() {
+            //Arrange
+            Borrow borrow = borrows.First();
+            borrow.borrow_status = (int)BorrowStatus.Borrowed;
+            A.CallTo(() => borrowRepository.Update(borrow, true)).Returns(borrows.Contains(borrow) ? 1 : 0);
+
+            IBookRepository bookRepository = A.Fake<IBookRepository>();
+            A.CallTo(() => bookRepository.Update(borrow.Book, true)).Returns(1);
+
+            BookServices bookService = new BookServices(bookRepository, null, null);
+
+            borrowService = new BorrowService(borrowRepository, null, bookService);
+
+            //Act
+            int updatedBorrowNumber = borrowService.UpdateBorrow(borrow);
+
+            //Assert
+            Assert.Equal(1, updatedBorrowNumber);
+        }
+
+        [Fact]
+        public void UpdateBorrow_BorrowHasStatusBorrowedAndHasCopies_OneCopyIsRemoved() {
+            //Arrange
+            Borrow borrow = borrows.First();
+            borrow.borrow_status = (int)BorrowStatus.Borrowed;
+            int currentCopies = (int)borrow.Book.current_copies;
+            A.CallTo(() => borrowRepository.Update(borrow, true)).Returns(borrows.Contains(borrow) ? 1 : 0);
+
+            IBookRepository bookRepository = A.Fake<IBookRepository>();
+            A.CallTo(() => bookRepository.Update(borrow.Book, true)).Returns(1);
+
+            BookServices bookService = new BookServices(bookRepository, null, null);
+
+            borrowService = new BorrowService(borrowRepository, null, bookService);
+
+            //Act
+            borrowService.UpdateBorrow(borrow);
+
+            //Assert
+            Assert.Equal(currentCopies - 1, borrow.Book.current_copies);
         }
 
         private Borrow PrepareNewBorrow(BorrowStatus borrowStatus = BorrowStatus.Borrowed) {
