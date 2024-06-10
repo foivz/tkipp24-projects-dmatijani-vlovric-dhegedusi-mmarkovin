@@ -302,5 +302,58 @@ namespace UnitTesting {
             //Arrange
             Assert.Equal(borrowsForLibrary, borrows.Where(b => b.Member.Library_id == library.id).ToList());
         }
+
+        [Fact]
+        public async Task GetBorrowsForLibraryByStatusAsync_GivenThereAreNoBorrows_NoBorrowsRetrieved() {
+            //Arrange
+            A.CallTo(() => borrowRepository.GetBorrowsForLibraryByStatusAsync(5, BorrowStatus.Borrowed)).Returns(Task.FromResult(new List<Borrow>()));
+
+            //Act
+            var borrowsForLibrary = await borrowService.GetBorrowsForLibraryByStatusAsync(5, BorrowStatus.Borrowed);
+
+            //Arrange
+            Assert.Equal(borrowsForLibrary, new List<Borrow>());
+        }
+
+        [Theory]
+        [InlineData(1, BorrowStatus.Waiting)]
+        [InlineData(1, BorrowStatus.Borrowed)]
+        [InlineData(1, BorrowStatus.Late)]
+        [InlineData(2, BorrowStatus.Borrowed)]
+        [InlineData(2, BorrowStatus.Late)]
+        [InlineData(2, BorrowStatus.Returned)]
+        [InlineData(3, BorrowStatus.Waiting)]
+        [InlineData(3, BorrowStatus.Returned)]
+        public async Task GetBorrowsForLibraryByStatusAsync_GivenAnExistingLibraryIdIsEntered_CorrectBorrowsRetrieved(int libraryId, BorrowStatus borrowStatus) {
+            //Arrange
+            A.CallTo(() => borrowRepository.GetBorrowsForLibraryByStatusAsync(libraryId, borrowStatus)).Returns(Task.FromResult(borrows.Where(b => b.Book.Library_id == libraryId && b.borrow_status == (int)borrowStatus).ToList()));
+
+            //Act
+            var borrowsForLibrary = await borrowService.GetBorrowsForLibraryByStatusAsync(libraryId, borrowStatus);
+
+            //Arrange
+            Assert.Equal(borrowsForLibrary, borrows.Where(b => b.Member.Library_id == libraryId && b.borrow_status == (int)borrowStatus).ToList());
+        }
+
+        [Theory]
+        [InlineData(1, BorrowStatus.Waiting)]
+        [InlineData(1, BorrowStatus.Borrowed)]
+        [InlineData(1, BorrowStatus.Late)]
+        [InlineData(2, BorrowStatus.Borrowed)]
+        [InlineData(2, BorrowStatus.Late)]
+        [InlineData(2, BorrowStatus.Returned)]
+        [InlineData(3, BorrowStatus.Waiting)]
+        [InlineData(3, BorrowStatus.Returned)]
+        public async Task GetBorrowsForLibraryByStatusAsync_GivenAnExistingLibraryIsEntered_CorrectBorrowsRetrieved(int libraryId, BorrowStatus borrowStatus) {
+            //Arrange
+            var library = new Library { id = libraryId };
+            A.CallTo(() => borrowRepository.GetBorrowsForLibraryByStatusAsync(library, borrowStatus)).Returns(Task.FromResult(borrows.Where(b => b.Book.Library_id == library.id && b.borrow_status == (int)borrowStatus).ToList()));
+
+            //Act
+            var borrowsForLibrary = await borrowService.GetBorrowsForLibraryByStatusAsync(library, borrowStatus);
+
+            //Arrange
+            Assert.Equal(borrowsForLibrary, borrows.Where(b => b.Member.Library_id == library.id && b.borrow_status == (int)borrowStatus).ToList());
+        }
     }
 }
