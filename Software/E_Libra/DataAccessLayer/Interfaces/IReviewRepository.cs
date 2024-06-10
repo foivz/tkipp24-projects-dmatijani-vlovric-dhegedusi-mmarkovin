@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace DataAccessLayer.Interfaces {
-    public interface IReviewRepository {
+    public interface IReviewRepository : IDisposable {
 
         IQueryable<ReviewInfo> GetReviewsForBook(int bookId);
 

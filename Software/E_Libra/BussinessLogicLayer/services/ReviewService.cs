@@ -8,7 +8,7 @@ using DataAccessLayer.Interfaces;
 
 namespace BussinessLogicLayer.services {
     // Domagoj Hegedušić
-    public class ReviewService {
+    public class ReviewService : IDisposable {
         public IReviewRepository reviewRepository { get; set; }
 
         public ReviewService(IReviewRepository reviewRepository){
@@ -39,6 +39,23 @@ namespace BussinessLogicLayer.services {
         public List<Review> GetReviewsForMemberAndBook(int memberId, int bookId) {
                 return reviewRepository.GetReviewsForMemberAndBook(memberId, bookId).ToList();
         }
+
+
+        ~ReviewService() {
+            Dispose(false);
+        }
+
+        private void Dispose(bool disposing) {
+            if (disposing) {
+                reviewRepository?.Dispose();
+            }
+        }
+
+        public void Dispose() {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
     }
 
 }

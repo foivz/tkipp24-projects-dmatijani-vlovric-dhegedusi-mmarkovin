@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace BussinessLogicLayer.services {
     // Domagoj Hegedušić
-    public class StatisticsService {
+    public class StatisticsService : IDisposable {
         public IStatisticsRepository statisticsRepository { get; set; }
 
         public StatisticsService(IStatisticsRepository statisticsRepository) {
@@ -55,6 +55,21 @@ namespace BussinessLogicLayer.services {
             };
 
             return statistics;
+        }
+
+        ~StatisticsService() {
+            Dispose(false);
+        }
+
+        private void Dispose(bool disposing) {
+            if (disposing) {
+                statisticsRepository?.Dispose();
+            }
+        }
+
+        public void Dispose() {
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
     }
 }

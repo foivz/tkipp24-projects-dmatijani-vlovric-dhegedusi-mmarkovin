@@ -586,3 +586,5 @@ FodyWeavers.xsd
 # Additional files built by Visual Studio
 
 # End of https://www.toptal.com/developers/gitignore/api/visualstudio,specflow,csharp
+/.vs/VSWorkspaceState.json
+/.vs/tkipp24-projects-dmatijani-vlovric-dhegedusi-mmarkovin/v17/.wsuo
