@@ -23,5 +23,6 @@ namespace DataAccessLayer.Interfaces
         string ShowExistingReservations();
         Reservation CheckValidReservationFroMember(int memberId, int bookId);
         int Remove(Reservation reservation, bool saveChanges = true);
+        int SaveChanges();
     }
 }

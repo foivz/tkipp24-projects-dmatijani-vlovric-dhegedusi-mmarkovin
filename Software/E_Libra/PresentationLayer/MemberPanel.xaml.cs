@@ -57,7 +57,7 @@ namespace PresentationLayer {
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             ReservationService reservationService = new ReservationService();
-            //reservationService.CheckReservationDates();
+            reservationService.CheckReservationDates();
             var res = reservationService.ShowExistingReservations();
             if (!string.IsNullOrEmpty(res))
             {
