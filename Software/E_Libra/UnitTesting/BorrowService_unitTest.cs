@@ -418,20 +418,7 @@ namespace UnitTesting {
             };
             var newBorrow = PrepareNewBorrow(member, book, BorrowStatus.Borrowed);
 
-            IBookRepository bookRepository = A.Fake<IBookRepository>();
-            A.CallTo(() => bookRepository.Update(newBorrow.Book, true)).Returns(1);
-
-            IReservationRepository reservationRepository = A.Fake<IReservationRepository>();
-            A.CallTo(() => reservationRepository.CheckValidReservationFroMember(member.id, book.id))
-                .Returns(null);
-
-            BookServices bookService = new BookServices(bookRepository, null, null);
-            A.CallTo(() => borrowRepository.Add(newBorrow, true)).Invokes(call => {
-                List<Borrow> borrowsWithAddedBorrow = borrows.ToList();
-                borrowsWithAddedBorrow.Add(newBorrow);
-                borrows = borrowsWithAddedBorrow.AsQueryable();
-            }).Returns(1);
-            borrowService = new BorrowService(borrowRepository, new ReservationService(reservationRepository, null), bookService);
+            borrowService = PrepareBorrowService(newBorrow, false);
 
             //Act & assert
             var exception = Assert.Throws<NoMoreBookCopiesException>(() => borrowService.AddNewBorrow(newBorrow));
@@ -455,20 +442,7 @@ namespace UnitTesting {
             };
             var newBorrow = PrepareNewBorrow(member, book, BorrowStatus.Borrowed);
 
-            IBookRepository bookRepository = A.Fake<IBookRepository>();
-            A.CallTo(() => bookRepository.Update(newBorrow.Book, true)).Returns(1);
-
-            IReservationRepository reservationRepository = A.Fake<IReservationRepository>();
-            A.CallTo(() => reservationRepository.CheckValidReservationFroMember(member.id, book.id))
-                .Returns(new Reservation());
-
-            BookServices bookService = new BookServices(bookRepository, null, null);
-            A.CallTo(() => borrowRepository.Add(newBorrow, true)).Invokes(call => {
-                List<Borrow> borrowsWithAddedBorrow = borrows.ToList();
-                borrowsWithAddedBorrow.Add(newBorrow);
-                borrows = borrowsWithAddedBorrow.AsQueryable();
-            }).Returns(1);
-            borrowService = new BorrowService(borrowRepository, new ReservationService(reservationRepository, null), bookService);
+            borrowService = PrepareBorrowService(newBorrow, true);
 
             //Act
             borrowService.AddNewBorrow(newBorrow);
@@ -492,20 +466,7 @@ namespace UnitTesting {
             };
             var newBorrow = PrepareNewBorrow(member, book, BorrowStatus.Borrowed);
 
-            IBookRepository bookRepository = A.Fake<IBookRepository>();
-            A.CallTo(() => bookRepository.Update(newBorrow.Book, true)).Returns(1);
-
-            IReservationRepository reservationRepository = A.Fake<IReservationRepository>();
-            A.CallTo(() => reservationRepository.CheckValidReservationFroMember(member.id, book.id))
-                .Returns(new Reservation());
-
-            BookServices bookService = new BookServices(bookRepository, null, null);
-            A.CallTo(() => borrowRepository.Add(newBorrow, true)).Invokes(call => {
-                List<Borrow> borrowsWithAddedBorrow = borrows.ToList();
-                borrowsWithAddedBorrow.Add(newBorrow);
-                borrows = borrowsWithAddedBorrow.AsQueryable();
-            }).Returns(1);
-            borrowService = new BorrowService(borrowRepository, new ReservationService(reservationRepository, null), bookService);
+            borrowService = PrepareBorrowService(newBorrow, true);
 
             //Act
             borrowService.AddNewBorrow(newBorrow);
@@ -552,6 +513,24 @@ namespace UnitTesting {
             };
 
             return newBorrow;
+        }
+
+        private BorrowService PrepareBorrowService(Borrow newBorrow, bool reservationExists) {
+            IBookRepository bookRepository = A.Fake<IBookRepository>();
+            A.CallTo(() => bookRepository.Update(newBorrow.Book, true)).Returns(1);
+
+            IReservationRepository reservationRepository = A.Fake<IReservationRepository>();
+            A.CallTo(() => reservationRepository.CheckValidReservationFroMember(newBorrow.Member.id, newBorrow.Book.id))
+                .Returns(reservationExists ? new Reservation() : null);
+
+            BookServices bookService = new BookServices(bookRepository, null, null);
+            A.CallTo(() => borrowRepository.Add(newBorrow, true)).Invokes(call => {
+                List<Borrow> borrowsWithAddedBorrow = borrows.ToList();
+                borrowsWithAddedBorrow.Add(newBorrow);
+                borrows = borrowsWithAddedBorrow.AsQueryable();
+            }).Returns(1);
+
+            return new BorrowService(borrowRepository, new ReservationService(reservationRepository, null), bookService);
         }
     }
 }
