@@ -29,10 +29,10 @@ namespace UnitTesting
             A.CallTo(() => repo.GetArchive()).Returns(archivedBookInfos);
 
             //Act
-            var act = service.GetArchive();
+            var result = service.GetArchive();
 
             //Assert
-            Assert.Equal(archivedBookInfos, act);
+            Assert.Equal(archivedBookInfos, result);
         }
         [Fact]
         public void GetArchivesForEmployee_GivenFunctionIsCalled_ReturnsArchiveList()
@@ -49,10 +49,10 @@ namespace UnitTesting
             A.CallTo(() => repo.GetArchivesForEmployee(1)).Returns(archives);
 
             //Act
-            var act = service.GetArchivesForEmployee(1);
+            var result = service.GetArchivesForEmployee(1);
 
             //Assert
-            Assert.Equal(archives, act);
+            Assert.Equal(archives, result);
         }   
     }
 }
