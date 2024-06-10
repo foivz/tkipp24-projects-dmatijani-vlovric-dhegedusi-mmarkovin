@@ -14,17 +14,23 @@ namespace UnitTesting
 {
     public class ArchiveServices_unitTest
     {
+        readonly IArchiveRepository repo;
+        readonly ArchiveServices service;
+
+        public ArchiveServices_unitTest()
+        {
+            repo = A.Fake<IArchiveRepository>();
+            service = new ArchiveServices(repo);
+        }
         [Fact]
         public void GetArchive_GivenFunctionIsCalled_ReturnsArchiveList()
         {
             //Arrange
-            IArchiveRepository repo = A.Fake<IArchiveRepository>();
-            IQueryable<ArchivedBookInfo> archivedBookInfos = new List<ArchivedBookInfo>
+            var archivedBookInfos = new List<ArchivedBookInfo>
             {
                 new ArchivedBookInfo { BookName = "Book1", EmployeeName = "Employee1", ArchiveDate = DateTime.Now },
                 new ArchivedBookInfo { BookName = "Book2", EmployeeName = "Employee2", ArchiveDate = DateTime.Now },
             }.AsQueryable();
-            var service = new ArchiveServices(repo);
 
             A.CallTo(() => repo.GetArchive()).Returns(archivedBookInfos);
 
@@ -38,13 +44,11 @@ namespace UnitTesting
         public void GetArchivesForEmployee_GivenFunctionIsCalled_ReturnsArchiveList()
         {
             //Arrange
-            IArchiveRepository repo = A.Fake<IArchiveRepository>();
             IQueryable<Archive> archives = new List<Archive>
             {
                 new Archive { Book_id = 1, Employee_id = 1, arhive_date = DateTime.Now },
                 new Archive { Book_id = 2, Employee_id = 1, arhive_date = DateTime.Now },
             }.AsQueryable();
-            var service = new ArchiveServices(repo);
 
             A.CallTo(() => repo.GetArchivesForEmployee(1)).Returns(archives);
 

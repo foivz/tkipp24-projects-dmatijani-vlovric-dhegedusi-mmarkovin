@@ -13,6 +13,15 @@ namespace UnitTesting
 {
     public class GenreServices_unitTest
     {
+        readonly IGenreRepository repo;
+        readonly GenreServices service;
+
+        public GenreServices_unitTest()
+        {
+            repo = A.Fake<IGenreRepository>();
+
+            service = new GenreServices(repo);
+        }
 
         [Fact]
         public void GetGenres_GivenFunctionIsCalled_ReturnsListOfGenres()
@@ -24,9 +33,6 @@ namespace UnitTesting
                 new Genre { name = "Genre2" }
             }.AsQueryable();
 
-            var repo = A.Fake<IGenreRepository>();
-
-            var service = new GenreServices(repo);
             A.CallTo(() => repo.GetAll()).Returns(genreList);
 
             //Act
@@ -40,9 +46,7 @@ namespace UnitTesting
         public void Add_GivenFunctionIsCalled_ReturnsTrue()
         {
             //Arrange
-            var repo = A.Fake<IGenreRepository>();
             var genre = new Genre { name = "Genre1" };
-            var service = new GenreServices(repo);
 
             A.CallTo(() => repo.Add(genre, true)).Returns(1);
 
