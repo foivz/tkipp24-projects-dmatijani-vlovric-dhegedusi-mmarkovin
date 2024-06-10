@@ -16,8 +16,8 @@ namespace BussinessLogicLayer.services
     public class BookServices
     {
         public IBookRepository bookRepository { get; set; }
-        private IReservationRepository reservationRepository { get; set; }
-        private IMembersRepository memberRepository { get; set; }
+        public IReservationRepository reservationRepository { get; set; }
+        public IMembersRepository memberRepository { get; set; }
         public BookServices(
             IBookRepository bookRepository,
             IReservationRepository reservationRepository,
