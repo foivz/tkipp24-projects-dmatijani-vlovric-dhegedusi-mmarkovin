@@ -11,57 +11,167 @@ using Xunit;
 
 namespace UnitTesting {
     public class BorrowService_unitTest {
-        private BorrowService InitialiseBorrowService(IBorrowRepository repository) {
-            var borrowService = new BorrowService(repository, null, null);
+        private IQueryable<Borrow> borrows { get; set; }
+        private readonly IBorrowRepository borrowRepository;
+        private BorrowService borrowService { get; set; }
 
-            return borrowService;
-        }
-
-        [Fact]
-        public void GetAllBorrowsForMember_GivenTheCorrectMemberAndLibraryIdIsEntered_BorrowsRetrieved() {
-            //Arrange
-            var repo = A.Fake<IBorrowRepository>();
-            Member member = new Member {
-                id = 123
+        public BorrowService_unitTest() {
+            borrowRepository = A.Fake<IBorrowRepository>();
+            List<Member> members = new List<Member> {
+                new Member { id = 123 },
+                new Member { id = 456 },
+                new Member { id = 789 },
+                new Member { id = 012 }
             };
-            IQueryable<Borrow> borrows = new List<Borrow> {
+            borrows = new List<Borrow> {
                 new Borrow {
                     idBorrow = 1,
                     borrow_date = DateTime.Now,
                     return_date = DateTime.Now,
                     borrow_status = (int)BorrowStatus.Borrowed,
                     Book_id = 3,
-                    Member_id = member.id,
+                    Member_id = members[0].id,
                     Employee_borrow_id = 56,
                     Book = new Book(),
                     Employee = new Employee {
                         id = 56
                     },
-                    Member = member
+                    Member = members[0]
                 },
                 new Borrow {
                     idBorrow = 2,
                     borrow_date = DateTime.Now,
                     return_date = DateTime.Now,
                     borrow_status = (int)BorrowStatus.Late,
-                    Book_id = 3,
-                    Member_id = member.id,
+                    Book_id = 5,
+                    Member_id = members[0].id,
                     Employee_borrow_id = 22,
                     Book = new Book(),
                     Employee = new Employee {
                         id = 22
                     },
-                    Member = member
+                    Member = members[0]
+                },
+                new Borrow {
+                    idBorrow = 2,
+                    borrow_date = DateTime.Now,
+                    return_date = DateTime.Now,
+                    borrow_status = (int)BorrowStatus.Late,
+                    Book_id = 8,
+                    Member_id = members[1].id,
+                    Employee_borrow_id = 22,
+                    Book = new Book(),
+                    Employee = new Employee {
+                        id = 22
+                    },
+                    Member = members[1]
+                },
+                new Borrow {
+                    idBorrow = 2,
+                    borrow_date = DateTime.Now,
+                    return_date = DateTime.Now,
+                    borrow_status = (int)BorrowStatus.Returned,
+                    Book_id = 13,
+                    Member_id = members[1].id,
+                    Employee_borrow_id = 22,
+                    Employee_return_id = 33,
+                    Book = new Book(),
+                    Employee = new Employee {
+                        id = 22
+                    },
+                    Employee1 = new Employee {
+                        id = 33
+                    },
+                    Member = members[1]
+                },
+                new Borrow {
+                    idBorrow = 2,
+                    borrow_date = DateTime.Now,
+                    return_date = DateTime.Now,
+                    borrow_status = (int)BorrowStatus.Waiting,
+                    Book_id = 21,
+                    Member_id = members[2].id,
+                    Employee_borrow_id = 33,
+                    Book = new Book(),
+                    Employee = new Employee {
+                        id = 33
+                    },
+                    Member = members[2]
+                },
+                new Borrow {
+                    idBorrow = 2,
+                    borrow_date = DateTime.Now,
+                    return_date = DateTime.Now,
+                    borrow_status = (int)BorrowStatus.Returned,
+                    Book_id = 13,
+                    Member_id = members[2].id,
+                    Employee_borrow_id = 22,
+                    Employee_return_id = 33,
+                    Book = new Book(),
+                    Employee = new Employee {
+                        id = 22
+                    },
+                    Employee1 = new Employee {
+                        id = 33
+                    },
+                    Member = members[2]
+                },
+                new Borrow {
+                    idBorrow = 2,
+                    borrow_date = DateTime.Now,
+                    return_date = DateTime.Now,
+                    borrow_status = (int)BorrowStatus.Returned,
+                    Book_id = 21,
+                    Member_id = members[3].id,
+                    Employee_borrow_id = 22,
+                    Employee_return_id = 33,
+                    Book = new Book(),
+                    Employee = new Employee {
+                        id = 22
+                    },
+                    Employee1 = new Employee {
+                        id = 33
+                    },
+                    Member = members[3]
+                },
+                new Borrow {
+                    idBorrow = 2,
+                    borrow_date = DateTime.Now,
+                    return_date = DateTime.Now,
+                    borrow_status = (int)BorrowStatus.Waiting,
+                    Book_id = 34,
+                    Member_id = members[3].id,
+                    Employee_borrow_id = 22,
+                    Book = new Book(),
+                    Employee = new Employee {
+                        id = 22
+                    },
+                    Member = members[3]
                 }
             }.AsQueryable();
-            A.CallTo(() => repo.GetAllBorrowsForMember(123, 456)).Returns(borrows);
-            var borrowService = InitialiseBorrowService(repo);
+            borrowService = InitialiseBorrowService(borrowRepository);
+        }
+
+        private BorrowService InitialiseBorrowService(IBorrowRepository repository) {
+            var service = new BorrowService(repository, null, null);
+
+            return service;
+        }
+
+        [Theory]
+        [InlineData(123)]
+        [InlineData(456)]
+        [InlineData(789)]
+        [InlineData(012)]
+        public void GetAllBorrowsForMember_GivenTheCorrectMemberAndLibraryIdIsEntered_BorrowsRetrieved(int memberId) {
+            //Arrange
+            A.CallTo(() => borrowRepository.GetAllBorrowsForMember(memberId, 456)).Returns(borrows.Where(b => b.Member_id == memberId));
 
             //Act
-            var borrowsForMember = borrowService.GetAllBorrowsForMember(123, 456);
+            var borrowsForMember = borrowService.GetAllBorrowsForMember(memberId, 456);
 
             //Assert
-            Assert.Equal(borrowsForMember, borrows.ToList());
+            Assert.Equal(borrowsForMember, borrows.Where(b => b.Member_id == memberId).ToList());
         }
     }
 }
