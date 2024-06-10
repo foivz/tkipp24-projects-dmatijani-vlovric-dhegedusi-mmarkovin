@@ -24,6 +24,7 @@ namespace UnitTesting
             notificationsRepository = A.Fake<INotificationsRepository>();
             notificationService = new NotificationService(notificationsRepository, memberService);
         }
+
         [Fact]
         public void GetAllNotificationByLibrary_GivenMemberIsFromLibraryOne_ReturnsAllNotificationsForLibraryOne()
         {
@@ -176,6 +177,39 @@ namespace UnitTesting
 
             // Assert
             Assert.True(result);
+        }
+        [Fact]
+        public void GetReadNotificationsForMember_ReturnsCorrectList()
+        {
+            // Arrange
+            var member = new Member { username = "testuser" };
+            var fakeNotifications = new List<Notification>
+            {
+                new Notification
+                {
+                    id = 1,
+                    title = "Naslov 1",
+                    description = "Opis 1",
+                    Library_id = 1,
+                },
+                new Notification
+                {
+                    id = 2,
+                    title = "Naslov 2",
+                    description = "Opis 2",
+                    Library_id = 1,
+                }
+            }.AsQueryable();
+
+            A.CallTo(() => notificationsRepository.GetReadNotificationsForMember(member))
+           .Returns(fakeNotifications);
+
+            // Act
+            var result = notificationService.GetReadNotificationsForMember(member);
+
+            // Assert
+            Assert.Equal(fakeNotifications.Count(), result.Count);
+            Assert.All(result, n => Assert.Contains(n, fakeNotifications));
         }
     }
 }
