@@ -134,5 +134,37 @@ namespace UnitTesting
             // Assert
             Assert.False(result);
         }
+
+        [Fact]
+        public void Remove_NotificationExists_ReturnsOne()
+        {
+            // Arrange
+            var notificationsRepository = A.Fake<INotificationsRepository>();
+            var notificationService = new NotificationService(notificationsRepository);
+            var notificationToRemove = new Notification();
+            A.CallTo(() => notificationsRepository.Remove(notificationToRemove, true)).Returns(1);
+
+            // Act
+            var result = notificationService.Remove(notificationToRemove);
+
+            // Assert
+            Assert.Equal(1, result);
+        }
+
+        [Fact]
+        public void Remove_NotificationDoesNotExist_ReturnsZero()
+        {
+            // Arrange
+            var notificationsRepository = A.Fake<INotificationsRepository>();
+            var notificationService = new NotificationService(notificationsRepository);
+            var notificationToRemove = new Notification(); // Create a notification object
+            A.CallTo(() => notificationsRepository.Remove(notificationToRemove, true)).Returns(0);
+
+            // Act
+            var result = notificationService.Remove(notificationToRemove);
+
+            // Assert
+            Assert.Equal(0, result);
+        }
     }
 }
