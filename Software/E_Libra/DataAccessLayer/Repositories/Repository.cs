@@ -10,7 +10,7 @@ namespace DataAccessLayer.Repositories {
         protected DatabaseModel Context { get; set; }
         protected DbSet<T> Entities { get; set; }
 
-        public Repository(DatabaseModel context) {
+        protected Repository(DatabaseModel context) {
             Context = context;
             Entities = Context.Set<T>();
         }
@@ -49,8 +49,20 @@ namespace DataAccessLayer.Repositories {
             }
         }
 
+        protected virtual void Dispose(bool disposing) {
+            if (disposing && Context != null) {
+                Context.Dispose();
+                Context = null;
+            }
+        }
+
+        ~Repository() {
+            Dispose(false);
+        }
+
         public void Dispose() {
-            Context.Dispose();
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
     }
 }

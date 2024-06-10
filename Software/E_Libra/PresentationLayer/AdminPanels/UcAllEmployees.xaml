@@ -5,7 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:PresentationLayer.AdminPanels"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="450" d:DesignWidth="800"
+             Unloaded="UserControl_Unloaded">
     <DockPanel Background="#FFEFE8">
         <TextBlock Background="#637E78" DockPanel.Dock="Top" Height="40"
                Style="{StaticResource titleText}" FontSize="20" Padding="5"
@@ -46,16 +47,29 @@
                           x:Name="cboLibrary" Margin="12.5" HorizontalAlignment="Left"
                           SelectionChanged="cboLibrary_SelectionChanged"/>
             </StackPanel>
-            <DataGrid x:Name="dgAllEmployees" Grid.Row="1" AutoGenerateColumns="False">
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="ID" Binding="{Binding id}"/>
-                    <DataGridTextColumn Header="Ime" Binding="{Binding name}"/>
-                    <DataGridTextColumn Header="Prezime" Binding="{Binding surname}"/>
-                    <DataGridTextColumn Header="Korisničko ime" Binding="{Binding username}"/>
-                    <DataGridTextColumn Header="Lozinka" Binding="{Binding password}"/>
-                    <DataGridTextColumn Header="OIB" Binding="{Binding OIB}"/>
-                </DataGrid.Columns>
-            </DataGrid>
+            <Grid Grid.Row="1">              
+                <DataGrid x:Name="dgAllEmployees" AutoGenerateColumns="False">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="ID" Binding="{Binding id}"/>
+                        <DataGridTextColumn Header="Ime" Binding="{Binding name}"/>
+                        <DataGridTextColumn Header="Prezime" Binding="{Binding surname}"/>
+                        <DataGridTextColumn Header="Korisničko ime" Binding="{Binding username}"/>
+                        <DataGridTextColumn Header="Lozinka" Binding="{Binding password}"/>
+                        <DataGridTextColumn Header="OIB" Binding="{Binding OIB}"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+                <Border Background="LightGray"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Width="Auto" Height="Auto"
+                    Padding="5"
+                    CornerRadius="5"
+                    x:Name="txtNoEmployees">
+                    <TextBlock Text="Ova knjižnica nema zaposlenika!" HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           FontSize="16"/>
+                </Border>
+            </Grid>
         </Grid>
     </DockPanel>
 </UserControl>

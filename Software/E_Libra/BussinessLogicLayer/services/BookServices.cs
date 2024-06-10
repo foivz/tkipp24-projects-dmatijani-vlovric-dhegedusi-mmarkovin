@@ -1,4 +1,5 @@
 ﻿using BussinessLogicLayer.Exceptions;
+using DataAccessLayer.Interfaces;
 using DataAccessLayer.Repositories;
 using EntitiesLayer;
 using System;
@@ -14,141 +15,155 @@ namespace BussinessLogicLayer.services
     // David Matijanić: GetBookByBarcodeId
     public class BookServices
     {
+        public IBookRepository bookRepository { get; set; }
+        private IReservationRepository reservationRepository { get; set; }
+        private IMembersRepository memberRepository { get; set; }
+        public BookServices(
+            IBookRepository bookRepository,
+            IReservationRepository reservationRepository,
+            IMembersRepository memberRepository
+        )
+        {
+            this.bookRepository = bookRepository;
+            this.reservationRepository = reservationRepository;
+            this.memberRepository = memberRepository;
+        }
+        public BookServices() : this(
+            new BookRepository(),
+            new ReservationRepository(),
+            new MemberRepository()
+        )
+        {}
+
         public bool AddBook(Book book, Author author)
         {
-            bool isSuccesful = false;
-            using(var repo = new BookRepository())
-            {
-                int affectedRows = repo.Add(book, author);
-                isSuccesful = affectedRows > 0;
-            }
+            bool isSuccesful;
+            int affectedRows = bookRepository.Add(book, author);
+            isSuccesful = affectedRows > 0;
             return isSuccesful;
         }
 
         public List<Book> GetAllBooks()
         {
-            using (var repo = new BookRepository())
-            {
-                return repo.GetAll().ToList();
-            }
+            return bookRepository.GetAll().ToList();
         }
 
         public List<Book> GetNonArchivedBooks(bool digital)
         {
-            using(var repo = new BookRepository())
-            {
-                return repo.GetNonArchivedBooks(digital).ToList();
-            }
+            return bookRepository.GetNonArchivedBooks(digital).ToList();
+        }
+  
+        public bool InsertOneCopy(Book book)
+        {
+            bool isSuccesful;
+            int affectedRows = bookRepository.InsertOneCopy(book);
+            isSuccesful = affectedRows > 0;
+            return isSuccesful;
+        }
+        public bool RemoveOneCopy(Book book)
+        {
+            bool isSuccesful;
+            int affectedRows = bookRepository.RemoveOneCopy(book);
+            isSuccesful = affectedRows > 0;
+            return isSuccesful;
         }
         public bool InsertNewCopies(int number, Book book)
         {
-            bool isSuccesful = false;
-            using (var repo = new BookRepository())
+            var numCopies = number;
+
+            int currentCopies = bookRepository.GetBookCurrentCopies(book.id);
+            bool imaRezervacije;
+            if (currentCopies < 0) //ako ima rezervacija
             {
-                int affectedRows = repo.InsertNewCopies(number, book);
-                isSuccesful = affectedRows > 0;
+                do
+                {
+                    imaRezervacije = reservationRepository.EnterDateForReservation(book); //daj osobi datum na rezervaciju
+                    if (imaRezervacije)
+                    {
+                        bookRepository.InsertNewCopies(1, book);
+                        numCopies--;
+                    }
+                } while (imaRezervacije && numCopies > 0);
+                if (numCopies > 0) //ako je ostalo jos kopija nakon popunjavanja svih rezervacija
+                {
+                    bookRepository.InsertNewCopies(numCopies, book); //dodaj ih
+                }
             }
-            return isSuccesful;
+            else
+            {
+                bookRepository.InsertNewCopies(number, book); //samo dodajem current i total copies
+            }
+            return true;
         }
         public bool ArchiveBook(Book book, Archive archive)
         {
-            bool isSuccesful = false;
-            using(var repo = new BookRepository())
-            {
-                int affectedRows = repo.ArhiveBook(book, archive);
-                isSuccesful = affectedRows > 0;
-            }
+            bool isSuccesful;
+            int affectedRows = bookRepository.ArhiveBook(book, archive);
+            isSuccesful = affectedRows > 0;
             return isSuccesful;
         }
         public List<Book> GetNonArchivedBooksByName(string searchTerm)
         {
-            using (var repo = new BookRepository())
-            {
-                return repo.GetNonArchivedBooksByName(searchTerm).ToList();
-            }
+            return bookRepository.GetNonArchivedBooksByName(searchTerm).ToList();
         }
 
         public List<BookViewModel> SearchBooks(string searchTerm, bool digital) {
-            using (var repo = new BookRepository()) {
-                return repo.SearchBooks(searchTerm, digital).ToList();
-            }
+            return bookRepository.SearchBooks(searchTerm, digital).ToList();
         }
         public List<BookViewModel> GetBooksByGenre(string genreName, bool digital) {
-            using (var repo = new BookRepository()) {
-                return repo.GetBooksByGenre(genreName, digital).ToList();
-            }
+            return bookRepository.GetBooksByGenre(genreName, digital).ToList();
         }
         public List<BookViewModel> GetBooksByAuthor(string authorName, bool digital) {
-            using (var repo = new BookRepository()) {
-                return repo.GetBooksByAuthor(authorName, digital).ToList();
-            }
+            return bookRepository.GetBooksByAuthor(authorName, digital).ToList();
         }
         public List<BookViewModel> GetBooksByYear(int year, bool digital) {
-            using (var repo = new BookRepository()) {
-                return repo.GetBooksByYear(year, digital).ToList();
-            }
+            return bookRepository.GetBooksByYear(year, digital).ToList();
         }
         public Book GetBookById(int id) {
-            using (var repo = new BookRepository()) {
-                return repo.GetBookById(id);
-            }
+            return bookRepository.GetBookById(id);
         }
         public List<BookViewModel> GetWishlistedBooks() {
-            using (var repo = new BookRepository()) {
-                return repo.GetWishlistBooksForMember(LoggedUser.Username).ToList();
-            }
+            return bookRepository.GetWishlistBooksForMember(LoggedUser.Username).ToList();
         }
         public bool AddBookToWishlist(int bookId) {
-            MemberRepository memberRepository = new MemberRepository();
             int userId = memberRepository.GetMemberId(LoggedUser.Username);
 
-            using (var repo = new BookRepository()) {
-                return repo.AddBookToWishlist(userId, bookId);
-            }
+            return bookRepository.AddBookToWishlist(userId, bookId);
         }
         public bool RemoveBookFromWishlist(int bookId) {
-            MemberRepository memberRepository = new MemberRepository();
             int userId = memberRepository.GetMemberId(LoggedUser.Username);
 
-            using (var repo = new BookRepository()) {
-                return repo.RemoveBookFromWishlist(userId, bookId);
-            }
+            return bookRepository.RemoveBookFromWishlist(userId, bookId);
         }
 
         public Book GetBookByBarcodeId(int libraryId, string barcodeId) {
-            using (var repository = new BookRepository()) {
-                List<Book> returned = repository.GetBookByBarcodeId(barcodeId).ToList();
+            List<Book> returned = bookRepository.GetBookByBarcodeId(barcodeId).ToList();
 
-                if (returned.Count == 0) {
-                    throw new BookNotFoundException("Knjiga s tim barkodom ne postoji!");
-                }
-
-                Book book = returned.FirstOrDefault();
-
-                if (book.Library.id != libraryId) {
-                    throw new WrongLibraryException("Knjiga s tim barkodom ovdje ne postoji!");
-                }
-
-                return book;
+            if (returned.Count == 0)
+            {
+                throw new BookNotFoundException("Knjiga s tim barkodom ne postoji!");
             }
+
+            Book book = returned.FirstOrDefault();
+
+            if (book.Library.id != libraryId)
+            {
+                throw new WrongLibraryException("Knjiga s tim barkodom ovdje ne postoji!");
+            }
+
+            return book;
         }
 
         public int UpdateBook(Book book, bool saveChanges = true) {
-            using (var context = new BookRepository()) {
-                return context.Update(book, saveChanges);
-            }
+            return bookRepository.Update(book, saveChanges);
         }
 
         public string GetBookBarcode(int id) {
-            using (var repository = new BookRepository()) {
-                return repository.GetBookBarcode(id).FirstOrDefault();
-            }
+            return bookRepository.GetBookBarcode(id).FirstOrDefault();
         }
 
         public List<Book> GetBooksByLibrary(int libraryId) {
-            using (var repository = new BookRepository()) {
-                return repository.GetBooksByLibrary(libraryId).ToList();
-            }
+            return bookRepository.GetBooksByLibrary(libraryId).ToList();
         }
     }
 }

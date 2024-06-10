@@ -36,7 +36,7 @@ namespace PresentationLayer
             }
             var selectedReservation = dgvReservations.SelectedItem as ReservationViewModel;
             ReservationService reservationService = new ReservationService();
-            if (reservationService.RemoveReservation(selectedReservation.ReservationId))
+            if (reservationService.RemoveReservationFromList(selectedReservation.ReservationId))
             {
                 MessageBox.Show("Uspješno!");
                 LoadDgv();

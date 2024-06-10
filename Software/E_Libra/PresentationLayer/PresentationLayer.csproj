@@ -414,6 +414,7 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <Resource Include="Resources\loader.gif" />
     <Content Include="UserDocumentation\User_documentation_admin.pdf" />
     <Content Include="UserDocumentation\User_documentation_employee.pdf" />
     <Content Include="UserDocumentation\User_documentation_login.pdf" />
@@ -428,7 +429,7 @@
       <Name>BussinessLogicLayer</Name>
     </ProjectReference>
     <ProjectReference Include="..\DataAccessLayer\DataAccessLayer.csproj">
-      <Project>{35d148d2-ed6d-4188-95bd-e67d6c7b8fe2}</Project>
+      <Project>{35D148D2-ED6D-4188-95BD-E67D6C7B8FE2}</Project>
       <Name>DataAccessLayer</Name>
     </ProjectReference>
     <ProjectReference Include="..\EntitiesLayer\EntitiesLayer.csproj">

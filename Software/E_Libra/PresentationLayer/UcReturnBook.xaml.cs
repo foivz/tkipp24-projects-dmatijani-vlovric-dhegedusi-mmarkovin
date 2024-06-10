@@ -24,6 +24,8 @@ namespace PresentationLayer {
         private UcEmployeeBorrows parentUserControl { get; set; }
         private Borrow borrow = null;
 
+        private BorrowService borrowService = new BorrowService();
+
         public UcReturnBook(EmployeePanel _mainWindow, UcEmployeeBorrows _parentUserControl) {
             InitializeComponent();
 
@@ -111,35 +113,36 @@ namespace PresentationLayer {
             btnReturnBorrow.Visibility = Visibility.Visible;
         }
 
-        private void btnReturnBorrow_Click(object sender, RoutedEventArgs e) {
+        private async void btnReturnBorrow_Click(object sender, RoutedEventArgs e) {
             if (borrow == null) {
                 MessageBox.Show("Ne postoji posudba!");
                 return;
             }
 
             if (borrow.borrow_status == (int)BorrowStatus.Late) {
-                LibraryService libraryService = new LibraryService();
-                decimal priceDayLate = libraryService.GetLibraryPriceDayLate(LoggedUser.LibraryId);
-                TimeSpan difference = DateTime.Now - (DateTime)borrow.return_date;
-                int daysLate = Convert.ToInt16(Math.Ceiling(difference.TotalDays));
+                using (var libraryService = new LibraryService()) {
+                    decimal priceDayLate = libraryService.GetLibraryPriceDayLate(LoggedUser.LibraryId);
+                    TimeSpan difference = DateTime.Now - (DateTime)borrow.return_date;
+                    int daysLate = Convert.ToInt16(Math.Ceiling(difference.TotalDays));
 
-                decimal priceToPay = priceDayLate * daysLate;
+                    decimal priceToPay = priceDayLate * daysLate;
 
-                MessageBoxResult result = MessageBox.Show($"Potreban iznos za platiti kašnjenje: {priceToPay}." + Environment.NewLine + "Je li član platio iznos?", "Kašnjenje", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                    MessageBoxResult result = MessageBox.Show($"Potreban iznos za platiti kašnjenje: {priceToPay}." + Environment.NewLine + "Je li član platio iznos?", "Kašnjenje", MessageBoxButton.YesNo, MessageBoxImage.Question);
 
-                if (result == MessageBoxResult.No) {
-                    MessageBox.Show("Knjiga neće biti vraćena.");
-                    return;
+                    if (result == MessageBoxResult.No) {
+                        MessageBox.Show("Knjiga neće biti vraćena.");
+                        return;
+                    }
                 }
             }
 
+            //TODO: ovdje staviti using za employeeService kad realizira sučelje IDisposable (@mmarkoovin21)
             EmployeeService employeeService = new EmployeeService();
             Employee thisEmployee = employeeService.GetEmployeeByUsername(LoggedUser.Username);
             if (thisEmployee == null) {
                 return;
             }
 
-            BorrowService borrowService = new BorrowService();
             Borrow updatedBorrow = new Borrow {
                 idBorrow = borrow.idBorrow,
                 borrow_date = borrow.borrow_date,
@@ -155,8 +158,7 @@ namespace PresentationLayer {
             if (updateResult == 0) {
                 MessageBox.Show("Knjiga nije vraćena.");
             }
-
-            UpdateParentBorrows();
+            await UpdateParentBorrows();
             ReturnParentUserControl();
         }
 
@@ -178,6 +180,7 @@ namespace PresentationLayer {
         }
 
         private Member GetEnteredMember() {
+            //TODO: ovdje staviti using za memberService kad realizira sučelje IDisposable (@mmarkoovin21)
             MemberService memberService = new MemberService();
             try {
                 Member enteredMember = memberService.GetMemberByBarcodeId(LoggedUser.LibraryId, tbMemberBarcode.Text);
@@ -189,6 +192,7 @@ namespace PresentationLayer {
         }
 
         private Book GetEnteredBook() {
+            //TODO: ovdje staviti using za bookService kad realizira sučelje IDisposable (@vlovric21)
             BookServices bookService = new BookServices();
             try {
                 Book enteredBook = bookService.GetBookByBarcodeId(LoggedUser.LibraryId, tbBookBarcode.Text);
@@ -199,20 +203,22 @@ namespace PresentationLayer {
             }
         }
 
-        private Employee GetEmployee() {
-            EmployeeService employeeService = new EmployeeService();
-            return employeeService.GetEmployeeByUsername(LoggedUser.Username);
-        }
-
         private Borrow GetBorrow(Book book, Member member) {
-            BorrowService borrowService = new BorrowService();
-            return borrowService.GetBorrowsForMemberAndBook(member.id, book.id, LoggedUser.LibraryId).Where(b => b.borrow_status != (int)BorrowStatus.Returned
-            && b.borrow_status != (int)BorrowStatus.Waiting).FirstOrDefault();
+            try {
+                return borrowService.GetBorrowsForMemberAndBook(member.id, book.id, LoggedUser.LibraryId).Find(b => b.borrow_status != (int)BorrowStatus.Returned
+                    && b.borrow_status != (int)BorrowStatus.Waiting);
+            } catch (Exception) {
+                return null;
+            }
         }
 
-        private void UpdateParentBorrows() {
-            parentUserControl.LoadAllBorrows();
+        private async Task UpdateParentBorrows() {
+            await parentUserControl.LoadAllBorrows();
             parentUserControl.tbcTabs.SelectedIndex = 3;
+        }
+
+        private void UserControl_Unloaded(object sender, RoutedEventArgs e) {
+            borrowService.Dispose();
         }
     }
 }

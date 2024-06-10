@@ -1,4 +1,5 @@
-﻿using DataAccessLayer.Repositories;
+﻿using DataAccessLayer.Interfaces;
+using DataAccessLayer.Repositories;
 using EntitiesLayer;
 using System;
 using System.Collections.Generic;
@@ -11,21 +12,24 @@ namespace BussinessLogicLayer.services
     //Viktor Lovrić
     public class GenreServices
     {
+        public IGenreRepository genreRepository { get; set; }
+        public GenreServices(IGenreRepository genreRepository)
+        {
+            this.genreRepository = genreRepository;
+        }
+        public GenreServices() : this(new GenreRepository()) { }
+
         public List<Genre> GetGenres()
         {
-            using (var repo = new GenreRepository())
-            {
-                return repo.GetAll().ToList();
-            }
+            return genreRepository.GetAll().ToList();
         }
         public bool Add(Genre entity)
         {
             bool isSuccesful = false;
-            using (var repo = new GenreRepository())
-            {
-                int affectedRows = repo.Add(entity);
-                isSuccesful |= affectedRows > 0;
-            }
+
+            int affectedRows = genreRepository.Add(entity);
+            isSuccesful |= affectedRows > 0;
+
             return isSuccesful;
         }
     }

@@ -1,4 +1,6 @@
-﻿using EntitiesLayer;
+﻿using DataAccessLayer.Exceptions;
+using DataAccessLayer.Interfaces;
+using EntitiesLayer;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -9,9 +11,8 @@ using System.Threading.Tasks;
 
 namespace DataAccessLayer.Repositories {
     // David Matijanić: sve osim HasUserBorrowedBook
-    public class BorrowRepository : Repository<Borrow> {
+    public class BorrowRepository : Repository<Borrow>, IBorrowRepository {
         public BorrowRepository() : base(new DatabaseModel()) {
-
         }
 
         public IQueryable<Borrow> GetAllBorrowsForMember(int member_id, int library_id) {
@@ -85,29 +86,8 @@ namespace DataAccessLayer.Repositories {
         }
 
         private async Task UpdateBorrowStatusAsync(int library_id) {
-            var allBorrows = from b in Entities.Include("Book")
-                             where b.Book.Library_id == library_id
-                             select b;
-
-            List<Borrow> borrowsToRemove = new List<Borrow>();
-            List<Borrow> borrowsToUpdate = new List<Borrow>();
-
-            foreach (Borrow borrow in allBorrows) {
-                switch (borrow.borrow_status) {
-                    case ((int)BorrowStatus.Waiting):
-                        if (borrow.return_date < DateTime.Now) {
-                            borrowsToRemove.Add(borrow);
-                        }
-                        break;
-
-                    case ((int)BorrowStatus.Borrowed):
-                        if (borrow.return_date < DateTime.Now) {
-                            borrow.borrow_status = (int)BorrowStatus.Late;
-                            borrowsToUpdate.Add(borrow);
-                        }
-                        break;
-                }
-            }
+            var borrowsToUpdate = GetBorrowsToUpdate(library_id);
+            var borrowsToRemove = GetBorrowsToRemove(library_id);
 
             foreach (Borrow borrow in borrowsToRemove) {
                 Remove(borrow);
@@ -121,29 +101,8 @@ namespace DataAccessLayer.Repositories {
         }
 
         private void UpdateBorrowStatus(int library_id) {
-            var allBorrows = from b in Entities.Include("Book")
-                             where b.Book.Library_id == library_id
-                             select b;
-
-            List<Borrow> borrowsToRemove = new List<Borrow>();
-            List<Borrow> borrowsToUpdate = new List<Borrow>();
-
-            foreach (Borrow borrow in allBorrows) {
-                switch (borrow.borrow_status) {
-                    case ((int)BorrowStatus.Waiting):
-                        if (borrow.return_date < DateTime.Now) {
-                            borrowsToRemove.Add(borrow);
-                        }
-                        break;
-
-                    case ((int)BorrowStatus.Borrowed):
-                        if (borrow.return_date < DateTime.Now) {
-                            borrow.borrow_status = (int)BorrowStatus.Late;
-                            borrowsToUpdate.Add(borrow);
-                        }
-                        break;
-                }
-            }
+            var borrowsToUpdate = GetBorrowsToUpdate(library_id);
+            var borrowsToRemove = GetBorrowsToRemove(library_id);
 
             foreach (Borrow borrow in borrowsToRemove) {
                 Remove(borrow);
@@ -157,34 +116,36 @@ namespace DataAccessLayer.Repositories {
         public override int Add(Borrow borrow, bool saveChanges = true) {
             var book = Context.Books.SingleOrDefault(b => b.id == borrow.Book.id);
             var member = Context.Members.SingleOrDefault(m => m.id == borrow.Member.id);
-            
+
+            var newBorrow = MakeNewBorrow(borrow, book, member);
+
+            Entities.Add(newBorrow);
+            return saveChanges ? SaveChanges() : 0;
+        }
+
+        private Borrow MakeNewBorrow(Borrow borrowData, Book book, Member member) {
             var newBorrow = new Borrow {
                 Book = book,
                 Member = member,
-                borrow_date = borrow.borrow_date,
-                return_date = borrow.return_date,
-                borrow_status = borrow.borrow_status
+                borrow_date = borrowData.borrow_date,
+                return_date = borrowData.return_date,
+                borrow_status = borrowData.borrow_status
             };
-            
-            if (borrow.Employee != null) {
-                var employee = Context.Employees.SingleOrDefault(e => e.id == borrow.Employee.id);
+
+            if (borrowData.Employee != null) {
+                var employee = Context.Employees.SingleOrDefault(e => e.id == borrowData.Employee.id);
                 newBorrow.Employee = employee;
             } else {
                 Employee employee = Context.Employees.Where(e => e.Library_id == member.Library_id).First();
                 newBorrow.Employee = employee;
             }
 
-            if (borrow.Employee1 != null) {
-                var employeeReturn = Context.Employees.SingleOrDefault(e => e.id == borrow.Employee1.id);
+            if (borrowData.Employee1 != null) {
+                var employeeReturn = Context.Employees.SingleOrDefault(e => e.id == borrowData.Employee1.id);
                 newBorrow.Employee1 = employeeReturn;
             }
 
-            Entities.Add(newBorrow);
-            if (saveChanges) {
-                return SaveChanges();
-            } else {
-                return 0;
-            }
+            return newBorrow;
         }
 
         public override int Update(Borrow borrow, bool saveChanges = true) {
@@ -193,6 +154,19 @@ namespace DataAccessLayer.Repositories {
             var employee = Context.Employees.SingleOrDefault(e => e.id == borrow.Employee.id);
 
             var existingBorrow = Context.Borrows.SingleOrDefault(b => b.idBorrow == borrow.idBorrow);
+            try {
+                UpdateExistingBorrowData(existingBorrow, borrow, book, member, employee);
+            } catch (BorrowException) {
+                return 0;
+            }
+
+            return saveChanges ? SaveChanges() : 0;
+        }
+
+        private void UpdateExistingBorrowData(Borrow existingBorrow, Borrow borrow, Book book, Member member, Employee employee) {
+            if (existingBorrow == null) {
+                throw new BorrowException("Ne postoji borrow!");
+            }
             existingBorrow.borrow_date = borrow.borrow_date;
             existingBorrow.return_date = borrow.return_date;
             existingBorrow.borrow_status = borrow.borrow_status;
@@ -202,12 +176,6 @@ namespace DataAccessLayer.Repositories {
             if (borrow.Employee1 != null) {
                 var employeeReturn = Context.Employees.SingleOrDefault(e => e.id == borrow.Employee1.id);
                 existingBorrow.Employee1 = employeeReturn;
-            }
-
-            if (saveChanges) {
-                return SaveChanges();
-            } else {
-                return 0;
             }
         }
 
@@ -225,6 +193,41 @@ namespace DataAccessLayer.Repositories {
                         select b;
 
             return query;
+        }
+
+        private List<Borrow> GetBorrowsToUpdate(int libraryId) {
+            var allBorrows = GetAllBorrowsForLibrary(libraryId);
+            List<Borrow> borrowsToUpdate = new List<Borrow>();
+
+            foreach (Borrow borrow in allBorrows) {
+                if (borrow.borrow_status == (int)BorrowStatus.Borrowed && borrow.return_date < DateTime.Now) {
+                    borrow.borrow_status = (int)BorrowStatus.Late;
+                    borrowsToUpdate.Add(borrow);
+                }
+            }
+
+            return borrowsToUpdate;
+        }
+
+        private List<Borrow> GetBorrowsToRemove(int libraryId) {
+            var allBorrows = GetAllBorrowsForLibrary(libraryId);
+            List<Borrow> borrowsToRemove = new List<Borrow>();
+
+            foreach (Borrow borrow in allBorrows) {
+                if (borrow.borrow_status == (int)BorrowStatus.Waiting && borrow.return_date < DateTime.Now) {
+                    borrowsToRemove.Add(borrow);
+                }
+            }
+
+            return borrowsToRemove;
+        }
+
+        private List<Borrow> GetAllBorrowsForLibrary(int libraryId) {
+            var allBorrows = from b in Entities.Include("Book")
+                             where b.Book.Library_id == libraryId
+                             select b;
+
+            return allBorrows.ToList();
         }
     }
 }

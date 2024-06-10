@@ -1,4 +1,5 @@
-﻿using DataAccessLayer.Repositories;
+﻿using DataAccessLayer.Interfaces;
+using DataAccessLayer.Repositories;
 using EntitiesLayer;
 using System;
 using System.Collections.Generic;
@@ -11,18 +12,22 @@ namespace BussinessLogicLayer.services
     //Viktor Lovrić
     public class ArchiveServices
     {
+        public IArchiveRepository archiveRepository { get; set; }
+        public ArchiveServices(IArchiveRepository archiveRepository)
+        {
+            this.archiveRepository = archiveRepository;
+        }
+        public ArchiveServices() : this(new ArchiveRepository()){}
+
+
         public List<ArchivedBookInfo> GetArchive()
         {
-            using (var repo = new ArchiveRepository())
-            {
-                return repo.GetArchive().ToList();
-            }
+            return archiveRepository.GetArchive().ToList();
         }
 
         public List<Archive> GetArchivesForEmployee(int employeeId) {
-            using (var repo = new ArchiveRepository()) {
-                return repo.GetArchivesForEmployee(employeeId).ToList();
-            }
+
+            return archiveRepository.GetArchivesForEmployee(employeeId).ToList();
         }
     }
 }

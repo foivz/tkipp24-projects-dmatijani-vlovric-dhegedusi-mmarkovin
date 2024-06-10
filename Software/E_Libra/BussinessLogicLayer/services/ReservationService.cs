@@ -1,4 +1,5 @@
-﻿using DataAccessLayer.Repositories;
+﻿using DataAccessLayer.Interfaces;
+using DataAccessLayer.Repositories;
 using EntitiesLayer;
 using System;
 using System.Collections.Generic;
@@ -12,107 +13,103 @@ namespace BussinessLogicLayer.services
     //Magdalena Markovinivić, metoda: GetReservationsForMemberNormal
     public class ReservationService
     {
+        public IReservationRepository reservationRepository { get; set; }
+        private BookServices bookService { get; set; }
+        public ReservationService(
+            IReservationRepository reservationRepository,
+            BookServices bookServices
+        )
+        {
+            this.reservationRepository = reservationRepository;
+            this.bookService = bookServices;
+        }
+        public ReservationService() : this(
+            new ReservationRepository(),
+            new BookServices()
+        ) { }
+
+
         public int CheckNumberOfReservations(int id)
         {
-            using(var repo = new ReservationRepository())
-            {
-                return repo.CheckNumberOfReservations(id);
-            }
+            return reservationRepository.CheckNumberOfReservations(id);
         }
         public bool CheckExistingReservation(int bookId, int memberId)
         {
-            using (var repo = new ReservationRepository())
-            {
-                return repo.CheckExistingReservation(bookId, memberId);
-            }
+            return reservationRepository.CheckExistingReservation(bookId, memberId);
         }
-        public int Add(Reservation reservation)
+        public int AddReservation(Reservation reservation)
         {
-            using (var repo = new ReservationRepository())
-            {
-                return repo.Add(reservation);
-            }
+            return reservationRepository.Add(reservation);
         }
         public List<ReservationViewModel> GetReservationForMember(int memberId)
         {
-            using (var repo = new ReservationRepository())
-            {
-                return repo.GetReservationsForMember(memberId).ToList();
-            }
+            return reservationRepository.GetReservationsForMember(memberId).ToList();
         }
         public List<Reservation> GetReservationsForMemberNormal(int memberId)
         {
-            using (var repo = new ReservationRepository())
-            {
-                return repo.GetReservationsForMemberNormal(memberId).ToList();
-            }
-        }
-        public bool RemoveReservation(int reservationId)
-        {
-            using (var repo = new ReservationRepository())
-            {
-                int res = repo.RemoveReservation(reservationId);
-                if (res == 1)
-                {
-                    return true;
-                }
-                else return false;
-            }
+            return reservationRepository.GetReservationsForMemberNormal(memberId).ToList();
         }
         public int CountExistingReservations(int memberId)
         {
-            using(var repo = new ReservationRepository())
-            {
-                return repo.CountExistingReservations(memberId);
-            }
+            return reservationRepository.CountExistingReservations(memberId);
         }
-        public void SetReservationEndDateAndAddCopies(Book book, int current, int received)
+        public bool EnterDateForReservation(Book book)
         {
-            using (var repo = new ReservationRepository())
-            {
-                repo.SetReservationEndDateAndAddCopies(book, current, received);
-            }
+            return reservationRepository.EnterDateForReservation(book);
         }
         public void CheckReservationDates()
         {
-            using (var repo = new ReservationRepository())
+            var overdueReservations = reservationRepository.GetOverdueReservations();
+            foreach (var reservation in overdueReservations)
             {
-                repo.CheckReservationDates();
+                bookService.InsertOneCopy(reservation.Book);
+                reservationRepository.EnterDateForReservation(reservation.Book);
+                reservationRepository.Remove(reservation, false);
             }
+            reservationRepository.SaveChanges();
+        }
+        public void ReturnBook(Book book)
+        {
+            bookService.InsertOneCopy(book);
+            reservationRepository.EnterDateForReservation(book);
         }
         public int GetReservationId(int memberId, int bookId)
         {
-            using (var repo = new ReservationRepository())
-            {
-                return repo.GetReservationId(memberId, bookId);
-            }
+            return reservationRepository.GetReservationId(memberId, bookId);
         }
         public int GetReservationPosition(int reservationId, int bookId)
         {
-            using (var repo = new ReservationRepository())
-            {
-                return repo.GetReservationPosition(reservationId, bookId);
-            }
+            return reservationRepository.GetReservationPosition(reservationId, bookId);
         }
         public string ShowExistingReservations()
         {
-            using (var repo = new ReservationRepository())
-            {
-                return repo.ShowExistingReservations();
-            }
+            return reservationRepository.ShowExistingReservations();
         }
         public Reservation CheckValidReservationFroMember(int memberId, int bookId)
         {
-            using(var repo = new ReservationRepository())
-            {
-                return repo.CheckValidReservationFroMember(memberId, bookId);
-            }
+            return reservationRepository.CheckValidReservationFroMember(memberId, bookId);
         }
 
-        public int RemoveReservation(Reservation reservation, bool saveChanges = true) {
-            using (var repo = new ReservationRepository()) {
-                return repo.Remove(reservation, saveChanges);
+        public int RemoveReservation(Reservation reservation, bool saveChanges = true)
+        {
+            return reservationRepository.Remove(reservation, saveChanges);
+        }
+        public bool RemoveReservationFromList(int reservationId)
+        {
+            var reservation = reservationRepository.GetReservationById(reservationId);
+            Book book = reservation.Book;
+            if (reservation.reservation_date == null)
+            {
+                reservationRepository.Remove(reservation);
+                bookService.InsertOneCopy(book);
             }
+            else
+            {
+                reservationRepository.Remove(reservation);
+                bookService.InsertOneCopy(book);
+                reservationRepository.EnterDateForReservation(book);
+            }
+            return true;
         }
     }
 }

@@ -73,7 +73,7 @@ Scenario: F01_S06_C06 - Password not entered
 	And the user enters an employee name
 	And the user enters a correct employee OIB
 	And the user clicks the Save new employee button
-	Then the employee should be visible in the All employees list for the chosen library
+	Then the system should show an error message that the employee can't be added
 
 Scenario: F01_S06_C07 - Successful new employee
 	When the user enters a correct employee username
