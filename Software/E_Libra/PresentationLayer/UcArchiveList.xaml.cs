@@ -26,8 +26,10 @@ namespace PresentationLayer
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            ArchiveServices archiveServices = new ArchiveServices();
-            dgvArchive.ItemsSource = archiveServices.GetArchive();
+            using (ArchiveServices archiveServices = new ArchiveServices())
+            {
+                dgvArchive.ItemsSource = archiveServices.GetArchive();
+            }
             RenameColumns();
         }
 

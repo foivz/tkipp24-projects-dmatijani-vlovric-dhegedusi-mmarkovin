@@ -40,15 +40,19 @@ namespace PresentationLayer
 
         private void LoadAuthors()
         {
-            AuthorService authorService = new AuthorService();
-            cmbAuthor.ItemsSource = authorService.GetAllAuthors();
+            using (AuthorService authorService = new AuthorService())
+            {
+                cmbAuthor.ItemsSource = authorService.GetAllAuthors();
+            } 
         }
 
         private void LoadGenres()
         {
-            GenreServices genreServices = new GenreServices();
-            var genres = genreServices.GetGenres();
-            cmbGenre.ItemsSource = genres;
+            using (GenreServices genreServices = new GenreServices())
+            {
+                var genres = genreServices.GetGenres();
+                cmbGenre.ItemsSource = genres;
+            }  
         }
 
         private string ValidateInputs()

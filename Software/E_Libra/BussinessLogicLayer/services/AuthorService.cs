@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace BussinessLogicLayer.services
 {
     //Viktor Lovrić
-    public class AuthorService
+    public class AuthorService : IDisposable
     {
         public IAuthorRepository authorRepository { get; set; }
         public AuthorService(IAuthorRepository authorRepository)
@@ -18,6 +18,25 @@ namespace BussinessLogicLayer.services
             this.authorRepository = authorRepository;
         }
         public AuthorService() : this(new AuthorRepository()) { }
+
+        ~AuthorService()
+        {
+            Dispose(false);
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        public void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                authorRepository?.Dispose();
+            }
+        }
         public List<Author> GetAllAuthors() 
         {
             return authorRepository.GetAll().ToList();

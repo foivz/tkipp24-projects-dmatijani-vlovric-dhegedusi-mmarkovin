@@ -47,8 +47,11 @@ namespace PresentationLayer
             {
                 name = txtName.Text,
             };
-            GenreServices genreServices = new GenreServices();
-            var res = genreServices.Add(genre);
+            bool res;
+            using (GenreServices genreServices = new GenreServices())
+            {
+                res = genreServices.Add(genre);
+            }  
             MessageBox.Show(res ? "Uspješno!" : "Neuspješno!");
 
             (Window.GetWindow(this) as EmployeePanel).contentPanel.Content = prevForm;

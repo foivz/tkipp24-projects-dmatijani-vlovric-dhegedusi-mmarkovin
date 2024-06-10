@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace BussinessLogicLayer.services
 {
     //Viktor Lovrić
-    public class GenreServices
+    public class GenreServices : IDisposable
     {
         public IGenreRepository genreRepository { get; set; }
         public GenreServices(IGenreRepository genreRepository)
@@ -18,6 +18,25 @@ namespace BussinessLogicLayer.services
             this.genreRepository = genreRepository;
         }
         public GenreServices() : this(new GenreRepository()) { }
+
+        ~GenreServices()
+        {
+            Dispose(false);
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        public void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                genreRepository?.Dispose();
+            }
+        }
 
         public List<Genre> GetGenres()
         {
