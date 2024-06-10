@@ -14,16 +14,16 @@ namespace BussinessLogicLayer.services
     //Magdalena Markovinocić
     public class NotificationService
     {
-        public INotificationsRepository notificationsRepository;
+        private INotificationsRepository notificationsRepository;
+        private MemberService memberService;
 
-        MemberService memberService = new MemberService();
-        public NotificationService(INotificationsRepository notificationsRepo)
+        public NotificationService(INotificationsRepository notificationsRepo, MemberService memberService)
         {
             this.notificationsRepository = notificationsRepo;
+            this.memberService = memberService;
         }
-        public NotificationService() : this(new NotificationsRepository())
+        public NotificationService() : this(new NotificationsRepository(), new MemberService())
         {
-            
         }
 
         public List<Notification> GetAllNotificationByLibrary(int id)
