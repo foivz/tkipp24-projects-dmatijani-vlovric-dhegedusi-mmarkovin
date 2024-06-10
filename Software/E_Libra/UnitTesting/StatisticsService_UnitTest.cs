@@ -20,6 +20,38 @@ namespace UnitTesting {
             service = new StatisticsService(repo);
         }
 
+
+        [Fact]
+        public void GetMemberCount_GivenLibraryId_ReturnsMemberCount() {
+            // Arrange
+            int libraryId = 1;
+            int expectedMemberCount = 100;
+
+            A.CallTo(() => repo.GetMemberCount(libraryId)).Returns(expectedMemberCount);
+
+            // Act
+            int result = service.GetMemberCount(libraryId);
+
+            // Assert
+            Assert.Equal(expectedMemberCount, result);
+        }
+
+        [Fact]
+        public void CalculateTotalIncome_GivenLibraryId_ReturnsTotalIncome() {
+            // Arrange
+            int libraryId = 1;
+            int memberCount = 100;
+            int expectedTotalIncome = memberCount * 12;
+
+            A.CallTo(() => repo.GetMemberCount(libraryId)).Returns(memberCount);
+
+            // Act
+            int result = service.CalculateTotalIncome(libraryId);
+
+            // Assert
+            Assert.Equal(expectedTotalIncome, result);
+        }
+
         [Fact]
         public void GetIncomeStatistics_GivenLibraryId_ReturnsIncomeStatistics() {
             // Arrange
@@ -98,6 +130,15 @@ namespace UnitTesting {
 
             // Assert
             Assert.Equal(expectedBooks, result);
+        }
+
+        [Fact]
+        public void Dispose_CallsDisposeOnRepository() {
+            // Act
+            service.Dispose();
+
+            // Assert
+            A.CallTo(() => repo.Dispose()).MustHaveHappened();
         }
 
 
