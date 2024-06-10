@@ -46,7 +46,7 @@ namespace BussinessLogicLayer.services
             {
                 bookRepository?.Dispose();
                 reservationRepository?.Dispose();
-                //memberRepository?.Dispose();
+                //memberRepository?.Dispose(); TODO
             }
         }
 

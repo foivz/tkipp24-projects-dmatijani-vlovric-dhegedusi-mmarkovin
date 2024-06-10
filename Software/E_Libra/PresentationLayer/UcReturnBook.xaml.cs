@@ -192,15 +192,19 @@ namespace PresentationLayer {
         }
 
         private Book GetEnteredBook() {
-            //TODO: ovdje staviti using za bookService kad realizira sučelje IDisposable (@vlovric21)
-            BookServices bookService = new BookServices();
-            try {
-                Book enteredBook = bookService.GetBookByBarcodeId(LoggedUser.LibraryId, tbBookBarcode.Text);
-                return enteredBook;
-            } catch (Exception ex) {
-                MessageBox.Show(ex.Message);
-                return null;
-            }
+            using (BookServices bookService = new BookServices())
+            {
+                try
+                {
+                    Book enteredBook = bookService.GetBookByBarcodeId(LoggedUser.LibraryId, tbBookBarcode.Text);
+                    return enteredBook;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                    return null;
+                }
+            }  
         }
 
         private Borrow GetBorrow(Book book, Member member) {

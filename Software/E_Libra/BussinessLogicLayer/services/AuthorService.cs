@@ -32,9 +32,9 @@ namespace BussinessLogicLayer.services
 
         public void Dispose(bool disposing)
         {
-            if (disposing)
+            if (disposing && authorRepository != null)
             {
-                authorRepository?.Dispose();
+                authorRepository.Dispose();
             }
         }
         public List<Author> GetAllAuthors() 

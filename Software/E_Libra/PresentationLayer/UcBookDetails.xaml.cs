@@ -331,8 +331,7 @@ namespace PresentationLayer
         }
 
         private void UserControl_Unloaded(object sender, RoutedEventArgs e) {
-            //TODO: odkomentirati ovu liniju kada BookService bude realizirao sučelje IDisposable (@vlovric21)
-            //bookServices.Dispose();
+            bookServices.Dispose();
         }
     }
 }

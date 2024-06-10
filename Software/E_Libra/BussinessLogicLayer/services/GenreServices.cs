@@ -32,9 +32,9 @@ namespace BussinessLogicLayer.services
 
         public void Dispose(bool disposing)
         {
-            if (disposing)
+            if (disposing && genreRepository != null)
             {
-                genreRepository?.Dispose();
+                genreRepository.Dispose();
             }
         }
 
