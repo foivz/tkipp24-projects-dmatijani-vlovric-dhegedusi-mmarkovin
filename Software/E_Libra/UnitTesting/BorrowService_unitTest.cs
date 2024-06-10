@@ -163,6 +163,7 @@ namespace UnitTesting {
         [InlineData(456)]
         [InlineData(789)]
         [InlineData(012)]
+        [InlineData(0)]
         public void GetAllBorrowsForMember_GivenTheCorrectMemberAndLibraryIdIsEntered_BorrowsRetrieved(int memberId) {
             //Arrange
             A.CallTo(() => borrowRepository.GetAllBorrowsForMember(memberId, 456)).Returns(borrows.Where(b => b.Member_id == memberId));
@@ -172,6 +173,26 @@ namespace UnitTesting {
 
             //Assert
             Assert.Equal(borrowsForMember, borrows.Where(b => b.Member_id == memberId).ToList());
+        }
+
+        [Theory]
+        [InlineData(123, BorrowStatus.Waiting)]
+        [InlineData(123, BorrowStatus.Late)]
+        [InlineData(123, BorrowStatus.Returned)]
+        [InlineData(789, BorrowStatus.Waiting)]
+        [InlineData(789, BorrowStatus.Borrowed)]
+        [InlineData(789, BorrowStatus.Late)]
+        [InlineData(0, BorrowStatus.Borrowed)]
+        [InlineData(0, BorrowStatus.Returned)]
+        public void GetBorrowsForMemberByStatus_GivenTheCorrectMemberAndBorrowStatusIsEntered_CorrectBorrowsRetrieved(int memberId, BorrowStatus borrowStatus) {
+            //Arrange
+            A.CallTo(() => borrowRepository.GetBorrowsForMemberByStatus(memberId, 456, borrowStatus)).Returns(borrows.Where(b => b.Member_id == memberId && b.borrow_status == (int)borrowStatus));
+
+            //Act
+            var borrowsForMember = borrowService.GetBorrowsForMemberByStatus(memberId, 456, borrowStatus);
+
+            //Assert
+            Assert.Equal(borrowsForMember, borrows.Where(b => b.Member_id == memberId && b.borrow_status == (int)borrowStatus).ToList());
         }
     }
 }
