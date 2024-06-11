@@ -21,6 +21,7 @@ namespace UnitTesting
         readonly BookServices bookServices;
 
         readonly IMembersRepository membersRepo;
+        readonly MemberService memberService;
 
         readonly Book book;
         readonly Reservation reservation;
@@ -32,6 +33,7 @@ namespace UnitTesting
             membersRepo = A.Fake<IMembersRepository>();
             bookServices = new BookServices(bookRepo, reservationRepo, membersRepo);
             reservationService = new ReservationService(reservationRepo, bookServices);
+            memberService = new MemberService(membersRepo, null, null, null, reservationService);
 
             book = new Book
             {
@@ -333,5 +335,45 @@ namespace UnitTesting
             A.CallTo(() => fakeReservationRepo.Dispose()).MustHaveHappened();
             A.CallTo(() => fakeBookServices.Dispose()).MustHaveHappened();
         }
+
+        //Magdalena Markovinović
+
+        [Fact]
+        public void GetReservationsForMemberNormal_ReturnsReservations()
+        {
+            // Arrange
+            int memberId = 1;
+            List<Reservation> expectedReservations = new List<Reservation>() { new Reservation(), new Reservation() };
+            A.CallTo(() => reservationRepo.GetReservationsForMemberNormal(memberId))
+                .Returns(expectedReservations.AsQueryable());
+
+            // Act
+            var reservations = reservationService.GetReservationsForMemberNormal(memberId);
+
+            // Assert
+            Assert.Equal(expectedReservations, reservations);
+            A.CallTo(() => reservationRepo.GetReservationsForMemberNormal(memberId))
+                .MustHaveHappenedOnceExactly();
+        }
+        //Magdalena markovinović
+        [Fact]
+        public void GetReservationsForMemberNormal_NoReservations_ReturnsEmptyList()
+        {
+            // Arrange
+            int memberId = 1;
+            List<Reservation> emptyList = new List<Reservation>();
+            A.CallTo(() => reservationRepo.GetReservationsForMemberNormal(memberId))
+                .Returns(emptyList.AsQueryable());
+
+            // Act
+            var reservations = reservationService.GetReservationsForMemberNormal(memberId);
+
+            // Assert
+            Assert.Empty(reservations);
+            A.CallTo(() => reservationRepo.GetReservationsForMemberNormal(memberId))
+                .MustHaveHappenedOnceExactly();
+        }
+
+
     }
 }
