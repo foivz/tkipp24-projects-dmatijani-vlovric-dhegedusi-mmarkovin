@@ -1,6 +1,7 @@
 ﻿using BussinessLogicLayer.Exceptions;
 using BussinessLogicLayer.services;
 using DataAccessLayer.Interfaces;
+using DataAccessLayer.Repositories;
 using EntitiesLayer;
 using FakeItEasy;
 using System;
@@ -119,6 +120,7 @@ namespace UnitTesting {
             }.AsQueryable();
         }
 
+        //David Matijanić
         [Fact]
         public void Constructor_WhenEmployeeServiceIsInstantiated_ItIsNotNull() {
             //Arrange & act
@@ -128,6 +130,7 @@ namespace UnitTesting {
             Assert.NotNull(service);
         }
 
+        //David Matijanić
         [Fact]
         public void GetEmployeesByLibrary_NoEmployeesExist_NoEmployeesReturned() {
             //Arrange
@@ -141,6 +144,7 @@ namespace UnitTesting {
             Assert.Empty(retrievedEmployees);
         }
 
+        //David Matijanić
         [Theory]
         [InlineData(111)]
         [InlineData(222)]
@@ -159,6 +163,7 @@ namespace UnitTesting {
             Assert.Equal(employees.Where(e => e.Library.id == libraryId).ToList(), retrievedEmployees);
         }
 
+        //David Matijanić
         [Theory]
         [InlineData(1)]
         [InlineData(2)]
@@ -177,6 +182,7 @@ namespace UnitTesting {
             Assert.Throws<EmployeeWithSameIDException>(() => employeeService.AddEmployee(employee));
         }
 
+        //David Matijanić
         [Theory]
         [InlineData("ddaric")]
         [InlineData("mmisic")]
@@ -198,6 +204,7 @@ namespace UnitTesting {
             Assert.Throws<EmployeeWithSameUsernameException>(() => employeeService.AddEmployee(employee));
         }
 
+        //David Matijanić
         [Theory]
         [InlineData("11892593283")]
         [InlineData("85738923405")]
@@ -220,6 +227,7 @@ namespace UnitTesting {
             Assert.Throws<EmployeeWithSameOIBException>(() => employeeService.AddEmployee(employee));
         }
 
+        //David Matijanić
         [Fact]
         public void AddEmployee_EmployeeHasUniqueData_NewEmployeeIsAdded() {
             //Arrange
@@ -242,6 +250,7 @@ namespace UnitTesting {
             Assert.Contains(employee, employees);
         }
 
+        //David Matijanić
         [Theory]
         [InlineData(1)]
         [InlineData(2)]
@@ -260,6 +269,7 @@ namespace UnitTesting {
             Assert.Throws<EmployeeWithSameIDException>(() => employeeService.UpdateEmployee(employee));
         }
 
+        //David Matijanić
         [Theory]
         [InlineData("11111111111")]
         [InlineData("22222222222")]
@@ -277,6 +287,7 @@ namespace UnitTesting {
             Assert.Throws<EmployeeWithSameOIBException>(() => employeeService.UpdateEmployee(employee));
         }
 
+        //David Matijanić
         [Theory]
         [InlineData("mmisic")]
         [InlineData("ssivic")]
@@ -298,6 +309,7 @@ namespace UnitTesting {
             Assert.Throws<EmployeeWithSameUsernameException>(() => employeeService.UpdateEmployee(employee));
         }
 
+        //David Matijanić
         [Fact]
         public void UpdateEmployee_EmployeeWithOIBExists_EmployeeIsUpdated() {
             //Arrange
@@ -322,6 +334,7 @@ namespace UnitTesting {
             Assert.Equal("Promijenjen", employee.name);
         }
 
+        //David Matijanić
         [Fact]
         public void DeleteEmployee_EmployeeHasActiveBorrows_ThrowsEmployeeException() {
             //Arrange
@@ -332,6 +345,7 @@ namespace UnitTesting {
             Assert.Throws<EmployeeException>(() => employeeService.DeleteEmployee(employee));
         }
 
+        //David Matijanić
         [Fact]
         public void DeleteEmployee_EmployeeHasActiveArchives_ThrowsEmployeeException() {
             //Arrange
@@ -342,6 +356,7 @@ namespace UnitTesting {
             Assert.Throws<EmployeeException>(() => employeeService.DeleteEmployee(employee));
         }
 
+        //David Matijanić
         [Fact]
         public void DeleteEmployee_EmployeeHasNoActiveBorrowsOrArchives_EmployeeIsDeleted() {
             //Arrange
@@ -355,6 +370,7 @@ namespace UnitTesting {
             Assert.DoesNotContain(employee, employees);
         }
 
+        //David Matijanić
         [Fact]
         public void GetEmployeesByUsernam_NoEmployeesExist_NoEmployeesReturned() {
             //Arrange
@@ -368,6 +384,7 @@ namespace UnitTesting {
             Assert.Null(retrievedEmployee);
         }
 
+        //David Matijanić
         [Theory]
         [InlineData("ddaric")]
         [InlineData("mmisic")]
@@ -391,6 +408,7 @@ namespace UnitTesting {
             Assert.Equal(employeeUsername, retrievedEmployee.username);
         }
 
+        //David Matijanić
         [Fact]
         public void GetEmployeeByUsername_NonExistingEmployeeUsername_EmployeeIsNotReturned() {
             //Arrange
@@ -407,12 +425,16 @@ namespace UnitTesting {
             Assert.Null(retrievedEmployee);
         }
 
+        // Implementirati DISPOSE kad EmployeeService bude imao IDisposable implementiran! (@dmatijani21)
+
+        //David Matijanić
         private void PrepareEmployeeRepositoryMethods(Employee employee) {
             A.CallTo(() => employeeRepository.GetEmployeesById(employee.id)).Returns(employees.Where(e => e.id == employee.id));
             A.CallTo(() => employeeRepository.GetEmployeesByUsername(employee.username)).Returns(employees.Where(e => e.username == employee.username));
             A.CallTo(() => employeeRepository.GetEmployeesByOIB(employee.OIB)).Returns(employees.Where(e => e.OIB == employee.OIB));
         }
 
+        //David Matijanić
         private void PrepareBorrowAndArchiveServices(Employee employee, List<Borrow> borrows, List<Archive> archives) {
             IBorrowRepository borrowRepository = A.Fake<IBorrowRepository>();
             A.CallTo(() => borrowRepository.GetBorrowsForEmployee(employee.id)).Returns(borrows.AsQueryable());
