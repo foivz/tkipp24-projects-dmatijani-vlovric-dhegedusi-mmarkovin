@@ -322,6 +322,66 @@ namespace UnitTesting {
             Assert.Equal("Promijenjen", employee.name);
         }
 
+        [Fact]
+        public void DeleteEmployee_EmployeeHasActiveBorrows_ThrowsEmployeeException() {
+            //Arrange
+            Employee employee = employees.First();
+
+            IBorrowRepository borrowRepository = A.Fake<IBorrowRepository>();
+            A.CallTo(() => borrowRepository.GetBorrowsForEmployee(employee.id)).Returns(new List<Borrow> { new Borrow() }.AsQueryable());
+            BorrowService borrowService = new BorrowService(borrowRepository, null, null);
+
+            employeeService = new EmployeeService(employeeRepository, borrowService, null);
+
+            //Act & assert
+            Assert.Throws<EmployeeException>(() => employeeService.DeleteEmployee(employee));
+        }
+
+        [Fact]
+        public void DeleteEmployee_EmployeeHasActiveArchives_ThrowsEmployeeException() {
+            //Arrange
+            Employee employee = employees.First();
+
+            IBorrowRepository borrowRepository = A.Fake<IBorrowRepository>();
+            A.CallTo(() => borrowRepository.GetBorrowsForEmployee(employee.id)).Returns(new List<Borrow>().AsQueryable());
+            BorrowService borrowService = new BorrowService(borrowRepository, null, null);
+
+            IArchiveRepository archiveRepository = A.Fake<IArchiveRepository>();
+            A.CallTo(() => archiveRepository.GetArchivesForEmployee(employee.id)).Returns(new List<Archive> { new Archive() }.AsQueryable());
+            ArchiveServices archiveService = new ArchiveServices(archiveRepository);
+
+            employeeService = new EmployeeService(employeeRepository, borrowService, archiveService);
+
+            //Act & assert
+            Assert.Throws<EmployeeException>(() => employeeService.DeleteEmployee(employee));
+        }
+
+        [Fact]
+        public void DeleteEmployee_EmployeeHasNoActiveBorrowsOrArchives_EmployeeIsDeleted() {
+            //Arrange
+            Employee employee = employees.First();
+
+            IBorrowRepository borrowRepository = A.Fake<IBorrowRepository>();
+            A.CallTo(() => borrowRepository.GetBorrowsForEmployee(employee.id)).Returns(new List<Borrow>().AsQueryable());
+            BorrowService borrowService = new BorrowService(borrowRepository, null, null);
+
+            IArchiveRepository archiveRepository = A.Fake<IArchiveRepository>();
+            A.CallTo(() => archiveRepository.GetArchivesForEmployee(employee.id)).Returns(new List<Archive>().AsQueryable());
+            ArchiveServices archiveService = new ArchiveServices(archiveRepository);
+
+            A.CallTo(() => employeeRepository.Remove(employee)).Invokes(call => {
+                employees = employees.Where(e => e.id != employee.id);
+            });
+
+            employeeService = new EmployeeService(employeeRepository, borrowService, archiveService);
+
+            //Act
+            employeeService.DeleteEmployee(employee);
+
+            //Assert
+            Assert.DoesNotContain(employee, employees);
+        }
+
         private void PrepareEmployeeRepositoryMethods(Employee employee) {
             A.CallTo(() => employeeRepository.GetEmployeesById(employee.id)).Returns(employees.Where(e => e.id == employee.id));
             A.CallTo(() => employeeRepository.GetEmployeesByUsername(employee.username)).Returns(employees.Where(e => e.username == employee.username));
