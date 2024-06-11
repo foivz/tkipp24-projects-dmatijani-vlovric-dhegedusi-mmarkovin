@@ -101,6 +101,10 @@ namespace BussinessLogicLayer.services {
         }
 
         public int GetEmployeeLibraryId(string username) {
+            if (username == null)
+            {
+                throw new ArgumentNullException(nameof(username), "Korisnik ne može biti null!");
+            }
             return employeeRepository.GetEmployeeLibraryId(username);
         }
 

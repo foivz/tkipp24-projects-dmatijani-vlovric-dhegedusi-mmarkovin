@@ -106,5 +106,32 @@ namespace UnitTesting
             Assert.Null(LoggedUser.UserType);
             Assert.Equal(0, LoggedUser.LibraryId);
         }
+
+        // Magdalena Markovinović
+        [Fact]
+        public void GetEmployeeLibraryId_ReturnsCorrectId()
+        {
+            // Arrange
+            string username = "testuser";
+            int expectedLibraryId = 1;
+            A.CallTo(() => empoloyeeRepositroy.GetEmployeeLibraryId(username)).Returns(expectedLibraryId);
+
+            // Act
+            int actualLibraryId = employeeService.GetEmployeeLibraryId(username);
+
+            // Assert
+            Assert.Equal(expectedLibraryId, actualLibraryId);
+        }
+
+        // Magdalena Markovinović
+        [Fact]
+        public void GetEmployeeLibraryId_With_NullUsername_Throws_Exception()
+        {
+            // Arrange
+            string username = null;
+
+            // Act & Assert
+            Assert.Throws<ArgumentNullException>(() => employeeService.GetEmployeeLibraryId(username));
+        }
     }
 }
