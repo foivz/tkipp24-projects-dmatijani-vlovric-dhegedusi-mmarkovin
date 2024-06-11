@@ -5,6 +5,7 @@ using EntitiesLayer;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -13,18 +14,18 @@ namespace BussinessLogicLayer.services
     //Magdalena Markovinocić
     public class NotificationService
     {
-        public INotificationsRepository notificationsRepository;
+        private INotificationsRepository notificationsRepository;
+        private MemberService memberService;
 
-        public NotificationService(INotificationsRepository notificationsRepo)
+        public NotificationService(INotificationsRepository notificationsRepo, MemberService memberService)
         {
             this.notificationsRepository = notificationsRepo;
+            this.memberService = memberService;
         }
-        public NotificationService() : this(new NotificationsRepository())
+        public NotificationService() : this(new NotificationsRepository(), new MemberService())
         {
-            
         }
 
-        MemberService memberService = new MemberService();
         public List<Notification> GetAllNotificationByLibrary(int id)
         {
             return notificationsRepository.GetAllNotificationsForLibrary(id).ToList();
@@ -38,13 +39,15 @@ namespace BussinessLogicLayer.services
         public bool AddNotificationRead(Notification notification)
         {
             Member member = memberService.GetMemberByUsername(LoggedUser.Username);
-            notificationsRepository.AddReadNotification(notification, member);
-            return true;
+            var added = notificationsRepository.AddReadNotification(notification, member);
+            if (added != 0) return true;
+            return false;
         }
         public bool EditNotification(Notification notification)
         {
-            notificationsRepository.Update(notification);
-            return true;
+            var updated = notificationsRepository.Update(notification);
+            if (updated != 0) return true;
+            else return false;
         }
 
         public List<Notification> GetReadNotificationsForMember(Member member)
