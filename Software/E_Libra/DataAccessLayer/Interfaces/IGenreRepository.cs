@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace DataAccessLayer.Interfaces
 {
-    public interface IGenreRepository
+    public interface IGenreRepository : IDisposable
     {
         IQueryable<Genre> GetAll();
         int Add(Genre entity, bool saveChanges = true);
