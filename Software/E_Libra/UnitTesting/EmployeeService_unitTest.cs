@@ -118,6 +118,10 @@ namespace UnitTesting {
                     Library_id = 444
                 }
             }.AsQueryable();
+
+            LoggedUser.Username = null;
+            LoggedUser.UserType = null;
+            LoggedUser.LibraryId = 0;
         }
 
         //David Matijanić
