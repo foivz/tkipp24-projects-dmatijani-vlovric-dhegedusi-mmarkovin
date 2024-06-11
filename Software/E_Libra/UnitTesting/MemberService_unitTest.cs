@@ -40,6 +40,10 @@ namespace UnitTesting
             reservationService = new ReservationService(reservationRepository, null);
             employeeService = new EmployeeService(empoloyeeRepositroy, borrowService, archiveServices);
             memberService = new MemberService(membersRepository, libraryRepository, employeeService, borrowService, reservationService);
+
+            LoggedUser.Username = null;
+            LoggedUser.UserType = null;
+            LoggedUser.LibraryId = 1;
         }
 
         //David Matijanić
@@ -60,9 +64,9 @@ namespace UnitTesting
             string username = "user1";
             string password = "password1";
             var returnedMembers = new List<Member>
-        {
-            new Member { username = username, password = password, Library_id = 1 }
-        }.AsQueryable();
+            {
+                new Member { username = username, password = password, Library_id = 1 }
+            }.AsQueryable();
 
             A.CallTo(() => membersRepository.GetMemberLogin(username, password)).Returns(returnedMembers);
 
