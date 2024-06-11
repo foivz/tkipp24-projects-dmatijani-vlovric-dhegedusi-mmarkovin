@@ -355,6 +355,58 @@ namespace UnitTesting {
             Assert.DoesNotContain(employee, employees);
         }
 
+        [Fact]
+        public void GetEmployeesByUsernam_NoEmployeesExist_NoEmployeesReturned() {
+            //Arrange
+            A.CallTo(() => employeeRepository.GetEmployeeId("ddaric")).Returns(1);
+            A.CallTo(() => employeeRepository.GetEmployeesById(1)).Returns(new List<Employee>().AsQueryable());
+
+            //Act
+            var retrievedEmployee = employeeService.GetEmployeeByUsername("ddaric");
+
+            //Assert
+            Assert.Null(retrievedEmployee);
+        }
+
+        [Theory]
+        [InlineData("ddaric")]
+        [InlineData("mmisic")]
+        [InlineData("ssivic")]
+        [InlineData("llalic")]
+        [InlineData("aanic")]
+        [InlineData("iivic")]
+        [InlineData("ppreradovic")]
+        [InlineData("mmarkovic")]
+        public void GetEmployeeByUsername_EmployeeWithUsernameExists_EmployeeReturned(string employeeUsername) {
+            //Arrange
+            A.CallTo(() => employeeRepository.GetEmployeeId(employeeUsername)).Returns(employees.Where(e => e.username == employeeUsername).First().id);
+            A.CallTo(() => employeeRepository.GetEmployeesById(A<int>.Ignored)).ReturnsLazily((int _id) => {
+                return employees.Where(e => e.id == _id);
+            });
+
+            //Act
+            var retrievedEmployee = employeeService.GetEmployeeByUsername(employeeUsername);
+
+            //Assert
+            Assert.Equal(employeeUsername, retrievedEmployee.username);
+        }
+
+        [Fact]
+        public void GetEmployeeByUsername_NonExistingEmployeeUsername_EmployeeIsNotReturned() {
+            //Arrange
+            string username = "nonexisting";
+            A.CallTo(() => employeeRepository.GetEmployeeId(username)).Returns(-99);
+            A.CallTo(() => employeeRepository.GetEmployeesById(A<int>.Ignored)).ReturnsLazily((int _id) => {
+                return employees.Where(e => e.id == _id);
+            });
+
+            //Act
+            var retrievedEmployee = employeeService.GetEmployeeByUsername(username);
+
+            //Assert
+            Assert.Null(retrievedEmployee);
+        }
+
         private void PrepareEmployeeRepositoryMethods(Employee employee) {
             A.CallTo(() => employeeRepository.GetEmployeesById(employee.id)).Returns(employees.Where(e => e.id == employee.id));
             A.CallTo(() => employeeRepository.GetEmployeesByUsername(employee.username)).Returns(employees.Where(e => e.username == employee.username));
