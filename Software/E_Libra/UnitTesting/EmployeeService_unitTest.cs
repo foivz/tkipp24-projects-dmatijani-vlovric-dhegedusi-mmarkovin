@@ -242,6 +242,86 @@ namespace UnitTesting {
             Assert.Contains(employee, employees);
         }
 
+        [Theory]
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(3)]
+        [InlineData(4)]
+        [InlineData(5)]
+        [InlineData(6)]
+        [InlineData(7)]
+        [InlineData(8)]
+        public void UpdateEmployee_EmployeeWithSameIdExists_ThrowsEmployeeWithSameIdException(int employeeId) {
+            //Arrange
+            Employee employee = new Employee { id = employeeId };
+            PrepareEmployeeRepositoryMethods(employee);
+
+            //Act & assert
+            Assert.Throws<EmployeeWithSameIDException>(() => employeeService.UpdateEmployee(employee));
+        }
+
+        [Theory]
+        [InlineData("11111111111")]
+        [InlineData("22222222222")]
+        [InlineData("33333333333")]
+        public void UpdateEmployee_NonExistingOIBEntered_ThrowsEmployeeWithSameOIBException(string employeeOib) {
+            //Arrange
+            Employee employee = new Employee {
+                id = 9,
+                username = "ddaric",
+                OIB = employeeOib
+            };
+            PrepareEmployeeRepositoryMethods(employee);
+
+            //Act & assert
+            Assert.Throws<EmployeeWithSameOIBException>(() => employeeService.UpdateEmployee(employee));
+        }
+
+        [Theory]
+        [InlineData("mmisic")]
+        [InlineData("ssivic")]
+        [InlineData("llalic")]
+        [InlineData("aanic")]
+        [InlineData("iivic")]
+        [InlineData("ppreradovic")]
+        [InlineData("mmarkovic")]
+        public void UpdateEmployee_EmployeeWithSameUsernameExists_ThrowsEmployeeWithSameUsernameException(string employeeUsername) {
+            //Arrange
+            Employee employee = new Employee {
+                id = 1,
+                OIB = "11892593283",
+                username = employeeUsername
+            };
+            PrepareEmployeeRepositoryMethods(employee);
+
+            //Act & assert
+            Assert.Throws<EmployeeWithSameUsernameException>(() => employeeService.UpdateEmployee(employee));
+        }
+
+        [Fact]
+        public void UpdateEmployee_EmployeeWithOIBExists_EmployeeIsUpdated() {
+            //Arrange
+            Employee employee = employees.First();
+            Employee changedEmployee = new Employee {
+                OIB = employee.OIB,
+                username = employee.username,
+                name = "Promijenjen"
+            };
+            PrepareEmployeeRepositoryMethods(changedEmployee);
+            A.CallTo(() => employeeRepository.Update(changedEmployee, true)).Invokes(call => {
+                foreach (var e in employees.Where(ee => ee.OIB == changedEmployee.OIB)) {
+                    e.name = changedEmployee.name;
+                }
+            });
+
+            //Act
+            employeeService.UpdateEmployee(changedEmployee);
+            employee = employees.First();
+
+            //Assert
+            Assert.Equal("Promijenjen", employee.name);
+        }
+
         private void PrepareEmployeeRepositoryMethods(Employee employee) {
             A.CallTo(() => employeeRepository.GetEmployeesById(employee.id)).Returns(employees.Where(e => e.id == employee.id));
             A.CallTo(() => employeeRepository.GetEmployeesByUsername(employee.username)).Returns(employees.Where(e => e.username == employee.username));
