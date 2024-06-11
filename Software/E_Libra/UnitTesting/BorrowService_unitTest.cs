@@ -19,6 +19,7 @@ namespace UnitTesting {
         private readonly IBorrowRepository borrowRepository;
         private BorrowService borrowService { get; set; }
 
+        //David Matijanić
         public BorrowService_unitTest() {
             borrowRepository = A.Fake<IBorrowRepository>();
             List<Member> members = new List<Member> {
@@ -159,6 +160,7 @@ namespace UnitTesting {
             borrowService = InitialiseBorrowService(borrowRepository);
         }
 
+        //David Matijanić
         [Fact]
         public void Constructor_WhenBorrowServiceIsInstantiated_ItIsNotNull() {
             //Arrange & act
@@ -168,6 +170,7 @@ namespace UnitTesting {
             Assert.NotNull(service);
         }
 
+        //David Matijanić
         [Fact]
         public void GetAllBorrowsForMember_GivenThereAreNoBorrows_NoBorrowsRetrieved() {
             //Arrange
@@ -177,9 +180,10 @@ namespace UnitTesting {
             var borrowsForMember = borrowService.GetAllBorrowsForMember(1, 1);
 
             //Assert
-            Assert.Equal(borrowsForMember, new List<Borrow>());
+            Assert.Empty(borrowsForMember);
         }
 
+        //David Matijanić
         [Theory]
         [InlineData(123, 1)]
         [InlineData(456, 2)]
@@ -194,9 +198,10 @@ namespace UnitTesting {
             var borrowsForMember = borrowService.GetAllBorrowsForMember(memberId, libraryId);
 
             //Assert
-            Assert.Equal(borrowsForMember, borrows.Where(b => b.Member.id == memberId).ToList());
+            Assert.Equal(borrows.Where(b => b.Member.id == memberId).ToList(), borrowsForMember);
         }
 
+        //David Matijanić
         [Theory]
         [InlineData(BorrowStatus.Waiting)]
         [InlineData(BorrowStatus.Borrowed)]
@@ -210,9 +215,10 @@ namespace UnitTesting {
             var borrowsForMember = borrowService.GetBorrowsForMemberByStatus(1, 1, borrowStatus);
 
             //Assert
-            Assert.Equal(borrowsForMember, new List<Borrow>());
+            Assert.Empty(borrowsForMember);
         }
 
+        //David Matijanić
         [Theory]
         [InlineData(123, 1, BorrowStatus.Waiting)]
         [InlineData(123, 1, BorrowStatus.Late)]
@@ -230,9 +236,10 @@ namespace UnitTesting {
             var borrowsForMember = borrowService.GetBorrowsForMemberByStatus(memberId, libraryId, borrowStatus);
 
             //Assert
-            Assert.Equal(borrowsForMember, borrows.Where(b => b.Member.id == memberId && b.borrow_status == (int)borrowStatus).ToList());
+            Assert.Equal(borrows.Where(b => b.Member.id == memberId && b.borrow_status == (int)borrowStatus).ToList(), borrowsForMember);
         }
 
+        //David Matijanić
         [Fact]
         public void GetBorrowsForMemberAndBook_GivenThereAreNoBorrows_NoBorrowsRetrieved() {
             //Arrange
@@ -242,9 +249,10 @@ namespace UnitTesting {
             var borrowsForMember = borrowService.GetBorrowsForMemberAndBook(1, 1, 1);
 
             //Assert
-            Assert.Equal(borrowsForMember, new List<Borrow>());
+            Assert.Empty(borrowsForMember);
         }
 
+        //David Matijanić
         [Theory]
         [InlineData(123, 1, 3)]
         [InlineData(123, 1, 5)]
@@ -264,9 +272,10 @@ namespace UnitTesting {
             var borrowsForMember = borrowService.GetBorrowsForMemberAndBook(memberId, libraryId, bookId);
 
             //Assert
-            Assert.Equal(borrowsForMember, borrows.Where(b => b.Member.id == memberId && b.Book.id == bookId).ToList());
+            Assert.Equal(borrows.Where(b => b.Member.id == memberId && b.Book.id == bookId).ToList(), borrowsForMember);
         }
 
+        //David Matijanić
         [Fact]
         public async Task GetAllBorrowsForLibraryAsync_GivenThereAreNoBorrows_NoBorrowsRetrieved() {
             //Arrange
@@ -276,9 +285,10 @@ namespace UnitTesting {
             var borrowsForLibrary = await borrowService.GetAllBorrowsForLibraryAsync(5);
 
             //Arrange
-            Assert.Equal(borrowsForLibrary, new List<Borrow>());
+            Assert.Empty(borrowsForLibrary);
         }
 
+        //David Matijanić
         [Theory]
         [InlineData(1)]
         [InlineData(2)]
@@ -291,9 +301,10 @@ namespace UnitTesting {
             var borrowsForLibrary = await borrowService.GetAllBorrowsForLibraryAsync(libraryId);
 
             //Arrange
-            Assert.Equal(borrowsForLibrary, borrows.Where(b => b.Member.Library_id == libraryId).ToList());
+            Assert.Equal(borrows.Where(b => b.Member.Library_id == libraryId).ToList(), borrowsForLibrary);
         }
 
+        //David Matijanić
         [Theory]
         [InlineData(1)]
         [InlineData(2)]
@@ -307,9 +318,10 @@ namespace UnitTesting {
             var borrowsForLibrary = await borrowService.GetAllBorrowsForLibraryAsync(library.id);
 
             //Arrange
-            Assert.Equal(borrowsForLibrary, borrows.Where(b => b.Member.Library_id == library.id).ToList());
+            Assert.Equal(borrows.Where(b => b.Member.Library_id == library.id).ToList(), borrowsForLibrary);
         }
 
+        //David Matijanić
         [Fact]
         public async Task GetBorrowsForLibraryByStatusAsync_GivenThereAreNoBorrows_NoBorrowsRetrieved() {
             //Arrange
@@ -319,9 +331,10 @@ namespace UnitTesting {
             var borrowsForLibrary = await borrowService.GetBorrowsForLibraryByStatusAsync(5, BorrowStatus.Borrowed);
 
             //Arrange
-            Assert.Equal(borrowsForLibrary, new List<Borrow>());
+            Assert.Empty(borrowsForLibrary);
         }
 
+        //David Matijanić
         [Theory]
         [InlineData(1, BorrowStatus.Waiting)]
         [InlineData(1, BorrowStatus.Borrowed)]
@@ -339,9 +352,10 @@ namespace UnitTesting {
             var borrowsForLibrary = await borrowService.GetBorrowsForLibraryByStatusAsync(libraryId, borrowStatus);
 
             //Arrange
-            Assert.Equal(borrowsForLibrary, borrows.Where(b => b.Member.Library_id == libraryId && b.borrow_status == (int)borrowStatus).ToList());
+            Assert.Equal(borrows.Where(b => b.Member.Library_id == libraryId && b.borrow_status == (int)borrowStatus).ToList(), borrowsForLibrary);
         }
 
+        //David Matijanić
         [Theory]
         [InlineData(1, BorrowStatus.Waiting)]
         [InlineData(1, BorrowStatus.Borrowed)]
@@ -360,9 +374,10 @@ namespace UnitTesting {
             var borrowsForLibrary = await borrowService.GetBorrowsForLibraryByStatusAsync(library, borrowStatus);
 
             //Arrange
-            Assert.Equal(borrowsForLibrary, borrows.Where(b => b.Member.Library_id == library.id && b.borrow_status == (int)borrowStatus).ToList());
+            Assert.Equal(borrows.Where(b => b.Member.Library_id == library.id && b.borrow_status == (int)borrowStatus).ToList(), borrowsForLibrary);
         }
 
+        //David Matijanić
         [Fact]
         public void AddNewBorrow_BorrowHasStatusWaiting_BookIsBorrowed() {
             //Arrange
@@ -380,6 +395,7 @@ namespace UnitTesting {
             Assert.Contains(newBorrow, borrows);
         }
 
+        //David Matijanić
         [Fact]
         public void AddNewBorrow_BorrowHasStatusBorrowed_BookHasOneLessCopies() {
             //Arrange
@@ -406,6 +422,7 @@ namespace UnitTesting {
             Assert.Multiple(actions);
         }
 
+        //David Matijanić
         [Fact]
         public void AddNewBorrow_BorrowHasStatusBorrowedAndBookHasNoMoreCopiesAndNoReservationExists_ThrowsNoMoreBookCopiesException() {
             //Arrange
@@ -430,6 +447,7 @@ namespace UnitTesting {
             Assert.Equal("Odabrane knjige trenutno nema na stanju!", exception.Message);
         }
 
+        //David Matijanić
         [Fact]
         public void AddNewBorrow_BorrowHasStatusBorrowedAndBookHasNoMoreCopiesAndReservationExists_BookIsBorrowed() {
             //Arrange
@@ -454,6 +472,7 @@ namespace UnitTesting {
             Assert.Contains(newBorrow, borrows);
         }
 
+        //David Matijanić
         [Fact]
         public void AddNewBorrow_BorrowHasStatusBorrowedAndBookHasNoMoreCopiesAndReservationExists_NumberOfCopiesStaysAtZero() {
             //Arrange
@@ -478,6 +497,7 @@ namespace UnitTesting {
             Assert.Equal(0, newBorrow.Book.current_copies);
         }
 
+        //David Matijanić
         [Fact]
         public void UpdateBorrow_WaitingBorrowDoesntExist_NoBorrowIsUpdated() {
             //Arrange
@@ -503,6 +523,7 @@ namespace UnitTesting {
             Assert.Equal(0, updatedBorrowNumber);
         }
 
+        //David Matijanić
         [Fact]
         public void UpdateBorrow_BorrowExists_BorrowIsUpdated() {
             //Arrange
@@ -517,6 +538,7 @@ namespace UnitTesting {
             Assert.Equal(1, updatedBorrowNumber);
         }
 
+        //David Matijanić
         [Fact]
         public void UpdateBorrow_BorrowHasStatusReturned_OneCopyIsInserted() {
             //Arrange
@@ -546,6 +568,7 @@ namespace UnitTesting {
             Assert.Equal(current_copies + 1, borrow.Book.current_copies);
         }
 
+        //David Matijanić
         [Fact]
         public void UpdateBorrow_BorrowHasStatusBorrowedAndNoMoreCurrentCopies_ThrowsNoMoreBookCopiesException() {
             //Arrange
@@ -569,6 +592,7 @@ namespace UnitTesting {
             Assert.Throws<NoMoreBookCopiesException>(() => borrowService.UpdateBorrow(borrow));
         }
 
+        //David Matijanić
         [Fact]
         public void UpdateBorrow_BorrowHasStatusBorrowedAndHasCopies_BorrowIsUpdated() {
             //Arrange
@@ -590,6 +614,7 @@ namespace UnitTesting {
             Assert.Equal(1, updatedBorrowNumber);
         }
 
+        //David Matijanić
         [Fact]
         public void UpdateBorrow_BorrowHasStatusBorrowedAndHasCopies_OneCopyIsRemoved() {
             //Arrange
@@ -612,6 +637,7 @@ namespace UnitTesting {
             Assert.Equal(currentCopies - 1, borrow.Book.current_copies);
         }
 
+        //David Matijanić
         [Fact]
         public void GetAllBorrowsForEmployee_GivenThereAreNoBorrows_NoBorrowsRetrieved() {
             //Arrange
@@ -624,6 +650,7 @@ namespace UnitTesting {
             Assert.Equal(borrowsForEmployee, new List<Borrow>());
         }
 
+        //David Matijanić
         [Theory]
         [InlineData(111)]
         [InlineData(222)]
@@ -642,6 +669,7 @@ namespace UnitTesting {
             Assert.Equal(borrowsForEmployee, borrows.Where(b => b.Employee.id == employeeId || (b.Employee1 != null ? (b.Employee1.id == employeeId) : false)).ToList());
         }
 
+        //David Matijanić
         [Fact]
         public void Dispose_CallsDisposeOnRepository() {
             //Act
@@ -651,6 +679,7 @@ namespace UnitTesting {
             A.CallTo(() => borrowRepository.Dispose()).MustHaveHappened();
         }
 
+        //David Matijanić
         private Borrow PrepareNewBorrow(BorrowStatus borrowStatus = BorrowStatus.Borrowed) {
             int libraryId = 20;
             Member member = new Member {
@@ -676,6 +705,7 @@ namespace UnitTesting {
             return newBorrow;
         }
 
+        //David Matijanić
         private Borrow PrepareNewBorrow(Member member, Book book, BorrowStatus borrowStatus = BorrowStatus.Borrowed) {
             Borrow newBorrow = new Borrow {
                 idBorrow = 1234,
@@ -691,6 +721,7 @@ namespace UnitTesting {
             return newBorrow;
         }
 
+        //David Matijanić
         private BorrowService PrepareBorrowService(Borrow newBorrow, bool reservationExists) {
             IBookRepository bookRepository = A.Fake<IBookRepository>();
             A.CallTo(() => bookRepository.Update(newBorrow.Book, true)).Returns(1);
@@ -708,7 +739,8 @@ namespace UnitTesting {
 
             return new BorrowService(borrowRepository, new ReservationService(reservationRepository, null), bookService);
         }
-        
+
+        //David Matijanić
         private BorrowService InitialiseBorrowService(IBorrowRepository repository) {
             var service = new BorrowService(repository, null, null);
 
