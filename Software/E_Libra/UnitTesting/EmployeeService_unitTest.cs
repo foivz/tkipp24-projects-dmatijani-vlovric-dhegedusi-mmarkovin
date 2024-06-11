@@ -1,4 +1,5 @@
-﻿using BussinessLogicLayer.services;
+﻿using BussinessLogicLayer.Exceptions;
+using BussinessLogicLayer.services;
 using DataAccessLayer.Interfaces;
 using EntitiesLayer;
 using FakeItEasy;
@@ -156,6 +157,95 @@ namespace UnitTesting {
 
             //Assert
             Assert.Equal(employees.Where(e => e.Library.id == libraryId).ToList(), retrievedEmployees);
+        }
+
+        [Theory]
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(3)]
+        [InlineData(4)]
+        [InlineData(5)]
+        [InlineData(6)]
+        [InlineData(7)]
+        [InlineData(8)]
+        public void AddEmployee_EmployeeWithSameIdExists_ThrowsEmployeeWithSameIdException(int employeeId) {
+            //Arrange
+            Employee employee = new Employee { id = employeeId };
+            PrepareEmployeeRepositoryMethods(employee);
+
+            //Act & assert
+            Assert.Throws<EmployeeWithSameIDException>(() => employeeService.AddEmployee(employee));
+        }
+
+        [Theory]
+        [InlineData("ddaric")]
+        [InlineData("mmisic")]
+        [InlineData("ssivic")]
+        [InlineData("llalic")]
+        [InlineData("aanic")]
+        [InlineData("iivic")]
+        [InlineData("ppreradovic")]
+        [InlineData("mmarkovic")]
+        public void AddEmployee_EmployeeWithSameUsernameExists_ThrowsEmployeeWithSameUsernameException(string employeeUsername) {
+            //Arrange
+            Employee employee = new Employee { 
+                id = 9,
+                username = employeeUsername
+            };
+            PrepareEmployeeRepositoryMethods(employee);
+
+            //Act & assert
+            Assert.Throws<EmployeeWithSameUsernameException>(() => employeeService.AddEmployee(employee));
+        }
+
+        [Theory]
+        [InlineData("11892593283")]
+        [InlineData("85738923405")]
+        [InlineData("23423423424")]
+        [InlineData("22738449503")]
+        [InlineData("31567923456")]
+        [InlineData("78912345678")]
+        [InlineData("98765432101")]
+        [InlineData("12345678901")]
+        public void AddEmployee_EmployeeWithSameOIBExists_ThrowsEmployeeWithSameOIBException(string employeeOib) {
+            //Arrange
+            Employee employee = new Employee {
+                id = 9,
+                username = "novinovic",
+                OIB = employeeOib
+            };
+            PrepareEmployeeRepositoryMethods(employee);
+
+            //Act & assert
+            Assert.Throws<EmployeeWithSameOIBException>(() => employeeService.AddEmployee(employee));
+        }
+
+        [Fact]
+        public void AddEmployee_EmployeeHasUniqueData_NewEmployeeIsAdded() {
+            //Arrange
+            Employee employee = new Employee {
+                id = 9,
+                username = "novinovic",
+                OIB = "11111122223"
+            };
+            PrepareEmployeeRepositoryMethods(employee);
+            A.CallTo(() => employeeRepository.Add(employee, true)).Invokes(call => {
+                var newEmployees = employees.ToList();
+                newEmployees.Add(employee);
+                employees = newEmployees.AsQueryable();
+            });
+
+            //Act
+            employeeService.AddEmployee(employee);
+
+            //Assert
+            Assert.Contains(employee, employees);
+        }
+
+        private void PrepareEmployeeRepositoryMethods(Employee employee) {
+            A.CallTo(() => employeeRepository.GetEmployeesById(employee.id)).Returns(employees.Where(e => e.id == employee.id));
+            A.CallTo(() => employeeRepository.GetEmployeesByUsername(employee.username)).Returns(employees.Where(e => e.username == employee.username));
+            A.CallTo(() => employeeRepository.GetEmployeesByOIB(employee.OIB)).Returns(employees.Where(e => e.OIB == employee.OIB));
         }
     }
 }
