@@ -24,7 +24,7 @@ namespace UnitTesting
 
         //Magdalena Markovinović
         [Fact]
-        public void CheckLoginCredentials_ValidCredentials_SetsLoggedUser()
+        public void CheckLoginCredentials_ValidCredentials_SetsLoggedEmployee()
         {
             // Arrange
             string username = "empl1";
@@ -46,7 +46,7 @@ namespace UnitTesting
         }
         //Magdalena Markovinović
         [Fact]
-        public void CheckLoginCredentials_InvalidCredentials_DoesNotSetLoggedUser()
+        public void CheckLoginCredentials_InvalidCredentials_DoesNotSetLoggedEmployee()
         {
             // Arrange
             string username = "invalidUsername";
@@ -66,7 +66,7 @@ namespace UnitTesting
 
         // Magdalena Markovinović
         [Fact]
-        public void CheckLoginCredentials_NoMatchingUsers_DoesNotSetLoggedUser()
+        public void CheckLoginCredentials_NoMatchingUsers_DoesNotSetLoggedEmpoyee()
         {
             // Arrange
             string username = "nonexistent";
@@ -85,7 +85,7 @@ namespace UnitTesting
         }
         // Magdalena Markovinović
         [Fact]
-        public void CheckLoginCredentials_MultipleMatchingUsers_DoesNotSetLoggedUser()
+        public void CheckLoginCredentials_MultipleMatchingUsers_DoesNotSetLoggedEmployee()
         {
             // Arrange
             string username = "empl1";
