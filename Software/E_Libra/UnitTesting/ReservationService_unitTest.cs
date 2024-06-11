@@ -316,5 +316,22 @@ namespace UnitTesting
             };
             Assert.Multiple(actions);
         }
+
+        [Fact]
+        public void Dispose_GivenFunctionIsCalled_DisposesAll()
+        {
+            // Arrange
+            var fakeReservationRepo = A.Fake<IReservationRepository>();
+            var fakeBookServices = A.Fake<BookServices>();
+
+            var fakeReservationService = new ReservationService(fakeReservationRepo, fakeBookServices);
+
+            // Act
+            fakeReservationService.Dispose();
+
+            // Assert
+            A.CallTo(() => fakeReservationRepo.Dispose()).MustHaveHappened();
+            A.CallTo(() => fakeBookServices.Dispose()).MustHaveHappened();
+        }
     }
 }

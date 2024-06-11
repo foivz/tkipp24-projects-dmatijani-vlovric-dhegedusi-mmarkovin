@@ -350,6 +350,24 @@ namespace UnitTesting
             };
             Assert.Multiple(actions);
         }
+
+        [Fact]
+        public void Dispose_FunctionIsCalled_DisposesAll()
+        {
+            //Arrange
+
+            //Act
+            bookServices.Dispose();
+
+            //Assert
+            Action[] actions =
+            {
+                () => A.CallTo(() => bookRepo.Dispose()).MustHaveHappened(),
+                () => A.CallTo(() => reservationRepo.Dispose()).MustHaveHappened(),
+                //TODO () => A.CallTo(() => memberRepo.Dispose()).MustHaveHappened(),
+            };
+            Assert.Multiple(actions);
+        }
         //TODO GetBookByBarcodeId
         //TODO UpdateBook
         //TODO GetBookBarcode
