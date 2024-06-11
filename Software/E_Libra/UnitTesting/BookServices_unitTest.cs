@@ -1,4 +1,5 @@
-﻿using BussinessLogicLayer.services;
+﻿using BussinessLogicLayer.Exceptions;
+using BussinessLogicLayer.services;
 using DataAccessLayer.Interfaces;
 using DataAccessLayer.Repositories;
 using EntitiesLayer;
@@ -50,11 +51,41 @@ namespace UnitTesting
                 {
                     id = 1,
                     name = "Title",
+                    barcode_id = "sdf42",
+                    Library_id = 1,
+                    Library = new Library {
+                        id = 1
+                    }
                 },
                 new Book
                 {
                     id = 2,
                     name = "Title2",
+                    barcode_id = "dfg41",
+                    Library_id = 1,
+                    Library = new Library {
+                        id = 1
+                    }
+                },
+                new Book
+                {
+                    id = 3,
+                    name = "Title3",
+                    barcode_id = "sgvfsd",
+                    Library_id = 2,
+                    Library = new Library {
+                        id = 2
+                    }
+                },
+                new Book
+                {
+                    id = 4,
+                    name = "Title4",
+                    barcode_id = "3454363",
+                    Library_id = 2,
+                    Library = new Library {
+                        id = 2
+                    }
                 }
             }.AsQueryable();
 
@@ -368,7 +399,56 @@ namespace UnitTesting
             };
             Assert.Multiple(actions);
         }
-        //TODO GetBookByBarcodeId
+
+        //David Matijanić
+        [Theory]
+        [InlineData("doesntExist")]
+        [InlineData("alsoDoesntExist")]
+        [InlineData("isThisEvenABarcode?")]
+        public void GetBookByBarcodeId_BarcodeDoesntExist_BookNotFoundExceptionThrown(string barcodeId) {
+            //Arrange
+            int libraryId = 1;
+            A.CallTo(() => bookRepo.GetBookByBarcodeId(barcodeId)).Returns(new List<Book>().AsQueryable());
+
+            //Act & assert
+            Assert.Throws<BookNotFoundException>(() => bookServices.GetBookByBarcodeId(libraryId, barcodeId));
+        }
+
+        //David Matijanić
+        [Theory]
+        [InlineData(111, "sdf42")]
+        [InlineData(111, "dfg41")]
+        [InlineData(111, "sgvfsd")]
+        [InlineData(111, "3454363")]
+        public void GetBookByBarcodeId_WrongBookLibrary_WrongLibraryException(int libraryId, string barcodeId) {
+            //Arrange
+            A.CallTo(() => bookRepo.GetBookByBarcodeId(barcodeId)).Returns(books.Where(b => b.barcode_id == barcodeId));
+
+            //Act & assert
+            Assert.Throws<WrongLibraryException>(() => bookServices.GetBookByBarcodeId(libraryId, barcodeId));
+        }
+
+        //David Matijanić
+        [Theory]
+        [InlineData(1, "sdf42")]
+        [InlineData(1, "dfg41")]
+        [InlineData(2, "sgvfsd")]
+        [InlineData(2, "3454363")]
+        public void GetBookByBarcodeId_CorrectBarcodeAndLibraryEntered_CorrectBookIsRetrieved(int libraryId, string barcodeId) {
+            //Arrange
+            A.CallTo(() => bookRepo.GetBookByBarcodeId(barcodeId)).Returns(books.Where(b => b.barcode_id == barcodeId));
+
+            //Act
+            Book book = bookServices.GetBookByBarcodeId(libraryId, barcodeId);
+
+            //Assert
+            Action[] actions = {
+                () => Assert.Equal(libraryId, book.Library.id),
+                () => Assert.Equal(barcodeId, book.barcode_id)
+            };
+            Assert.Multiple(actions);
+        }
+
         //TODO UpdateBook
         //TODO GetBookBarcode
         //TODO GetBooksByLibrary
