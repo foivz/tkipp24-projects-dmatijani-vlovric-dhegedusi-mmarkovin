@@ -1,4 +1,5 @@
-﻿using BussinessLogicLayer.services;
+﻿using BussinessLogicLayer.Exceptions;
+using BussinessLogicLayer.services;
 using DataAccessLayer.Interfaces;
 using DataAccessLayer.Repositories;
 using EntitiesLayer;
@@ -50,11 +51,41 @@ namespace UnitTesting
                 {
                     id = 1,
                     name = "Title",
+                    barcode_id = "sdf42",
+                    Library_id = 1,
+                    Library = new Library {
+                        id = 1
+                    }
                 },
                 new Book
                 {
                     id = 2,
                     name = "Title2",
+                    barcode_id = "dfg41",
+                    Library_id = 1,
+                    Library = new Library {
+                        id = 1
+                    }
+                },
+                new Book
+                {
+                    id = 3,
+                    name = "Title3",
+                    barcode_id = "sgvfsd",
+                    Library_id = 2,
+                    Library = new Library {
+                        id = 2
+                    }
+                },
+                new Book
+                {
+                    id = 4,
+                    name = "Title4",
+                    barcode_id = "3454363",
+                    Library_id = 2,
+                    Library = new Library {
+                        id = 2
+                    }
                 }
             }.AsQueryable();
 
@@ -72,6 +103,16 @@ namespace UnitTesting
                 }
             }.AsQueryable();
 
+        }
+
+        //David Matijanić
+        [Fact]
+        public void Constructor_WhenBookServiceIsInstantiated_ItIsNotNull() {
+            //Arrange & act
+            var service = new BookServices();
+
+            //Assert
+            Assert.NotNull(service);
         }
 
         [Fact]
@@ -368,9 +409,168 @@ namespace UnitTesting
             };
             Assert.Multiple(actions);
         }
-        //TODO GetBookByBarcodeId
-        //TODO UpdateBook
-        //TODO GetBookBarcode
-        //TODO GetBooksByLibrary
+
+        //David Matijanić
+        [Theory]
+        [InlineData("doesntExist")]
+        [InlineData("alsoDoesntExist")]
+        [InlineData("isThisEvenABarcode?")]
+        public void GetBookByBarcodeId_BarcodeDoesntExist_BookNotFoundExceptionThrown(string barcodeId) {
+            //Arrange
+            int libraryId = 1;
+            A.CallTo(() => bookRepo.GetBookByBarcodeId(barcodeId)).Returns(new List<Book>().AsQueryable());
+
+            //Act & assert
+            Assert.Throws<BookNotFoundException>(() => bookServices.GetBookByBarcodeId(libraryId, barcodeId));
+        }
+
+        //David Matijanić
+        [Theory]
+        [InlineData(111, "sdf42")]
+        [InlineData(111, "dfg41")]
+        [InlineData(111, "sgvfsd")]
+        [InlineData(111, "3454363")]
+        public void GetBookByBarcodeId_WrongBookLibrary_WrongLibraryException(int libraryId, string barcodeId) {
+            //Arrange
+            A.CallTo(() => bookRepo.GetBookByBarcodeId(barcodeId)).Returns(books.Where(b => b.barcode_id == barcodeId));
+
+            //Act & assert
+            Assert.Throws<WrongLibraryException>(() => bookServices.GetBookByBarcodeId(libraryId, barcodeId));
+        }
+
+        //David Matijanić
+        [Theory]
+        [InlineData(1, "sdf42")]
+        [InlineData(1, "dfg41")]
+        [InlineData(2, "sgvfsd")]
+        [InlineData(2, "3454363")]
+        public void GetBookByBarcodeId_CorrectBarcodeAndLibraryEntered_CorrectBookIsRetrieved(int libraryId, string barcodeId) {
+            //Arrange
+            A.CallTo(() => bookRepo.GetBookByBarcodeId(barcodeId)).Returns(books.Where(b => b.barcode_id == barcodeId));
+
+            //Act
+            Book book = bookServices.GetBookByBarcodeId(libraryId, barcodeId);
+
+            //Assert
+            Action[] actions = {
+                () => Assert.Equal(libraryId, book.Library.id),
+                () => Assert.Equal(barcodeId, book.barcode_id)
+            };
+            Assert.Multiple(actions);
+        }
+
+        //David Matijanić
+        [Fact]
+        public void UpdateBook_BookIsEntered_BookDataIsUpdated() {
+            //Arrange
+            Book foundBook = books.First();
+            Book updatedBook = new Book {
+                id = foundBook.id,
+                Library_id = foundBook.Library_id,
+                Library = foundBook.Library,
+                name = "Azurirana knjiga!",
+                current_copies = foundBook.current_copies - 1
+            };
+            A.CallTo(() => bookRepo.Update(updatedBook, true)).Invokes(call => {
+                foreach (var b in books.Where(bb => bb.id == updatedBook.id)) {
+                    b.Library_id = updatedBook.Library_id;
+                    b.Library = updatedBook.Library;
+                    b.name = updatedBook.name;
+                    b.current_copies = updatedBook.current_copies;
+                }
+            }).Returns(1);
+
+            //Act
+            bookServices.UpdateBook(updatedBook);
+            foundBook = books.First();
+
+            //Assert
+            Action[] actions = {
+                () => Assert.Equal(updatedBook.name, foundBook.name),
+                () => Assert.Equal(updatedBook.current_copies, foundBook.current_copies)
+            };
+            Assert.Multiple(actions);
+        }
+
+        //David Matijanić
+        [Fact]
+        public void UpdateBook_BookDoesntExist_ReturnsZero() {
+            //Arrange
+            Book updatedBook = new Book {
+                id = 55,
+                Library_id = 2,
+                Library = new Library {
+                    id = 2
+                },
+                name = "Ova knjiga ne postoji!",
+                current_copies = 7
+            };
+            A.CallTo(() => bookRepo.Update(updatedBook, true)).Returns(0);
+
+            //Act
+            int changedAmount = bookServices.UpdateBook(updatedBook);
+
+            //Assert
+            Assert.Equal(0, changedAmount);
+        }
+
+        //David Matijanić
+        [Theory]
+        [InlineData("sdf42", 1)]
+        [InlineData("dfg41", 2)]
+        [InlineData("sgvfsd", 3)]
+        [InlineData("3454363", 4)]
+        public void GetBookBarcode_BarcodeExists_ReturnsTheCorrectBookBarcode(string barcode, int id) {
+            //Arrange
+            A.CallTo(() => bookRepo.GetBookBarcode(id)).Returns(books.Where(b => b.id == id).Select(b => b.barcode_id));
+
+            //Act
+            string retrievedBarcode = bookServices.GetBookBarcode(id);
+
+            //Assert
+            Assert.Equal(barcode, retrievedBarcode);
+        }
+
+        //David Matijanić
+        [Theory]
+        [InlineData(111)]
+        [InlineData(222)]
+        [InlineData(333)]
+        public void GetBookBarcode_IdDoesntExist_ReturnsNull(int id) {
+            //Arrange
+            A.CallTo(() => bookRepo.GetBookBarcode(id)).Returns(new List<string>().AsQueryable());
+
+            //Act
+            string retrievedBarcode = bookServices.GetBookBarcode(id);
+
+            //Assert
+            Assert.Null(retrievedBarcode);
+        }
+
+        //David Matijanić
+        [Theory]
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(3)]
+        public void GetBooksByLibrary_LibraryIdEntered_CorrectBooksRetrieved(int libraryId) {
+            //Arrange
+            A.CallTo(() => bookRepo.GetBooksByLibrary(libraryId)).Returns(books.Where(b => b.Library.id == libraryId));
+
+            //Act
+            var retrievedBooks = bookServices.GetBooksByLibrary(libraryId);
+
+            //Assert
+            Assert.Equal(books.Where(b => b.Library.id == libraryId).ToList(), retrievedBooks);
+        }
+
+        //David Matijanić
+        [Fact]
+        public void Dispose_CallsDisposeOnRepository() {
+            //Act
+            bookServices.Dispose();
+
+            //Assert
+            A.CallTo(() => bookRepo.Dispose()).MustHaveHappened();
+        }
     }
 }
