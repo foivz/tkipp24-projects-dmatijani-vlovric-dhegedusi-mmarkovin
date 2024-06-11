@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using FakeItEasy;
 using Xunit;
+using BussinessLogicLayer.Exceptions;
 
 namespace UnitTesting {
     public class LibraryService_unitTest {
@@ -107,6 +108,66 @@ namespace UnitTesting {
 
             //Assert
             Assert.Equal(libraries, retrievedLibraries);
+        }
+
+        [Theory]
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(3)]
+        [InlineData(4)]
+        public void AddLibrary_LibraryWithSameIDExists_ThrowsLibraryWithSameIDException(int libraryId) {
+            //Arrange
+            Library library = new Library {
+                id = libraryId
+            };
+            PrepareLibraryRepositoryMethods(library);
+
+            //Act & assert
+            Assert.Throws<LibraryWithSameIDException>(() => libraryService.AddLibrary(library));
+        }
+
+        [Theory]
+        [InlineData("11111111111")]
+        [InlineData("22222222222")]
+        [InlineData("33333333333")]
+        [InlineData("44444444444")]
+        public void AddLibrary_LibraryWithSameOIBExists_ThrowsLibraryWithSameOIBException(string libraryOib) {
+            //Arrange
+            Library library = new Library {
+                id = 5,
+                OIB = libraryOib
+            };
+            PrepareLibraryRepositoryMethods(library);
+
+            //Act & assert
+            Assert.Throws<LibraryWithSameOIBException>(() => libraryService.AddLibrary(library));
+        }
+
+        [Fact]
+        public void AddLibrary_LibraryWithUniqueIdAndOib_LibraryIsAdded() {
+            //Arrange
+            Library library = new Library {
+                id = 5,
+                OIB = "55555555555",
+                name = "Nova knjiznica"
+            };
+            PrepareLibraryRepositoryMethods(library);
+            A.CallTo(() => libraryRepository.Add(library)).Invokes(call => {
+                List<Library> newLibraries = libraries.ToList();
+                newLibraries.Add(library);
+                libraries = newLibraries.AsQueryable();
+            });
+
+            //Act
+            libraryService.AddLibrary(library);
+
+            //Assert
+            Assert.Contains(library, libraries);
+        }
+
+        private void PrepareLibraryRepositoryMethods(Library library) {
+            A.CallTo(() => libraryRepository.GetLibrariesById(library.id)).Returns(libraries.Where(l => l.id == library.id));
+            A.CallTo(() => libraryRepository.GetLibrariesByOIB(library.OIB)).Returns(libraries.Where(l => l.OIB == library.OIB));
         }
 
         private decimal CalculateMembershipDurationFromDate(DateTime date) {
