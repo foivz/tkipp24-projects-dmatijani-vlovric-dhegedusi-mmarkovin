@@ -494,7 +494,7 @@ namespace UnitTesting
 
         //David Matijanić
         [Fact]
-        public void UpdateBook_BookDoesntExist_SomethingHappens() {
+        public void UpdateBook_BookDoesntExist_ReturnsZero() {
             //Arrange
             Book updatedBook = new Book {
                 id = 55,
@@ -514,8 +514,39 @@ namespace UnitTesting
             Assert.Equal(0, changedAmount);
         }
 
+        //David Matijanić
+        [Theory]
+        [InlineData("sdf42", 1)]
+        [InlineData("dfg41", 2)]
+        [InlineData("sgvfsd", 3)]
+        [InlineData("3454363", 4)]
+        public void GetBookBarcode_BarcodeExists_ReturnsTheCorrectBookBarcode(string barcode, int id) {
+            //Arrange
+            A.CallTo(() => bookRepo.GetBookBarcode(id)).Returns(books.Where(b => b.id == id).Select(b => b.barcode_id));
 
-        //TODO GetBookBarcode
+            //Act
+            string retrievedBarcode = bookServices.GetBookBarcode(id);
+
+            //Assert
+            Assert.Equal(barcode, retrievedBarcode);
+        }
+
+        //David Matijanić
+        [Theory]
+        [InlineData(111)]
+        [InlineData(222)]
+        [InlineData(333)]
+        public void GetBookBarcode_IdDoesntExist_ReturnsNull(int id) {
+            //Arrange
+            A.CallTo(() => bookRepo.GetBookBarcode(id)).Returns(new List<string>().AsQueryable());
+
+            //Act
+            string retrievedBarcode = bookServices.GetBookBarcode(id);
+
+            //Assert
+            Assert.Null(retrievedBarcode);
+        }
+            
         //TODO GetBooksByLibrary
     }
 }
