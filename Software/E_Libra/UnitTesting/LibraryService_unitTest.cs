@@ -331,6 +331,72 @@ namespace UnitTesting {
             Assert.Equal(newLibrary.OIB, library.OIB);
         }
 
+        [Theory]
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(3)]
+        [InlineData(4)]
+        [InlineData(5)]
+        public void GetLibraryPriceDayLate_LibraryIdIsEntered_CorrectPriceDayLateIsReturned(int libraryId) {
+            //Arrange
+            decimal correctPriceDayLate = libraries.Where(l => l.id == libraryId).First().price_day_late;
+            A.CallTo(() => libraryRepository.GetLibraryPriceDayLate(libraryId)).Returns(correctPriceDayLate);
+
+            //Act
+            decimal priceDayLate = libraryService.GetLibraryPriceDayLate(libraryId);
+
+            //Assert
+            Assert.Equal(correctPriceDayLate, priceDayLate);
+        }
+
+        [Theory]
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(3)]
+        [InlineData(4)]
+        [InlineData(5)]
+        public void GetLibraryPriceDayLate_LibraryIsEntered_CorrectPriceDayLateIsReturned(int libraryId) {
+            //Arrange
+            Library library = new Library { id = libraryId };
+            decimal correctPriceDayLate = libraries.Where(l => l.id == libraryId).First().price_day_late;
+            A.CallTo(() => libraryRepository.GetLibraryPriceDayLate(libraryId)).Returns(correctPriceDayLate);
+
+            //Act
+            decimal priceDayLate = libraryService.GetLibraryPriceDayLate(library);
+
+            //Assert
+            Assert.Equal(correctPriceDayLate, priceDayLate);
+        }
+
+        [Theory]
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(3)]
+        [InlineData(4)]
+        [InlineData(5)]
+        public void GetLibraryMembershipDuration(int libraryId) {
+            //Arrange
+            DateTime correctMembershipDurationDatetime = libraries.Where(l => l.id == libraryId).First().membership_duration;
+            decimal correctMembershipDuration = CalculateMembershipDurationFromDate(correctMembershipDurationDatetime);
+            A.CallTo(() => libraryRepository.GetLibraryMembershipDuration(libraryId)).Returns(correctMembershipDurationDatetime);
+
+            //Act
+            decimal membershipDuration = libraryService.GetLibraryMembershipDuration(libraryId);
+
+            //Assert
+            Assert.Equal(correctMembershipDuration, membershipDuration);
+        }
+
+        //David Matijanić
+        [Fact]
+        public void Dispose_CallsDisposeOnRepository() {
+            //Act
+            libraryService.Dispose();
+
+            //Assert
+            A.CallTo(() => libraryRepository.Dispose()).MustHaveHappened();
+        }
+
         private void PrepareLibraryRepositoryMethods(Library library) {
             A.CallTo(() => libraryRepository.GetLibrariesById(library.id)).Returns(libraries.Where(l => l.id == library.id));
             A.CallTo(() => libraryRepository.GetLibrariesByOIB(library.OIB)).Returns(libraries.Where(l => l.OIB == library.OIB));
