@@ -6,6 +6,7 @@ using FakeItEasy;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -258,9 +259,91 @@ namespace UnitTesting {
             Assert.DoesNotContain(library, libraries);
         }
 
+        [Theory]
+        [InlineData(6)]
+        [InlineData(7)]
+        [InlineData(8)]
+        public void UpdateLibrary_NoLibraryWithThatIdExists_ThrowsLibraryWithSameIdException(int libraryId) {
+            //Arrange
+            Library library = new Library {
+                id = libraryId,
+                name = "Izmijenjena"
+            };
+            PrepareLibraryRepositoryMethods(library);
+
+            //Act & assert
+            Assert.Throws<LibraryWithSameIDException>(() => libraryService.UpdateLibrary(library));
+        }
+
+        [Theory]
+        [InlineData(1, "22222222222")]
+        [InlineData(2, "33333333333")]
+        [InlineData(3, "44444444444")]
+        [InlineData(4, "55555555555")]
+        [InlineData(5, "11111111111")]
+        public void UpdateLibrary_LibraryWithOibAlreadyExists_ThrowsLibraryWithSameOIBException(int libraryId, string libraryOib) {
+            //Arrange
+            Library library = new Library {
+                id = libraryId,
+                OIB = libraryOib,
+                name = "Izmijenjena"
+            };
+            PrepareLibraryRepositoryMethods(library);
+
+            //Act & assert
+            Assert.Throws<LibraryWithSameOIBException>(() => libraryService.UpdateLibrary(library));
+        }
+
+        [Fact]
+        public void UpdateLibrary_LibraryExistsAndHasNameChanged_LibraryIsUpdated() {
+            //Arrange
+            Library library = libraries.First();
+            Library newLibrary = new Library {
+                id = library.id,
+                OIB = library.OIB,
+                name = "Izmijenjena"
+            };
+            PrepareLibraryRepositoryMethods(newLibrary);
+
+            //Act
+            libraryService.UpdateLibrary(newLibrary);
+            library = libraries.First();
+
+            //Assert
+            Assert.Equal(newLibrary.name, library.name);
+        }
+
+        [Fact]
+        public void UpdateLibrary_LibraryExistsAndHasOIBChanged_LibraryIsUpdated() {
+            //Arrange
+            Library library = libraries.First();
+            Library newLibrary = new Library {
+                id = library.id,
+                OIB = "12345678901"
+            };
+            PrepareLibraryRepositoryMethods(newLibrary);
+
+            //Act
+            libraryService.UpdateLibrary(newLibrary);
+            library = libraries.First();
+
+            //Assert
+            Assert.Equal(newLibrary.OIB, library.OIB);
+        }
+
         private void PrepareLibraryRepositoryMethods(Library library) {
             A.CallTo(() => libraryRepository.GetLibrariesById(library.id)).Returns(libraries.Where(l => l.id == library.id));
             A.CallTo(() => libraryRepository.GetLibrariesByOIB(library.OIB)).Returns(libraries.Where(l => l.OIB == library.OIB));
+            A.CallTo(() => libraryRepository.Update(library, true)).Invokes(call => {
+                foreach (var l in libraries.Where(l => l.id == library.id)) {
+                    l.name = library.name;
+                    l.OIB = library.OIB;
+                    l.price_day_late = library.price_day_late;
+                    l.address = library.address;
+                    l.email = library.email;
+                    l.membership_duration = library.membership_duration;
+                }
+            });
         }
 
         private void PrepareServicesForDeleteMethod(Library library) {
