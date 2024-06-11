@@ -177,7 +177,7 @@ namespace UnitTesting {
             var borrowsForMember = borrowService.GetAllBorrowsForMember(1, 1);
 
             //Assert
-            Assert.Equal(borrowsForMember, new List<Borrow>());
+            Assert.Empty(borrowsForMember);
         }
 
         [Theory]
@@ -194,7 +194,7 @@ namespace UnitTesting {
             var borrowsForMember = borrowService.GetAllBorrowsForMember(memberId, libraryId);
 
             //Assert
-            Assert.Equal(borrowsForMember, borrows.Where(b => b.Member.id == memberId).ToList());
+            Assert.Equal(borrows.Where(b => b.Member.id == memberId).ToList(), borrowsForMember);
         }
 
         [Theory]
@@ -210,7 +210,7 @@ namespace UnitTesting {
             var borrowsForMember = borrowService.GetBorrowsForMemberByStatus(1, 1, borrowStatus);
 
             //Assert
-            Assert.Equal(borrowsForMember, new List<Borrow>());
+            Assert.Empty(borrowsForMember);
         }
 
         [Theory]
@@ -230,7 +230,7 @@ namespace UnitTesting {
             var borrowsForMember = borrowService.GetBorrowsForMemberByStatus(memberId, libraryId, borrowStatus);
 
             //Assert
-            Assert.Equal(borrowsForMember, borrows.Where(b => b.Member.id == memberId && b.borrow_status == (int)borrowStatus).ToList());
+            Assert.Equal(borrows.Where(b => b.Member.id == memberId && b.borrow_status == (int)borrowStatus).ToList(), borrowsForMember);
         }
 
         [Fact]
@@ -242,7 +242,7 @@ namespace UnitTesting {
             var borrowsForMember = borrowService.GetBorrowsForMemberAndBook(1, 1, 1);
 
             //Assert
-            Assert.Equal(borrowsForMember, new List<Borrow>());
+            Assert.Empty(borrowsForMember);
         }
 
         [Theory]
@@ -264,7 +264,7 @@ namespace UnitTesting {
             var borrowsForMember = borrowService.GetBorrowsForMemberAndBook(memberId, libraryId, bookId);
 
             //Assert
-            Assert.Equal(borrowsForMember, borrows.Where(b => b.Member.id == memberId && b.Book.id == bookId).ToList());
+            Assert.Equal(borrows.Where(b => b.Member.id == memberId && b.Book.id == bookId).ToList(), borrowsForMember);
         }
 
         [Fact]
@@ -276,7 +276,7 @@ namespace UnitTesting {
             var borrowsForLibrary = await borrowService.GetAllBorrowsForLibraryAsync(5);
 
             //Arrange
-            Assert.Equal(borrowsForLibrary, new List<Borrow>());
+            Assert.Empty(borrowsForLibrary);
         }
 
         [Theory]
@@ -291,7 +291,7 @@ namespace UnitTesting {
             var borrowsForLibrary = await borrowService.GetAllBorrowsForLibraryAsync(libraryId);
 
             //Arrange
-            Assert.Equal(borrowsForLibrary, borrows.Where(b => b.Member.Library_id == libraryId).ToList());
+            Assert.Equal(borrows.Where(b => b.Member.Library_id == libraryId).ToList(), borrowsForLibrary);
         }
 
         [Theory]
@@ -307,7 +307,7 @@ namespace UnitTesting {
             var borrowsForLibrary = await borrowService.GetAllBorrowsForLibraryAsync(library.id);
 
             //Arrange
-            Assert.Equal(borrowsForLibrary, borrows.Where(b => b.Member.Library_id == library.id).ToList());
+            Assert.Equal(borrows.Where(b => b.Member.Library_id == library.id).ToList(), borrowsForLibrary);
         }
 
         [Fact]
@@ -319,7 +319,7 @@ namespace UnitTesting {
             var borrowsForLibrary = await borrowService.GetBorrowsForLibraryByStatusAsync(5, BorrowStatus.Borrowed);
 
             //Arrange
-            Assert.Equal(borrowsForLibrary, new List<Borrow>());
+            Assert.Empty(borrowsForLibrary);
         }
 
         [Theory]
@@ -339,7 +339,7 @@ namespace UnitTesting {
             var borrowsForLibrary = await borrowService.GetBorrowsForLibraryByStatusAsync(libraryId, borrowStatus);
 
             //Arrange
-            Assert.Equal(borrowsForLibrary, borrows.Where(b => b.Member.Library_id == libraryId && b.borrow_status == (int)borrowStatus).ToList());
+            Assert.Equal(borrows.Where(b => b.Member.Library_id == libraryId && b.borrow_status == (int)borrowStatus).ToList(), borrowsForLibrary);
         }
 
         [Theory]
@@ -360,7 +360,7 @@ namespace UnitTesting {
             var borrowsForLibrary = await borrowService.GetBorrowsForLibraryByStatusAsync(library, borrowStatus);
 
             //Arrange
-            Assert.Equal(borrowsForLibrary, borrows.Where(b => b.Member.Library_id == library.id && b.borrow_status == (int)borrowStatus).ToList());
+            Assert.Equal(borrows.Where(b => b.Member.Library_id == library.id && b.borrow_status == (int)borrowStatus).ToList(), borrowsForLibrary);
         }
 
         [Fact]
