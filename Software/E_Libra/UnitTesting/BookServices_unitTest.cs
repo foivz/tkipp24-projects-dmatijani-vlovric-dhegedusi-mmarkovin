@@ -546,7 +546,23 @@ namespace UnitTesting
             //Assert
             Assert.Null(retrievedBarcode);
         }
-            
-        //TODO GetBooksByLibrary
+
+        //David Matijanić
+        [Theory]
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(3)]
+        public void GetBooksByLibrary_LibraryIdEntered_CorrectBooksRetrieved(int libraryId) {
+            //Arrange
+            A.CallTo(() => bookRepo.GetBooksByLibrary(libraryId)).Returns(books.Where(b => b.Library.id == libraryId));
+
+            //Act
+            var retrievedBooks = bookServices.GetBooksByLibrary(libraryId);
+
+            //Assert
+            Assert.Equal(books.Where(b => b.Library.id == libraryId).ToList(), retrievedBooks);
+        }
+
+        //TODO: Implementirati DISPOSE kad EmployeeService bude imao IDisposable implementiran! (@dmatijani21)
     }
 }
