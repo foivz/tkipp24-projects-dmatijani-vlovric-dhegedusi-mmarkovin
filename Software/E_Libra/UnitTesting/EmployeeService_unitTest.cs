@@ -125,13 +125,18 @@ namespace UnitTesting
 
         // Magdalena Markovinović
         [Fact]
-        public void GetEmployeeLibraryId_With_NullUsername_Throws_Exception()
+        public void GetEmployeeId_ReturnsCorrectId()
         {
             // Arrange
-            string username = null;
+            string username = "testuser";
+            int expectedEmployeeId = 2;
+            A.CallTo(() => empoloyeeRepositroy.GetEmployeeId(username)).Returns(expectedEmployeeId);
 
-            // Act & Assert
-            Assert.Throws<ArgumentNullException>(() => employeeService.GetEmployeeLibraryId(username));
+            // Act
+            int actualEmployeeId = employeeService.GetEmployeeId(username);
+
+            // Assert
+            Assert.Equal(expectedEmployeeId, actualEmployeeId);
         }
     }
 }
