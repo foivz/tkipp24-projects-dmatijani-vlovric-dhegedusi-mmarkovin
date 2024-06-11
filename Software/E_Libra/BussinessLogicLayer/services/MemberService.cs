@@ -199,7 +199,7 @@ namespace BussinessLogicLayer.services {
             return membersRepository.GetMembersByLibrary(libraryId).ToList();
         }
 
-        private decimal GetLibraryMembershipDuration(int libraryId) {
+        public decimal GetLibraryMembershipDuration(int libraryId) {
             DateTime returnedValue = libraryRepository.GetLibraryMembershipDuration(libraryId);
             return CalculateMembershipDurationFromDate(returnedValue);
         }
