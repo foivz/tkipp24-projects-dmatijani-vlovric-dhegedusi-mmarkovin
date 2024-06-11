@@ -1,4 +1,5 @@
-﻿using BussinessLogicLayer.services;
+﻿using BussinessLogicLayer.Exceptions;
+using BussinessLogicLayer.services;
 using DataAccessLayer.Interfaces;
 using DataAccessLayer.Repositories;
 using EntitiesLayer;
@@ -18,6 +19,7 @@ namespace UnitTesting
     {
         private IMembersRepository membersRepository;
         private IEmpoloyeeRepositroy empoloyeeRepositroy;
+        private ILibraryRepository libraryRepository;
         private MemberService memberService;
         private EmployeeService employeeService;
 
@@ -25,8 +27,9 @@ namespace UnitTesting
         {
             membersRepository = A.Fake<IMembersRepository>();
             empoloyeeRepositroy = A.Fake<IEmpoloyeeRepositroy>();
-            employeeService = new EmployeeService(empoloyeeRepositroy, null,null);
-            memberService = new MemberService(membersRepository, null, employeeService, null, null);
+            libraryRepository = A.Fake<ILibraryRepository>();
+            employeeService = new EmployeeService(empoloyeeRepositroy, null, null);
+            memberService = new MemberService(membersRepository, libraryRepository, employeeService, null, null);
         }
         //Magdalena Markovinović
         [Fact]
@@ -649,5 +652,69 @@ namespace UnitTesting
             Assert.Null(result);
         }
 
+        //Magdalena Markovinović
+        [Fact]
+        public void GetMemberByBarcodeId_ValidLibraryIdAndBarcodeId_ReturnsMember()
+        {
+            // Arrange
+            int libraryId = 1;
+            string barcodeId = "ABCD1234";
+            var expectedMember = new Member
+            {
+                id = 1,
+                name = "test1",
+                surname = "test1",
+                barcode_id = barcodeId,
+                Library_id = libraryId,
+                Library = new Library { id = libraryId }
+            };
+            A.CallTo(() => membersRepository.GetMemberByBarcodeId(barcodeId)).Returns(new List<Member> { expectedMember }.AsQueryable());
+
+            // Act
+            Member result = memberService.GetMemberByBarcodeId(libraryId, barcodeId);
+
+            // Assert
+            Assert.Equal(expectedMember, result);
+        }
+        [Fact]
+        //Magdalena Markovinović
+        public void GetMemberByBarcodeId_NonExistentBarcodeId_ThrowsMemberNotFoundException()
+        {
+            // Arrange
+            int libraryId = 1;
+            string barcodeId = "NONEXISTENT";
+            A.CallTo(() => membersRepository.GetMemberByBarcodeId(barcodeId)).Returns(new List<Member>().AsQueryable());
+
+            // Act
+            var exception = Assert.Throws<MemberNotFoundException>(() => memberService.GetMemberByBarcodeId(libraryId, barcodeId));
+
+            // Assert
+            Assert.Equal("Član knjižnice sa tim barkodom ne postoji!", exception.Message);
+        }
+
+        [Fact]
+        //Magdalena Markovinović
+        public void GetMemberByBarcodeId_WrongLibraryId_ThrowsWrongLibraryException()
+        {
+            // Arrange
+            int libraryId = 1;
+            string barcodeId = "ABCD1234";
+            var memberFromAnotherLibrary = new Member
+            {
+                id = 1,
+                name = "test1",
+                surname = "test1",
+                barcode_id = barcodeId,
+                Library_id = 2,
+                Library = new Library { id = 2 }
+            };
+            A.CallTo(() => membersRepository.GetMemberByBarcodeId(barcodeId)).Returns(new List<Member> { memberFromAnotherLibrary }.AsQueryable());
+
+            // Act
+            var exception = Assert.Throws<WrongLibraryException>(() => memberService.GetMemberByBarcodeId(libraryId, barcodeId));
+
+            // Assert
+            Assert.Equal("Član ove knjižnice s tim barkodom ne postoji!", exception.Message);
+        }
     }
 }
