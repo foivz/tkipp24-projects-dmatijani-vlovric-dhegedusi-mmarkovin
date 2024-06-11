@@ -20,16 +20,25 @@ namespace UnitTesting
         private IMembersRepository membersRepository;
         private IEmpoloyeeRepositroy empoloyeeRepositroy;
         private ILibraryRepository libraryRepository;
+        private IReservationRepository reservationRepository;
+        private IBorrowRepository borrowRepository;
         private MemberService memberService;
         private EmployeeService employeeService;
+        private BorrowService borrowService;
+        private ReservationService reservationService;
+        private ArchiveServices archiveServices;
 
         public MemberService_unitTest()
         {
             membersRepository = A.Fake<IMembersRepository>();
             empoloyeeRepositroy = A.Fake<IEmpoloyeeRepositroy>();
             libraryRepository = A.Fake<ILibraryRepository>();
-            employeeService = new EmployeeService(empoloyeeRepositroy, null, null);
-            memberService = new MemberService(membersRepository, libraryRepository, employeeService, null, null);
+            borrowRepository = A.Fake<IBorrowRepository>();
+            reservationRepository = A.Fake<IReservationRepository>();
+            borrowService = new BorrowService(borrowRepository,null,null);
+            reservationService = new ReservationService(reservationRepository, null);
+            employeeService = new EmployeeService(empoloyeeRepositroy, borrowService, archiveServices);
+            memberService = new MemberService(membersRepository, libraryRepository, employeeService, borrowService, reservationService);
         }
         //Magdalena Markovinović
         [Fact]
@@ -375,10 +384,16 @@ namespace UnitTesting
 
         //Magdalena Markovinović
         [Fact]
-        public void DeleteMember_BorrowsAndReservationsClear_ReturnsTrue()
+        public void DeleteMember_WhenBorrowsAndReservationsAreClear_ReturnsTrue()
         {
-            // TODO: Implement this test
-            Assert.True(false);
+            // Arrange
+            var member = new Member { id = 1 };
+
+            // Act
+            var result = memberService.DeleteMember(member);
+
+            // Assert
+            Assert.True(result);
         }
 
         //Magdalena Markovinović
@@ -608,11 +623,10 @@ namespace UnitTesting
             // Arrange
             int libraryId = 1;
             var expectedMembers = new List<Member>
-            {
-                new Member { id = 1, name = "John", surname = "Doe", Library_id = 1 },
-                new Member { id = 2, name = "Jane", surname = "Smith", Library_id = 1 }
-            };
-            A.CallTo(() => employeeService.GetEmployeeLibraryId(A<string>._)).Returns(libraryId);
+                {
+                    new Member { id = 1, name = "test1", surname = "test1", Library_id = 1 },
+                    new Member { id = 2, name = "test2", surname = "test2", Library_id = 1 }
+                };
             A.CallTo(() => membersRepository.GetMembersByLibrary(libraryId)).Returns(expectedMembers.AsQueryable());
 
             // Act
@@ -623,13 +637,14 @@ namespace UnitTesting
             Assert.All(result, m => Assert.Contains(m, expectedMembers));
         }
 
+
         [Fact]
         //Magdalena Markovinović
         public void GetAllMembersByLibrary_WithInvalidLibraryId_ReturnsEmptyList()
         {
             // Arrange
             int invalidLibraryId = -1;
-            A.CallTo(() => employeeService.GetEmployeeLibraryId(A<string>._)).Returns(invalidLibraryId);
+            employeeService.GetEmployeeLibraryId("empl1");
 
             // Act
             var result = memberService.GetAllMembersByLybrary();
@@ -638,14 +653,12 @@ namespace UnitTesting
             Assert.Empty(result);
         }
 
-        // TODO testovi za GetMemberByBarcodeId(@dmatijani21)
-
         //Magdalena Markovinović
         [Fact]
         public void GetMemberBarcode_WithValidId_ReturnsBarcode()
         {
             // Arrange
-            int memberId = 1; // Assuming a valid member ID
+            int memberId = 1;
             string expectedBarcode = "ABCD1234";
             A.CallTo(() => membersRepository.GetMemberBarcode(memberId)).Returns(new List<string> { expectedBarcode }.AsQueryable());
 
