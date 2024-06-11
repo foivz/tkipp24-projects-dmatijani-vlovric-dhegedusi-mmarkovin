@@ -74,26 +74,32 @@ namespace PresentationLayer {
             if (tbcTabs.SelectedIndex == 2 && dgCurrentBorrows.SelectedItems.Count == 1) {
                 Borrow borrow = dgCurrentBorrows.SelectedItem as Borrow;
                 if (borrow != null) {
-                    //TODO: koristiti using kada MemberService i BookService budu realizirali sučelje IDisposable (@mmarkoovin21 i @vlovric21), ili još bolje, izvaditi u konstruktor i disposati u Unloaded
+                    //TODO: koristiti using kada MemberService budu realizirali sučelje IDisposable (@mmarkoovin21 i @vlovric21), ili još bolje, izvaditi u konstruktor i disposati u Unloaded
                     MemberService memberService = new MemberService();
-                    BookServices bookService = new BookServices();
-                    if (borrow.Member_id != null) {
-                        memberBarcode = memberService.GetMemberBarcode((int)borrow.Member_id);
-                        bookBarcode = bookService.GetBookBarcode(borrow.Book_id);
-                        notSelected = false;
-                    }
+                    using (BookServices bookService = new BookServices())
+                    {
+                        if (borrow.Member_id != null)
+                        {
+                            memberBarcode = memberService.GetMemberBarcode((int)borrow.Member_id);
+                            bookBarcode = bookService.GetBookBarcode(borrow.Book_id);
+                            notSelected = false;
+                        }
+                    }    
                 }
             } else if (tbcTabs.SelectedIndex == 3 && dgLateBorrows.SelectedItems.Count == 1) {
                 Borrow borrow = dgLateBorrows.SelectedItem as Borrow;
                 if (borrow != null) {
-                    //TODO: koristiti using kada MemberService i BookService budu realizirali sučelje IDisposable (@mmarkoovin21 i @vlovric21), ili još bolje, izvaditi u konstruktor i disposati u Unloaded
+                    //TODO: koristiti using kada MemberService budu realizirali sučelje IDisposable (@mmarkoovin21), ili još bolje, izvaditi u konstruktor i disposati u Unloaded
                     MemberService memberService = new MemberService();
-                    BookServices bookService = new BookServices();
-                    if (borrow.Member_id != null) {
-                        memberBarcode = memberService.GetMemberBarcode((int)borrow.Member_id);
-                        bookBarcode = bookService.GetBookBarcode(borrow.Book_id);
-                        notSelected = false;
-                    }
+                    using (BookServices bookService = new BookServices())
+                    {
+                        if (borrow.Member_id != null)
+                        {
+                            memberBarcode = memberService.GetMemberBarcode((int)borrow.Member_id);
+                            bookBarcode = bookService.GetBookBarcode(borrow.Book_id);
+                            notSelected = false;
+                        }
+                    }   
                 }
             }
 
@@ -113,14 +119,17 @@ namespace PresentationLayer {
             if (tbcTabs.SelectedIndex == 1 && dgPendingBorrows.SelectedItems.Count == 1) {
                 Borrow borrow = dgPendingBorrows.SelectedItem as Borrow;
                 if (borrow != null) {
-                    //TODO: koristiti using kada MemberService i BookService budu realizirali sučelje IDisposable (@mmarkoovin21 i @vlovric21), ili još bolje, izvaditi u konstruktor i disposati u Unloaded
+                    //TODO: koristiti using kada MemberService budu realizirali sučelje IDisposable (@mmarkoovin21), ili još bolje, izvaditi u konstruktor i disposati u Unloaded
                     MemberService memberService = new MemberService();
-                    BookServices bookService = new BookServices();
-                    if (borrow.Member_id != null) {
-                        memberBarcode = memberService.GetMemberBarcode((int)borrow.Member_id);
-                        bookBarcode = bookService.GetBookBarcode(borrow.Book_id);
-                        notSelected = false;
-                    }
+                    using (BookServices bookService = new BookServices())
+                    {
+                        if (borrow.Member_id != null)
+                        {
+                            memberBarcode = memberService.GetMemberBarcode((int)borrow.Member_id);
+                            bookBarcode = bookService.GetBookBarcode(borrow.Book_id);
+                            notSelected = false;
+                        }
+                    }    
                 }
             }
 

@@ -125,5 +125,10 @@ namespace PresentationLayer
         {
             ApplyFilter(false);
         }
+
+        private void UserControl_Unloaded(object sender, RoutedEventArgs e)
+        {
+            bookServices.Dispose();
+        }
     }
 }
