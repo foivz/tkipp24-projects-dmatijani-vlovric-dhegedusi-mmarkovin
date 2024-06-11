@@ -425,7 +425,7 @@ namespace UnitTesting {
             Assert.Null(retrievedEmployee);
         }
 
-        // Implementirati DISPOSE kad EmployeeService bude imao IDisposable implementiran! (@dmatijani21)
+        //TODO: Implementirati DISPOSE kad EmployeeService bude imao IDisposable implementiran! (@dmatijani21)
 
         //David Matijanić
         private void PrepareEmployeeRepositoryMethods(Employee employee) {

@@ -105,6 +105,16 @@ namespace UnitTesting
 
         }
 
+        //David Matijanić
+        [Fact]
+        public void Constructor_WhenBookServiceIsInstantiated_ItIsNotNull() {
+            //Arrange & act
+            var service = new BookServices();
+
+            //Assert
+            Assert.NotNull(service);
+        }
+
         [Fact]
         public void AddBook_GivenBookAndAuthor_ReturnsTrue()
         {
@@ -449,7 +459,62 @@ namespace UnitTesting
             Assert.Multiple(actions);
         }
 
-        //TODO UpdateBook
+        //David Matijanić
+        [Fact]
+        public void UpdateBook_BookIsEntered_BookDataIsUpdated() {
+            //Arrange
+            Book foundBook = books.First();
+            Book updatedBook = new Book {
+                id = foundBook.id,
+                Library_id = foundBook.Library_id,
+                Library = foundBook.Library,
+                name = "Azurirana knjiga!",
+                current_copies = foundBook.current_copies - 1
+            };
+            A.CallTo(() => bookRepo.Update(updatedBook, true)).Invokes(call => {
+                foreach (var b in books.Where(bb => bb.id == updatedBook.id)) {
+                    b.Library_id = updatedBook.Library_id;
+                    b.Library = updatedBook.Library;
+                    b.name = updatedBook.name;
+                    b.current_copies = updatedBook.current_copies;
+                }
+            }).Returns(1);
+
+            //Act
+            bookServices.UpdateBook(updatedBook);
+            foundBook = books.First();
+
+            //Assert
+            Action[] actions = {
+                () => Assert.Equal(updatedBook.name, foundBook.name),
+                () => Assert.Equal(updatedBook.current_copies, foundBook.current_copies)
+            };
+            Assert.Multiple(actions);
+        }
+
+        //David Matijanić
+        [Fact]
+        public void UpdateBook_BookDoesntExist_SomethingHappens() {
+            //Arrange
+            Book updatedBook = new Book {
+                id = 55,
+                Library_id = 2,
+                Library = new Library {
+                    id = 2
+                },
+                name = "Ova knjiga ne postoji!",
+                current_copies = 7
+            };
+            A.CallTo(() => bookRepo.Update(updatedBook, true)).Returns(0);
+
+            //Act
+            int changedAmount = bookServices.UpdateBook(updatedBook);
+
+            //Assert
+            Assert.Equal(0, changedAmount);
+        }
+
+
         //TODO GetBookBarcode
         //TODO GetBooksByLibrary
     }
