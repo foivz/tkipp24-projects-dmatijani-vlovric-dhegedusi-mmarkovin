@@ -149,6 +149,7 @@ namespace UnitTesting {
         [InlineData(2)]
         [InlineData(3)]
         [InlineData(4)]
+        [InlineData(5)]
         public void AddLibrary_LibraryWithSameIDExists_ThrowsLibraryWithSameIDException(int libraryId) {
             //Arrange
             Library library = new Library {
@@ -206,7 +207,7 @@ namespace UnitTesting {
             Library library = libraries.ToList()[0];
             PrepareServicesForDeleteMethod(library);
 
-            //Act & arrange
+            //Act & assert
             Assert.Throws<LibraryHasEmployeesException>(() => libraryService.DeleteLibrary(library));
         }
 
@@ -216,7 +217,7 @@ namespace UnitTesting {
             Library library = libraries.ToList()[1];
             PrepareServicesForDeleteMethod(library);
 
-            //Act & arrange
+            //Act & assert
             Assert.Throws<LibraryHasMembersException>(() => libraryService.DeleteLibrary(library));
         }
 
@@ -226,7 +227,7 @@ namespace UnitTesting {
             Library library = libraries.ToList()[2];
             PrepareServicesForDeleteMethod(library);
 
-            //Act & arrange
+            //Act & assert
             Assert.Throws<LibraryHasBooksException>(() => libraryService.DeleteLibrary(library));
         }
 
@@ -236,8 +237,25 @@ namespace UnitTesting {
             Library library = libraries.ToList()[3];
             PrepareServicesForDeleteMethod(library);
 
-            //Act & arrange
+            //Act & assert
             Assert.Throws<LibraryException>(() => libraryService.DeleteLibrary(library));
+        }
+
+        [Fact]
+        public void DeleteLibrary_LibraryHasNothing_DeletesLibrary() {
+            //Arrange
+            Library library = libraries.ToList()[4];
+            PrepareServicesForDeleteMethod(library);
+            A.CallTo(() => libraryRepository.Remove(library)).Invokes(call => {
+                var librariesWithNoDeleted = libraries.Where(l => l.id != library.id);
+                libraries = librariesWithNoDeleted;
+            });
+
+            //Act
+            libraryService.DeleteLibrary(library);
+
+            //Assert
+            Assert.DoesNotContain(library, libraries);
         }
 
         private void PrepareLibraryRepositoryMethods(Library library) {
