@@ -1,14 +1,13 @@
-﻿using BussinessLogicLayer.services;
+﻿using BussinessLogicLayer.Exceptions;
+using BussinessLogicLayer.services;
 using DataAccessLayer.Interfaces;
 using EntitiesLayer;
+using FakeItEasy;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using FakeItEasy;
 using Xunit;
-using BussinessLogicLayer.Exceptions;
 
 namespace UnitTesting {
     public class LibraryService_unitTest {
@@ -26,28 +25,63 @@ namespace UnitTesting {
                     name = "Knjiznica 1",
                     OIB = "11111111111",
                     price_day_late = 3,
-                    membership_duration = GetDateFromMembershipDuration(30)
+                    membership_duration = GetDateFromMembershipDuration(30),
+                    Employees = new List<Employee> {
+                        new Employee()
+                    },
+                    Members = new List<Member>(),
+                    Books = new List<Book>(),
+                    Notifications = new List<Notification>()
                 },
                 new Library {
                     id = 2,
                     name = "Knjiznica 2",
                     OIB = "22222222222",
                     price_day_late = 5,
-                    membership_duration = GetDateFromMembershipDuration(24)
+                    membership_duration = GetDateFromMembershipDuration(24),
+                    Employees = new List<Employee>(),
+                    Members = new List<Member> {
+                        new Member()
+                    },
+                    Books = new List<Book>(),
+                    Notifications = new List<Notification>()
                 },
                 new Library {
                     id = 3,
                     name = "Knjiznica 3",
                     OIB = "33333333333",
                     price_day_late = Convert.ToDecimal(3.2),
-                    membership_duration = GetDateFromMembershipDuration(35)
+                    membership_duration = GetDateFromMembershipDuration(35),
+                    Employees = new List<Employee>(),
+                    Members = new List<Member>(),
+                    Books = new List<Book> {
+                        new Book()
+                    },
+                    Notifications = new List<Notification>()
                 },
                 new Library {
                     id = 4,
                     name = "Knjiznica 4",
                     OIB = "44444444444",
                     price_day_late = Convert.ToDecimal(4.5),
-                    membership_duration = GetDateFromMembershipDuration(31)
+                    membership_duration = GetDateFromMembershipDuration(31),
+                    Employees = new List<Employee>(),
+                    Members = new List<Member>(),
+                    Books = new List<Book>(),
+                    Notifications = new List<Notification> {
+                        new Notification()
+                    }
+                },
+                new Library {
+                    id = 5,
+                    name = "Knjiznica 5",
+                    OIB = "55555555555",
+                    price_day_late = Convert.ToDecimal(4.3),
+                    membership_duration = GetDateFromMembershipDuration(68),
+                    Employees = new List<Employee>(),
+                    Members = new List<Member>(),
+                    Books = new List<Book>(),
+                    Notifications = new List<Notification>()
                 }
             }.AsQueryable();
         }
@@ -131,10 +165,11 @@ namespace UnitTesting {
         [InlineData("22222222222")]
         [InlineData("33333333333")]
         [InlineData("44444444444")]
+        [InlineData("55555555555")]
         public void AddLibrary_LibraryWithSameOIBExists_ThrowsLibraryWithSameOIBException(string libraryOib) {
             //Arrange
             Library library = new Library {
-                id = 5,
+                id = 6,
                 OIB = libraryOib
             };
             PrepareLibraryRepositoryMethods(library);
@@ -147,8 +182,8 @@ namespace UnitTesting {
         public void AddLibrary_LibraryWithUniqueIdAndOib_LibraryIsAdded() {
             //Arrange
             Library library = new Library {
-                id = 5,
-                OIB = "55555555555",
+                id = 6,
+                OIB = "66666666666",
                 name = "Nova knjiznica"
             };
             PrepareLibraryRepositoryMethods(library);
@@ -165,9 +200,69 @@ namespace UnitTesting {
             Assert.Contains(library, libraries);
         }
 
+        [Fact]
+        public void DeleteLibrary_LibraryHasEmployees_ThrowsLibraryHasEmployeesException() {
+            //Arrange
+            Library library = libraries.ToList()[0];
+            PrepareServicesForDeleteMethod(library);
+
+            //Act & arrange
+            Assert.Throws<LibraryHasEmployeesException>(() => libraryService.DeleteLibrary(library));
+        }
+
+        [Fact]
+        public void DeleteLibrary_LibraryHasMembers_ThrowsLibraryHasMemberrsException() {
+            //Arrange
+            Library library = libraries.ToList()[1];
+            PrepareServicesForDeleteMethod(library);
+
+            //Act & arrange
+            Assert.Throws<LibraryHasMembersException>(() => libraryService.DeleteLibrary(library));
+        }
+
+        [Fact]
+        public void DeleteLibrary_LibraryHasBooks_ThrowsLibraryHasBooksException() {
+            //Arrange
+            Library library = libraries.ToList()[2];
+            PrepareServicesForDeleteMethod(library);
+
+            //Act & arrange
+            Assert.Throws<LibraryHasBooksException>(() => libraryService.DeleteLibrary(library));
+        }
+
+        [Fact]
+        public void DeleteLibrary_LibraryHasNotifications_ThrowsLibraryException() {
+            //Arrange
+            Library library = libraries.ToList()[3];
+            PrepareServicesForDeleteMethod(library);
+
+            //Act & arrange
+            Assert.Throws<LibraryException>(() => libraryService.DeleteLibrary(library));
+        }
+
         private void PrepareLibraryRepositoryMethods(Library library) {
             A.CallTo(() => libraryRepository.GetLibrariesById(library.id)).Returns(libraries.Where(l => l.id == library.id));
             A.CallTo(() => libraryRepository.GetLibrariesByOIB(library.OIB)).Returns(libraries.Where(l => l.OIB == library.OIB));
+        }
+
+        private void PrepareServicesForDeleteMethod(Library library) {
+            IEmpoloyeeRepositroy employeeRepository = A.Fake<IEmpoloyeeRepositroy>();
+            A.CallTo(() => employeeRepository.GetEmployeesByLibrary(library)).Returns(library.Employees.AsQueryable());
+            EmployeeService employeeService = new EmployeeService(employeeRepository, null, null);
+
+            IMembersRepository memberRepository = A.Fake<IMembersRepository>();
+            A.CallTo(() => memberRepository.GetMembersByLibrary(library.id)).Returns(library.Members.AsQueryable());
+            MemberService memberService = new MemberService(memberRepository, null, null, null, null);
+
+            IBookRepository bookRepository = A.Fake<IBookRepository>();
+            A.CallTo(() => bookRepository.GetBooksByLibrary(library.id)).Returns(library.Books.AsQueryable());
+            BookServices bookService = new BookServices(bookRepository, null, null);
+
+            INotificationsRepository notificationRepository = A.Fake<INotificationsRepository>();
+            A.CallTo(() => notificationRepository.GetAllNotificationsForLibrary(library.id)).Returns(library.Notifications.AsQueryable());
+            NotificationService notificationService = new NotificationService(notificationRepository, null);
+
+            libraryService = new LibraryService(libraryRepository, employeeService, memberService, bookService, notificationService);
         }
 
         private decimal CalculateMembershipDurationFromDate(DateTime date) {
