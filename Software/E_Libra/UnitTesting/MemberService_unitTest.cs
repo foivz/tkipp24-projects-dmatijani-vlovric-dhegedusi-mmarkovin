@@ -1,4 +1,5 @@
-﻿using BussinessLogicLayer.Exceptions;
+﻿using BussinessLogicLayer;
+using BussinessLogicLayer.Exceptions;
 using BussinessLogicLayer.services;
 using DataAccessLayer.Interfaces;
 using DataAccessLayer.Repositories;
@@ -387,13 +388,9 @@ namespace UnitTesting
         public void DeleteMember_WhenBorrowsAndReservationsAreClear_ReturnsTrue()
         {
             // Arrange
-            var member = new Member { id = 1 };
-
-            // Act
-            var result = memberService.DeleteMember(member);
-
+            
             // Assert
-            Assert.True(result);
+            Assert.True(false);
         }
 
         //Magdalena Markovinović
@@ -623,10 +620,13 @@ namespace UnitTesting
             // Arrange
             int libraryId = 1;
             var expectedMembers = new List<Member>
-                {
-                    new Member { id = 1, name = "test1", surname = "test1", Library_id = 1 },
-                    new Member { id = 2, name = "test2", surname = "test2", Library_id = 1 }
-                };
+        {
+            new Member { id = 1, name = "test1", surname = "test1", Library_id = 1 },
+            new Member { id = 2, name = "test2", surname = "test2", Library_id = 1 }
+        };
+            IEmployeeService FakeEmployeeService = A.Fake<IEmployeeService>();
+
+            A.CallTo(() => FakeEmployeeService.GetEmployeeLibraryId(LoggedUser.Username)).Returns(libraryId);
             A.CallTo(() => membersRepository.GetMembersByLibrary(libraryId)).Returns(expectedMembers.AsQueryable());
 
             // Act
