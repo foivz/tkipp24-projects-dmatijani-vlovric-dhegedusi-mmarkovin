@@ -26,6 +26,7 @@ namespace UnitTesting
         private MemberService memberService;
         private EmployeeService employeeService;
         private BorrowService borrowService;
+        private LibraryService libraryService;
         private ReservationService reservationService;
         private ArchiveServices archiveServices;
 
@@ -36,7 +37,8 @@ namespace UnitTesting
             libraryRepository = A.Fake<ILibraryRepository>();
             borrowRepository = A.Fake<IBorrowRepository>();
             reservationRepository = A.Fake<IReservationRepository>();
-            borrowService = new BorrowService(borrowRepository,null,null);
+            libraryService = new LibraryService(libraryRepository, employeeService, memberService, null, null);
+            borrowService = new BorrowService(borrowRepository, null, null);
             reservationService = new ReservationService(reservationRepository, null);
             employeeService = new EmployeeService(empoloyeeRepositroy, borrowService, archiveServices);
             memberService = new MemberService(membersRepository, libraryRepository, employeeService, borrowService, reservationService);
@@ -327,7 +329,7 @@ namespace UnitTesting
 
             // Assert
             A.CallTo(() => membersRepository.Add(memberToAdd)).MustHaveHappenedOnceExactly();
-            Assert.True(result); 
+            Assert.True(result);
         }
         //Magdalena Markovinović
         [Fact]
@@ -388,7 +390,7 @@ namespace UnitTesting
         public void DeleteMember_WhenBorrowsAndReservationsAreClear_ReturnsTrue()
         {
             // Arrange
-            
+
             // Assert
             Assert.True(false);
         }
@@ -449,7 +451,7 @@ namespace UnitTesting
             var result = memberService.GetAllMembersByFilter(name, surname);
 
             // Assert
-            Assert.Equal(allMembers.Count, result.Count); 
+            Assert.Equal(allMembers.Count, result.Count);
             Assert.All(allMembers, m => Assert.Contains(m, result));
         }
         //Magdalena Markovinović
@@ -675,7 +677,7 @@ namespace UnitTesting
         {
             // Arrange
             int invalidId = -1;
-            A.CallTo(() => membersRepository.GetMemberBarcode(invalidId)).Returns(new List<string>().AsQueryable()); 
+            A.CallTo(() => membersRepository.GetMemberBarcode(invalidId)).Returns(new List<string>().AsQueryable());
 
             // Act
             string result = memberService.GetMemberBarcode(invalidId);
@@ -784,5 +786,74 @@ namespace UnitTesting
             // Assert
             Assert.Equal(expectedDuration, result);
         }
+        //Magdalena Markovinović
+        [Fact]
+        public void RestoreMembership_MembershipExpired_RestoresMembership()
+        {
+            // Arrange
+            var member = new Member { id = 1, Library_id = 1, membership_date = DateTime.Now.AddDays(-300) };
+            DateTime membershipRunOutDate = DateTime.Now.AddDays(-32); 
+            A.CallTo(() => membersRepository.UpdateMembershipDate(member, A<DateTime>.Ignored, true)).Returns(1);
+
+            A.CallTo(() => libraryRepository.GetLibraryMembershipDuration(member.Library_id)).Returns(membershipRunOutDate);
+
+            // Act
+            var result = memberService.RestoreMembership(member);
+
+            // Assert
+            Assert.True(result);
+            A.CallTo(() => membersRepository.UpdateMembershipDate(member, A<DateTime>.Ignored, true)).MustHaveHappenedOnceExactly();
+        }
+        //Magdalena Markovinović
+        [Fact]
+        public void RestoreMembership_MembershipNotExpired_DoesNotRestoreMembership()
+        {
+            // Arrange
+            var member = new Member { id = 1, Library_id = 1, membership_date = DateTime.Now.AddDays(-10) };
+            DateTime membershipDuration = DateTime.Now.AddDays(30);
+            A.CallTo(() => libraryRepository.GetLibraryMembershipDuration(member.Library_id)).Returns(membershipDuration);
+
+            // Act
+            var result = memberService.RestoreMembership(member);
+
+            // Assert
+            Assert.False(result);
+            A.CallTo(() => membersRepository.UpdateMembershipDate(member, A<DateTime>.Ignored, false)).MustNotHaveHappened();
+        }
+
+        //Magdalena Markovinović
+        [Fact]
+        public void RestoreMembership_MembershipExpired_RestorationFailed()
+        {
+            // Arrange
+            var member = new Member { id = 1, Library_id = 1, membership_date = DateTime.Now.AddDays(-300) };
+            DateTime membershipDuration = DateTime.Now.AddDays(30);
+            A.CallTo(() => libraryRepository.GetLibraryMembershipDuration(member.Library_id)).Returns(membershipDuration);
+            A.CallTo(() => membersRepository.UpdateMembershipDate(member, A<DateTime>.Ignored, true)).Returns(0);
+
+            // Act
+            var result = memberService.RestoreMembership(member);
+
+            // Assert
+            Assert.False(result);
+            A.CallTo(() => membersRepository.UpdateMembershipDate(member, A<DateTime>.Ignored, true)).MustHaveHappenedOnceExactly();
+        }
+        //Magdalena Markovinović
+        [Fact]
+        public void RestoreMembership_MemberHasNoMembershipDate_DoesNotRestoreMembership()
+        {
+            // Arrange
+            var member = new Member { id = 1, Library_id = 1, membership_date = null };
+            DateTime membershipDuration = DateTime.Now.AddDays(30);
+            A.CallTo(() => libraryRepository.GetLibraryMembershipDuration(member.Library_id)).Returns(membershipDuration);
+
+            // Act
+            var result = memberService.RestoreMembership(member);
+
+            // Assert
+            Assert.False(result);
+            A.CallTo(() => membersRepository.UpdateMembershipDate(member, A<DateTime>.Ignored, true)).MustNotHaveHappened();
+        }
+
     }
 }

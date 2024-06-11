@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace BussinessLogicLayer.services {
     // David Matijanić: GetEmployeesByLibrary, AddEmployee, UpdateEmployee, DeleteEmployee, GetEmployeeByUsername
-    public class EmployeeService {
+    public class EmployeeService : IEmployeeService{
 
         private IEmpoloyeeRepositroy employeeRepository;
         private BorrowService borrowService { get; set; }
