@@ -218,7 +218,11 @@ namespace PresentationLayer
                     Book_id = book.id,
                 };
                 bookServices.RemoveOneCopy(book);
-                int res = reservationService.AddReservation(reservation);
+                int res;
+                using (ReservationService reservationService = new ReservationService())
+                {
+                    res = reservationService.AddReservation(reservation);
+                }
                 bool result = false;
                 if (res == 1)
                 {
