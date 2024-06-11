@@ -61,7 +61,53 @@ namespace UnitTesting {
             Assert.NotNull(service);
         }
 
+        [Fact]
+        public void GetAllLibraries_NoLibrariesExist_NoLibrariesReturned() {
+            //Arrange
+            A.CallTo(() => libraryRepository.GetAll()).Returns(new List<Library>().AsQueryable());
 
+            //Act
+            var retrievedLibraries = libraryService.GetAllLibraries();
+
+            //Assert
+            Assert.Empty(retrievedLibraries);
+        }
+
+        [Fact]
+        public void GetAllLibraries_LibrariesExist_LibrariesRetrieved() {
+            //Arrange
+            A.CallTo(() => libraryRepository.GetAll()).Returns(libraries);
+
+            //Act
+            var retrievedLibraries = libraryService.GetAllLibraries();
+
+            //Assert
+            Assert.Equal(libraries, retrievedLibraries);
+        }
+
+        [Fact]
+        public async Task GetAllLibrariesAsync_NoLibrariesExist_NoLibrariesReturned() {
+            //Arrange
+            A.CallTo(() => libraryRepository.GetAllLibrariesAsync()).Returns(Task.FromResult(new List<Library>()));
+
+            //Act
+            var retrievedLibraries = await libraryService.GetAllLibrariesAsync();
+
+            //Assert
+            Assert.Empty(retrievedLibraries);
+        }
+
+        [Fact]
+        public async Task GetAllLibrariesAsync_LibrariesExist_LibrariesRetrieved() {
+            //Arrange
+            A.CallTo(() => libraryRepository.GetAllLibrariesAsync()).Returns(Task.FromResult(libraries.ToList()));
+
+            //Act
+            var retrievedLibraries = await libraryService.GetAllLibrariesAsync();
+
+            //Assert
+            Assert.Equal(libraries, retrievedLibraries);
+        }
 
         private decimal CalculateMembershipDurationFromDate(DateTime date) {
             return (date - new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Unspecified)).Days + 1;
