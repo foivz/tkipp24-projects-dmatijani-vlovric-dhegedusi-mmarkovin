@@ -13,11 +13,11 @@ namespace BussinessLogicLayer.services
 {
     //Viktor Lovrić
     // David Matijanić: GetBookByBarcodeId
-    public class BookServices
+    public class BookServices : IDisposable
     {
         public IBookRepository bookRepository { get; set; }
-        private IReservationRepository reservationRepository { get; set; }
-        private IMembersRepository memberRepository { get; set; }
+        public IReservationRepository reservationRepository { get; set; }
+        public IMembersRepository memberRepository { get; set; }
         public BookServices(
             IBookRepository bookRepository,
             IReservationRepository reservationRepository,
@@ -34,6 +34,27 @@ namespace BussinessLogicLayer.services
             new MemberRepository()
         )
         {}
+
+        ~BookServices()
+        {
+            Dispose(false);
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if(disposing)
+            {
+                bookRepository?.Dispose();
+                reservationRepository?.Dispose();
+                //memberRepository?.Dispose(); TODO
+            }
+        }
+
+        public virtual void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
 
         public bool AddBook(Book book, Author author)
         {

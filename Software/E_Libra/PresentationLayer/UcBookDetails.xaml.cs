@@ -47,23 +47,25 @@ namespace PresentationLayer
 
         private void HideReserve()
         {
-            //TODO: koristiti using za reservationService i memberService kada budu realizirali sučelje IDisposable (@mmarkoovin21 i @vlovric21)
-            ReservationService reservationService = new ReservationService();
+            //TODO: koristiti using za memberService kada budu realizirali sučelje IDisposable (@mmarkoovin21)
             MemberService memberService = new MemberService();
             int memberId = memberService.GetMemberId(LoggedUser.Username);
             //0 je, ja rezerviram
             //ak opet dodem bit ce sakriveno rezerviraj i pisat tekst
-            if (book.current_copies > 0 || reservationService.CheckExistingReservation(book.id, memberId)) //ovo provjerit sa davidom
+            using (ReservationService reservationService = new ReservationService())
             {
-                btnReserve.Visibility = Visibility.Collapsed;
-            }
+                if (book.current_copies > 0 || reservationService.CheckExistingReservation(book.id, memberId)) //ovo provjerit sa davidom
+                {
+                    btnReserve.Visibility = Visibility.Collapsed;
+                }
 
-            if (reservationService.CheckExistingReservation(book.id, memberId))
-            {
-                tblPosition.Visibility = Visibility.Visible;
-                int reservationId = reservationService.GetReservationId(memberId, book.id);
-                int position = reservationService.GetReservationPosition(reservationId, book.id);
-                tblPosition.Text = tblPosition.Text + " " + position;
+                if (reservationService.CheckExistingReservation(book.id, memberId))
+                {
+                    tblPosition.Visibility = Visibility.Visible;
+                    int reservationId = reservationService.GetReservationId(memberId, book.id);
+                    int position = reservationService.GetReservationPosition(reservationId, book.id);
+                    tblPosition.Text = tblPosition.Text + " " + position;
+                }
             }
         }
 
@@ -187,17 +189,20 @@ namespace PresentationLayer
         }
         private void btnReserve_Click(object sender, RoutedEventArgs e)
         {
-            //TODO: koristiti using za reservationService i memberService kada budu realizirali sučelje IDisposable (@mmarkoovin21 i @vlovric21)
-            ReservationService reservationService = new ReservationService();
+            //TODO: koristiti using za reservationService kada budu realizirali sučelje IDisposable (@mmarkoovin21)
             MemberService memberService = new MemberService();
             int memberId = memberService.GetMemberId(LoggedUser.Username);
-            if (reservationService.CountExistingReservations(memberId) == 3)
+            int position;
+            using (ReservationService reservationService = new ReservationService())
             {
-                MessageBox.Show("Već imate maksimalan broj rezervacija koji je 3!");
-                return;
-            }
-
-            int position = reservationService.CheckNumberOfReservations(book.id) + 1;
+                if (reservationService.CountExistingReservations(memberId) == 3)
+                {
+                    MessageBox.Show("Već imate maksimalan broj rezervacija koji je 3!");
+                    return;
+                }
+                position = reservationService.CheckNumberOfReservations(book.id) + 1;
+            } 
+            
             string text = "Biti ćete " + position + ". na redu čekanja. Potvrdite ili odbijte rezervaciju.";
 
             WinAcceptDecline winAcceptDecline = new WinAcceptDecline(text);
@@ -213,7 +218,11 @@ namespace PresentationLayer
                     Book_id = book.id,
                 };
                 bookServices.RemoveOneCopy(book);
-                int res = reservationService.AddReservation(reservation);
+                int res;
+                using (ReservationService reservationService = new ReservationService())
+                {
+                    res = reservationService.AddReservation(reservation);
+                }
                 bool result = false;
                 if (res == 1)
                 {
@@ -331,8 +340,7 @@ namespace PresentationLayer
         }
 
         private void UserControl_Unloaded(object sender, RoutedEventArgs e) {
-            //TODO: odkomentirati ovu liniju kada BookService bude realizirao sučelje IDisposable (@vlovric21)
-            //bookServices.Dispose();
+            bookServices.Dispose();
         }
     }
 }

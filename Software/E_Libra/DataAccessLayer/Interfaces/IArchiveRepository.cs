@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace DataAccessLayer.Interfaces
 {
-    public interface IArchiveRepository
+    public interface IArchiveRepository : IDisposable
     {
         IQueryable<ArchivedBookInfo> GetArchive();
         IQueryable<Archive> GetArchivesForEmployee(int employeeId);

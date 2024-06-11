@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace DataAccessLayer.Interfaces
 {
-    public interface IReservationRepository
+    public interface IReservationRepository : IDisposable
     {
         int CheckNumberOfReservations(int id);
         int GetReservationPosition(int reservationId, int bookId);

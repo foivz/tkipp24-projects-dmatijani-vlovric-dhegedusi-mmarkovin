@@ -9,7 +9,7 @@ using static DataAccessLayer.Repositories.BookRepository;
 
 namespace DataAccessLayer.Interfaces
 {
-    public interface IBookRepository
+    public interface IBookRepository : IDisposable
     {
         int Add(Book entity, Author selectedAuthor, bool saveChanges = true);
         bool BarcodeExists(string barcode);

@@ -39,17 +39,20 @@ namespace PresentationLayer
             }
 
             var book = dgvWishlist.SelectedItem as BookViewModel;
-            BookServices bookServices = new BookServices();
-            if (bookServices.RemoveBookFromWishlist(book.Id)){
-                MessageBox.Show("Knjiga je uspješno maknuta!");
-                LoadDgv();
-                return;
-            }
-            else
+            using (BookServices bookServices = new BookServices())
             {
-                MessageBox.Show("Neuspješno!");
-                return;
-            }
+                if (bookServices.RemoveBookFromWishlist(book.Id))
+                {
+                    MessageBox.Show("Knjiga je uspješno maknuta!");
+                    LoadDgv();
+                    return;
+                }
+                else
+                {
+                    MessageBox.Show("Neuspješno!");
+                    return;
+                }
+            }   
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
@@ -59,8 +62,10 @@ namespace PresentationLayer
 
         private void LoadDgv()
         {
-            BookServices bookServices = new BookServices();
-            dgvWishlist.ItemsSource = bookServices.GetWishlistedBooks();
+            using (BookServices bookServices = new BookServices())
+            {
+                dgvWishlist.ItemsSource = bookServices.GetWishlistedBooks();
+            }  
             var columnName = dgvWishlist.Columns.FirstOrDefault(c => c.Header.ToString() == "Name");
             columnName.Header = "Naziv";
             columnName = dgvWishlist.Columns.FirstOrDefault(c => c.Header.ToString() == "PublishDate");

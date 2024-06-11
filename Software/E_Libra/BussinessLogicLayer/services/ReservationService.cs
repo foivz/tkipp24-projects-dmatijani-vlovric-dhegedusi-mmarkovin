@@ -11,10 +11,10 @@ namespace BussinessLogicLayer.services
 {
     //Viktor Lovrić
     //Magdalena Markovinivić, metoda: GetReservationsForMemberNormal
-    public class ReservationService
+    public class ReservationService : IDisposable
     {
         public IReservationRepository reservationRepository { get; set; }
-        private BookServices bookService { get; set; }
+        public BookServices bookService { get; set; }
         public ReservationService(
             IReservationRepository reservationRepository,
             BookServices bookServices
@@ -27,6 +27,26 @@ namespace BussinessLogicLayer.services
             new ReservationRepository(),
             new BookServices()
         ) { }
+
+        ~ReservationService()
+        {
+            Dispose(false);
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                reservationRepository?.Dispose();
+                bookService?.Dispose();
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
 
 
         public int CheckNumberOfReservations(int id)

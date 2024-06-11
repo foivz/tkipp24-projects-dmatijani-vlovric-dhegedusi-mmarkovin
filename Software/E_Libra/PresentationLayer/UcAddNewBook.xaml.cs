@@ -40,15 +40,19 @@ namespace PresentationLayer
 
         private void LoadAuthors()
         {
-            AuthorService authorService = new AuthorService();
-            cmbAuthor.ItemsSource = authorService.GetAllAuthors();
+            using (AuthorService authorService = new AuthorService())
+            {
+                cmbAuthor.ItemsSource = authorService.GetAllAuthors();
+            } 
         }
 
         private void LoadGenres()
         {
-            GenreServices genreServices = new GenreServices();
-            var genres = genreServices.GetGenres();
-            cmbGenre.ItemsSource = genres;
+            using (GenreServices genreServices = new GenreServices())
+            {
+                var genres = genreServices.GetGenres();
+                cmbGenre.ItemsSource = genres;
+            }  
         }
 
         private string ValidateInputs()
@@ -84,24 +88,27 @@ namespace PresentationLayer
                 MessageBox.Show(validationError);
                 return;
             }
-            
+
             try
             {
                 ConvertIntoDateTime(txtDate);
                 TryParseInt(txtNumberPages.Text);
                 TryParseInt(txtNumberCopies.Text);
             }
-            catch(BookException ex)
+            catch (BookException ex)
             {
                 MessageBox.Show(ex.Poruka);
                 return;
             }
 
             Book book = MakeNewBook();
-            
+
             var author = cmbAuthor.SelectedItem as Author;
-            var bookService = new BookServices();
-            var rez = bookService.AddBook(book, author);
+            bool rez;
+            using (var bookService = new BookServices())
+            {
+                rez = bookService.AddBook(book, author);
+            }
             MessageBox.Show(rez ? "Uspješno" : "Neuspješno");
             (Window.GetWindow(this) as EmployeePanel).contentPanel.Content = new UcAddNewBook();
         }

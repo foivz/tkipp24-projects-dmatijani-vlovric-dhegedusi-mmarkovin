@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace BussinessLogicLayer.services
 {
     //Viktor Lovrić
-    public class ArchiveServices
+    public class ArchiveServices : IDisposable
     {
         public IArchiveRepository archiveRepository { get; set; }
         public ArchiveServices(IArchiveRepository archiveRepository)
@@ -19,6 +19,24 @@ namespace BussinessLogicLayer.services
         }
         public ArchiveServices() : this(new ArchiveRepository()){}
 
+        ~ArchiveServices()
+        {
+            Dispose(false);
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        public void Dispose(bool disposing)
+        {
+            if (disposing && archiveRepository != null)
+            {
+                archiveRepository.Dispose();
+            }
+        }
 
         public List<ArchivedBookInfo> GetArchive()
         {

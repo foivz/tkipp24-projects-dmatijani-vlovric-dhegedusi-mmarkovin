@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace DataAccessLayer.Interfaces
 {
-    public interface IAuthorRepository
+    public interface IAuthorRepository : IDisposable
     {
         IQueryable<Author> GetAll();
         int Add(Author entity, bool saveChanges = true);
