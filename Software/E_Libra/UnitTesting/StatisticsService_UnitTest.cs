@@ -21,6 +21,7 @@ namespace UnitTesting {
             service = new StatisticsService(repo);
         }
 
+        // Domagoj Hegedušić
 
         [Fact]
         public void GetMemberCount_GivenLibraryId_ReturnsMemberCount() {
@@ -52,6 +53,7 @@ namespace UnitTesting {
             // Assert
             Assert.Equal(expectedTotalIncome, result);
         }
+        // Domagoj Hegedušić
 
         [Fact]
         public void GetIncomeStatistics_GivenLibraryId_ReturnsIncomeStatistics() {
@@ -70,6 +72,7 @@ namespace UnitTesting {
             Assert.Equal(expectedStatistics.MemberCount, result.MemberCount);
             Assert.Equal(expectedStatistics.TotalIncome, result.TotalIncome);
         }
+        // Domagoj Hegedušić
 
         [Fact]
         public void GetReviewCount_GivenLibraryId_ReturnsReviewCount() {
@@ -91,6 +94,7 @@ namespace UnitTesting {
             // Assert
             Assert.Equal(expectedReviews, result);
         }
+        // Domagoj Hegedušić
 
         [Fact]
         public void GetMostPopularGenres_GivenLibraryId_ReturnsMostPopularGenres() {
@@ -112,6 +116,7 @@ namespace UnitTesting {
             // Assert
             Assert.Equal(expectedGenres, result);
         }
+        // Domagoj Hegedušić
 
         [Fact]
         public void GetMostPopularBooks_GivenLibraryId_ReturnsMostPopularBooks() {
@@ -132,6 +137,7 @@ namespace UnitTesting {
             // Assert
             Assert.Equal(expectedBooks, result);
         }
+        // Domagoj Hegedušić
 
         [Fact]
         public void Dispose_CallsDisposeOnRepository() {
@@ -141,6 +147,7 @@ namespace UnitTesting {
             // Assert
             A.CallTo(() => repo.Dispose()).MustHaveHappened();
         }
+        // Domagoj Hegedušić
 
         [Fact]
         public void DefaultConstructor_InitializesStatisticsRepository() {
