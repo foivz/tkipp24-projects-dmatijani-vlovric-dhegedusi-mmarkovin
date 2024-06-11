@@ -56,11 +56,14 @@ namespace UnitTesting
 
         //Magdalena Markovinović
         [Fact]
-        public void CheckLoginCredentials_InvalidCredentials_DoesNotSetLoggedUser()
+        public void CheckLoginCredentials_InvalidCredentials_DoesNotSetLoggedMember()
         {
             // Arrange
+            LoggedUser.UserType = null;
+            LoggedUser.Username = null;
             string username = "user1";
             string password = "password1";
+            var member = LoggedUser.Username;
             var returnedMembers = new List<Member>().AsQueryable();
 
             A.CallTo(() => membersRepository.GetMemberLogin(username, password)).Returns(returnedMembers);
@@ -73,8 +76,12 @@ namespace UnitTesting
             Assert.Null(LoggedUser.UserType);
         }
         //Magdalena Markovinović
-        [Fact]
-        public void CheckMembershipDateLogin_ValidMembership_ReturnsFalse()
+        [Theory]
+        [InlineData(-32)]
+        [InlineData(-60)]
+        [InlineData(-90)]
+        [InlineData(-180)]
+        public void CheckMembershipDateLogin_ValidMembership_ReturnsFalse(int daysOffset)
         {
             // Arrange
             string username = "user1";
@@ -84,9 +91,12 @@ namespace UnitTesting
                 username = username,
                 password = password,
                 Library_id = 1,
-                membership_date = DateTime.Now.AddDays(-365)
+                membership_date = DateTime.Now.AddDays(daysOffset)
             };
             A.CallTo(() => membersRepository.GetMemberLogin(username, password)).Returns(new List<Member> { member }.AsQueryable());
+
+            DateTime libraryMembershipDate = new DateTime(2024, 8, 8);
+            A.CallTo(() => libraryRepository.GetLibraryMembershipDuration(member.Library_id)).Returns(libraryMembershipDate);
 
             // Act
             bool result = memberService.CheckMembershipDateLogin(username, password);
@@ -95,8 +105,13 @@ namespace UnitTesting
             Assert.False(result);
         }
         //Magdalena Markoivinović
-        [Fact]
-        public void CheckMembershipDateLogin_ExpiredMembership_ReturnsTrue()
+        [Theory]
+        [InlineData(-1)]
+        [InlineData(-7)]
+        [InlineData(-15)]
+        [InlineData(-30)]
+        [InlineData(-31)]
+        public void CheckMembershipDateLogin_ExpiredMembership_ReturnsTrue(int daysOffset)
         {
             // Arrange
             string username = "user1";
@@ -106,16 +121,20 @@ namespace UnitTesting
                 username = username,
                 password = password,
                 Library_id = 1,
-                membership_date = DateTime.Now.AddDays(-400) // Membership expired 400 days ago (approximately 13 months)
+                membership_date = DateTime.Now.AddDays(daysOffset)
             };
             A.CallTo(() => membersRepository.GetMemberLogin(username, password)).Returns(new List<Member> { member }.AsQueryable());
+
+            DateTime libraryMembershipDate = new DateTime(2023, 1, 1);
+            A.CallTo(() => libraryRepository.GetLibraryMembershipDuration(member.Library_id)).Returns(libraryMembershipDate);
 
             // Act
             bool result = memberService.CheckMembershipDateLogin(username, password);
 
             // Assert
-            Assert.True(result); // Membership has expired
+            Assert.True(result);
         }
+        //Magdalena Markovinović
         [Fact]
         public void CheckMembershipDateLogin_MemberDoesNotExist_ReturnsFalse()
         {
@@ -715,6 +734,42 @@ namespace UnitTesting
 
             // Assert
             Assert.Equal("Član ove knjižnice s tim barkodom ne postoji!", exception.Message);
+        }
+        // Magdalena Markovinović
+        [Fact]
+        public void GetLibraryMembershipDuration_ReturnsCorrectDuration()
+        {
+            // Arrange
+            int libraryId = 1;
+            DateTime libraryMembershipDate = new DateTime(2022, 1, 1);
+
+            A.CallTo(() => libraryRepository.GetLibraryMembershipDuration(libraryId)).Returns(libraryMembershipDate);
+
+            TimeSpan expectedDuration = libraryMembershipDate - new DateTime(2024, 1, 1);
+            decimal expectedDurationInDays = (decimal)expectedDuration.TotalDays + 1;
+
+            // Act
+            decimal actualDuration = memberService.GetLibraryMembershipDuration(libraryId);
+
+            // Assert
+            Assert.Equal(expectedDurationInDays, actualDuration);
+        }
+        //Magdalena Markovinović
+
+        [Fact]
+        public void GetLibraryMembershipDuration_FutureMembershipDate_ReturnsExpectedDuration()
+        {
+            // Arrange
+            int libraryId = 1;
+            DateTime futureDate = DateTime.Now.AddDays(30);
+            A.CallTo(() => libraryRepository.GetLibraryMembershipDuration(libraryId)).Returns(futureDate);
+
+            // Act
+            decimal result = memberService.GetLibraryMembershipDuration(libraryId);
+            decimal expectedDuration = (futureDate - new DateTime(2024, 1, 1)).Days + 1;
+
+            // Assert
+            Assert.Equal(expectedDuration, result);
         }
     }
 }
