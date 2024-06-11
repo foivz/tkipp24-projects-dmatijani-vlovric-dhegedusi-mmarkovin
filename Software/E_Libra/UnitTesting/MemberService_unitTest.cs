@@ -41,6 +41,17 @@ namespace UnitTesting
             employeeService = new EmployeeService(empoloyeeRepositroy, borrowService, archiveServices);
             memberService = new MemberService(membersRepository, libraryRepository, employeeService, borrowService, reservationService);
         }
+
+        //David Matijanić
+        [Fact]
+        public void Constructor_WhenMemberServiceIsInstantiated_ItIsNotNull() {
+            //Arrange & act
+            var service = new MemberService();
+
+            //Assert
+            Assert.NotNull(service);
+        }
+
         //Magdalena Markovinović
         [Fact]
         public void CheckLoginCredentials_ValidCredentials_SetsLoggedUser()
@@ -784,5 +795,7 @@ namespace UnitTesting
             // Assert
             Assert.Equal(expectedDuration, result);
         }
+
+        //TODO: Implementirati DISPOSE kad EmployeeService bude imao IDisposable implementiran! (@dmatijani21)
     }
 }

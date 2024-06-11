@@ -563,6 +563,14 @@ namespace UnitTesting
             Assert.Equal(books.Where(b => b.Library.id == libraryId).ToList(), retrievedBooks);
         }
 
-        //TODO: Implementirati DISPOSE kad EmployeeService bude imao IDisposable implementiran! (@dmatijani21)
+        //David Matijanić
+        [Fact]
+        public void Dispose_CallsDisposeOnRepository() {
+            //Act
+            bookServices.Dispose();
+
+            //Assert
+            A.CallTo(() => bookRepo.Dispose()).MustHaveHappened();
+        }
     }
 }
