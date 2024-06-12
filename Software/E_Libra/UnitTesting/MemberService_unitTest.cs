@@ -43,7 +43,6 @@ namespace UnitTesting
 
             LoggedUser.Username = null;
             LoggedUser.UserType = null;
-            LoggedUser.LibraryId = 1;
         }
 
         //David Matijanić
