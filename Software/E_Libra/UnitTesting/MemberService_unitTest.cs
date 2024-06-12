@@ -91,7 +91,7 @@ namespace UnitTesting
         [InlineData(-60)]
         [InlineData(-90)]
         [InlineData(-180)]
-        public void CheckMembershipDateLogin_ValidMembership_ReturnsFalse(int daysOffset)
+        public void CheckMembershipDateLogin_GivenValidMembership_ReturnsFalse(int daysOffset)
         {
             // Arrange
             string username = "user1";
@@ -388,6 +388,19 @@ namespace UnitTesting
         public void DeleteMember_WhenBorrowsAndReservationsAreClear_ReturnsTrue()
         {
             // Arrange
+            var memberToDelete = new Member
+            {
+                id = 1,
+                name = "test1",
+                surname = "test1",
+                OIB = "12345678901",
+                membership_date = DateTime.Now,
+                barcode_id = "123456",
+                username = "test1",
+                password = "password1",
+                Library_id = 1
+            };
+            //A.CallTo(() => membersRepository.Delete(memberToDelete)).Returns(1);
 
             // Assert
             Assert.True(false);

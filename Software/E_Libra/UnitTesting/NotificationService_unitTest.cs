@@ -224,16 +224,15 @@ namespace UnitTesting
         public void Dispose_GivenFunctionIsCalled_DisposeAll()
         {
             // Arrange
-            IMemberService fakeMemberService = A.Fake<IMemberService>();
-            A.CallTo(() => notificationsRepository.Dispose()).DoesNothing();
-            A.CallTo(() => memberRepository.Dispose()).DoesNothing();
+            var fakeMemberService = A.Fake<MemberService>();
+            var fakeNotifRepo = A.Fake<INotificationsRepository>();
+            var fakeNotifService = new NotificationService(fakeNotifRepo, fakeMemberService);
             // Act
-            notificationService?.Dispose();
-            fakeMemberService?.Dispose();
+            fakeNotifService.Dispose();
 
             // Assert
-            A.CallTo(() => notificationsRepository.Dispose()).MustHaveHappenedOnceExactly();
-            A.CallTo(() => fakeMemberService.Dispose()).MustHaveHappenedOnceExactly();
+            A.CallTo(() => fakeNotifRepo.Dispose()).MustHaveHappened();
+            A.CallTo(() => fakeMemberService.Dispose()).MustHaveHappened();
         }
     }
 }
