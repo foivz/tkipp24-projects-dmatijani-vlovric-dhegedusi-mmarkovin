@@ -45,23 +45,25 @@ namespace PresentationLayer
                 MessageBox.Show("Ne možete arhivirati ovu knjigu jer nisu vraćeni svi primjerci u knjižnicu!");
                 return;
             }
-            EmployeeService employeeServices = new EmployeeService();
-            var archive = new Archive
+            using (EmployeeService employeeServices = new EmployeeService())
             {
-                Book_id = book.id,
-                Employee_id = employeeServices.GetEmployeeId(LoggedUser.Username),
-                arhive_date = DateTime.Now,
-            };
-            using (BookServices bookServices = new BookServices())
-            {
-                if (bookServices.ArchiveBook(book, archive))
+                var archive = new Archive
                 {
-                    MessageBox.Show("Uspješno!");
-                    LoadDgv();
-                }
-                else
+                    Book_id = book.id,
+                    Employee_id = employeeServices.GetEmployeeId(LoggedUser.Username),
+                    arhive_date = DateTime.Now,
+                };
+                using (BookServices bookServices = new BookServices())
                 {
-                    MessageBox.Show("Neuspješno!");
+                    if (bookServices.ArchiveBook(book, archive))
+                    {
+                        MessageBox.Show("Uspješno!");
+                        LoadDgv();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Neuspješno!");
+                    }
                 }
             }
         }

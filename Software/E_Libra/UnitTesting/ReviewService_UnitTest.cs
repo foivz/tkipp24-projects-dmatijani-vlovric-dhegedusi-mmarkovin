@@ -22,6 +22,7 @@ namespace UnitTesting {
             service = new ReviewService(repo);
         }
 
+        // Domagoj Hegedušić
         [Fact]
         public void GetReviewsForBook_GivenBookId_ReturnsReviews()
         {
@@ -41,6 +42,7 @@ namespace UnitTesting {
             // Assert
             Assert.Equal(existingReviews, result);
         }
+        // Domagoj Hegedušić
 
         [Fact]
         public void AddReview_GivenNewReview_ReturnsReviewId() {
@@ -56,6 +58,7 @@ namespace UnitTesting {
             // Assert
             Assert.Equal(expectedReviewId, result);
         }
+        // Domagoj Hegedušić
 
         [Fact]
         public void DeleteReview_GivenReviewIdAndBookId_ReturnsResult() {
@@ -72,6 +75,7 @@ namespace UnitTesting {
             // Assert
             Assert.Equal(expectedResult, result);
         }
+        // Domagoj Hegedušić
 
         [Fact]
         public void HasUserReviewedBook_GivenMemberIdAndBookId_ReturnsTrueIfReviewed() {
@@ -91,6 +95,7 @@ namespace UnitTesting {
             // Assert
             Assert.True(result);
         }
+        // Domagoj Hegedušić
 
         [Fact]
         public void GetReviewsForMemberAndBook_GivenMemberIdAndBookId_ReturnsReviews() {
@@ -111,6 +116,7 @@ namespace UnitTesting {
             // Assert
             Assert.Equal(expectedReviews, result);
         }
+        // Domagoj Hegedušić
 
         [Fact]
         public void Dispose_CallsDisposeOnRepository() {
@@ -120,6 +126,7 @@ namespace UnitTesting {
             // Assert
             A.CallTo(() => repo.Dispose()).MustHaveHappened();
         }
+        // Domagoj Hegedušić
 
         [Fact]
         public void DefaultConstructor_InitializesStatisticsRepository() {

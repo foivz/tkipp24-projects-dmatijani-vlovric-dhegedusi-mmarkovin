@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace DataAccessLayer.Interfaces
 {
-    public interface IMembersRepository
+    public interface IMembersRepository: IDisposable
     {
         IQueryable<Member> GetMemberLogin(string username, string password);
         IQueryable<Member> GetMembersByUsername(string username);

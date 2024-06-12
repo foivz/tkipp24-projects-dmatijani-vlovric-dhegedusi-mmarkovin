@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace DataAccessLayer.Interfaces
 {
-    public interface INotificationsRepository
+    public interface INotificationsRepository: IDisposable
     {
         IQueryable<Notification> GetAllNotificationsForLibrary(int libraryID);
 

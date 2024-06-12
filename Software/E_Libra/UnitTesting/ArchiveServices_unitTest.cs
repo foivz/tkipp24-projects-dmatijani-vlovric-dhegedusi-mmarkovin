@@ -22,6 +22,7 @@ namespace UnitTesting
             repo = A.Fake<IArchiveRepository>();
             service = new ArchiveServices(repo);
         }
+        //Viktor Lovrić
         [Fact]
         public void GetArchive_GivenFunctionIsCalled_ReturnsArchiveList()
         {
@@ -40,6 +41,7 @@ namespace UnitTesting
             //Assert
             Assert.Equal(archivedBookInfos, result);
         }
+        //Viktor Lovrić
         [Fact]
         public void GetArchivesForEmployee_GivenFunctionIsCalled_ReturnsArchiveList()
         {
@@ -58,7 +60,7 @@ namespace UnitTesting
             //Assert
             Assert.Equal(archives, result);
         }
-
+        //Viktor Lovrić
         [Fact]
         public void Constructor_InitializesAuthorRepository()
         {
@@ -70,7 +72,7 @@ namespace UnitTesting
             Assert.NotNull(testService.archiveRepository);
             Assert.IsType<ArchiveRepository>(testService.archiveRepository);
         }
-
+        //Viktor Lovrić
         [Fact]
         public void Dispose_GivenFunctionIsCalled_ReturnsNothing()
         {

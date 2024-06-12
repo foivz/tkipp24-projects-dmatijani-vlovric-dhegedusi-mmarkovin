@@ -56,7 +56,6 @@
     <Compile Include="Exceptions\MemberNotFoundException.cs" />
     <Compile Include="Exceptions\NoMoreBookCopiesException.cs" />
     <Compile Include="Exceptions\WrongLibraryException.cs" />
-    <Compile Include="IEmployeeService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="services\ArchiveServices.cs" />
     <Compile Include="services\BorrowService.cs" />

@@ -1,4 +1,4 @@
-﻿using BussinessLogicLayer;
+using BussinessLogicLayer;
 using BussinessLogicLayer.Exceptions;
 using BussinessLogicLayer.services;
 using DataAccessLayer.Interfaces;
@@ -36,7 +36,7 @@ namespace UnitTesting
             libraryRepository = A.Fake<ILibraryRepository>();
             borrowRepository = A.Fake<IBorrowRepository>();
             reservationRepository = A.Fake<IReservationRepository>();
-            borrowService = new BorrowService(borrowRepository,null,null);
+            borrowService = new BorrowService(borrowRepository, null, null);
             reservationService = new ReservationService(reservationRepository, null);
             employeeService = new EmployeeService(empoloyeeRepositroy, borrowService, archiveServices);
             memberService = new MemberService(membersRepository, libraryRepository, employeeService, borrowService, reservationService);
@@ -106,7 +106,7 @@ namespace UnitTesting
         [InlineData(-60)]
         [InlineData(-90)]
         [InlineData(-180)]
-        public void CheckMembershipDateLogin_ValidMembership_ReturnsFalse(int daysOffset)
+        public void CheckMembershipDateLogin_GivenValidMembership_ReturnsFalse(int daysOffset)
         {
             // Arrange
             string username = "user1";
@@ -342,7 +342,7 @@ namespace UnitTesting
 
             // Assert
             A.CallTo(() => membersRepository.Add(memberToAdd)).MustHaveHappenedOnceExactly();
-            Assert.True(result); 
+            Assert.True(result);
         }
         //Magdalena Markovinović
         [Fact]
@@ -403,10 +403,125 @@ namespace UnitTesting
         public void DeleteMember_WhenBorrowsAndReservationsAreClear_ReturnsTrue()
         {
             // Arrange
-            
+            var memberToDelete = new Member
+            {
+                id = 1,
+                name = "test1",
+                surname = "test1",
+                OIB = "12345678901",
+                membership_date = DateTime.Now,
+                barcode_id = "123456",
+                username = "test1",
+                password = "password1",
+                Library_id = 1
+            };
+            A.CallTo(() => borrowRepository.GetAllBorrowsForMember(memberToDelete.id, memberToDelete.Library_id)).Returns(new List<Borrow> { }.AsQueryable());
+            A.CallTo(() => reservationRepository.GetReservationsForMemberNormal(memberToDelete.id)).Returns(new List<Reservation> { }.AsQueryable());
+            A.CallTo(() => membersRepository.DeleteMember(memberToDelete.id, true)).Returns(1);
+
+            //Act
+            bool result = memberService.DeleteMember(memberToDelete);
+
             // Assert
-            Assert.True(false);
+            Assert.True(result);
         }
+        //Magdalena markovinović
+        [Fact]
+        public void DeleteMember_WhenBorrowsAreActive_ReturnsFalse()
+        {
+            // Arrange
+            var memberToDelete = new Member
+            {
+                id = 1,
+                name = "test1",
+                surname = "test1",
+                OIB = "12345678901",
+                membership_date = DateTime.Now,
+                barcode_id = "123456",
+                username = "test1",
+                password = "password1",
+                Library_id = 1
+            };
+
+            var activeBorrows = new List<Borrow>
+            {
+                new Borrow { borrow_status = (int)BorrowStatus.Borrowed },
+                new Borrow { borrow_status = (int)BorrowStatus.Late }
+            }.AsQueryable();
+
+            A.CallTo(() => borrowRepository.GetAllBorrowsForMember(memberToDelete.id, memberToDelete.Library_id)).Returns(activeBorrows);
+            A.CallTo(() => reservationRepository.GetReservationsForMemberNormal(memberToDelete.id)).Returns(new List<Reservation> { }.AsQueryable());
+            A.CallTo(() => membersRepository.DeleteMember(memberToDelete.id, true)).Returns(0);
+
+            // Act
+            bool result = memberService.DeleteMember(memberToDelete);
+
+            // Assert
+            Assert.False(result);
+        }
+        //Magdalena Markovinović
+        [Fact]
+        public void DeleteMember_WhenReservationsAreActive_ReturnsFalse()
+        {
+            // Arrange
+            var memberToDelete = new Member
+            {
+                id = 1,
+                name = "test1",
+                surname = "test1",
+                OIB = "12345678901",
+                membership_date = DateTime.Now,
+                barcode_id = "123456",
+                username = "test1",
+                password = "password1",
+                Library_id = 1
+            };
+
+            var activeReservations = new List<Reservation>
+            {
+                new Reservation { reservation_date = DateTime.Now }
+            }.AsQueryable();
+
+            A.CallTo(() => borrowRepository.GetAllBorrowsForMember(memberToDelete.id, memberToDelete.Library_id)).Returns(new List<Borrow> { }.AsQueryable());
+            A.CallTo(() => reservationRepository.GetReservationsForMemberNormal(memberToDelete.id)).Returns(activeReservations);
+            A.CallTo(() => membersRepository.DeleteMember(memberToDelete.id, true)).Returns(0);
+
+            // Act
+            bool result = memberService.DeleteMember(memberToDelete);
+
+            // Assert
+            Assert.False(result);
+        }
+        //Magdalena Markovinović
+        [Fact]
+        public void DeleteMember_WhenDeletionFails_ReturnsFalse()
+        {
+            // Arrange
+            var memberToDelete = new Member
+            {
+                id = 1,
+                name = "test1",
+                surname = "test1",
+                OIB = "12345678901",
+                membership_date = DateTime.Now,
+                barcode_id = "123456",
+                username = "test1",
+                password = "password1",
+                Library_id = 1
+            };
+
+            A.CallTo(() => borrowRepository.GetAllBorrowsForMember(memberToDelete.id, memberToDelete.Library_id)).Returns(new List<Borrow> { }.AsQueryable());
+            A.CallTo(() => reservationRepository.GetReservationsForMemberNormal(memberToDelete.id)).Returns(new List<Reservation> { }.AsQueryable());
+            A.CallTo(() => membersRepository.DeleteMember(memberToDelete.id, true)).Returns(0);
+
+            // Act
+            bool result = memberService.DeleteMember(memberToDelete);
+
+            // Assert
+            Assert.False(result);
+        }
+
+
 
         //Magdalena Markovinović
         [Fact]
@@ -464,7 +579,7 @@ namespace UnitTesting
             var result = memberService.GetAllMembersByFilter(name, surname);
 
             // Assert
-            Assert.Equal(allMembers.Count, result.Count); 
+            Assert.Equal(allMembers.Count, result.Count);
             Assert.All(allMembers, m => Assert.Contains(m, result));
         }
         //Magdalena Markovinović
@@ -639,9 +754,8 @@ namespace UnitTesting
             new Member { id = 1, name = "test1", surname = "test1", Library_id = 1 },
             new Member { id = 2, name = "test2", surname = "test2", Library_id = 1 }
         };
-            IEmployeeService FakeEmployeeService = A.Fake<IEmployeeService>();
 
-            A.CallTo(() => FakeEmployeeService.GetEmployeeLibraryId(LoggedUser.Username)).Returns(libraryId);
+            A.CallTo(() => empoloyeeRepositroy.GetEmployeeLibraryId(A<string>.Ignored)).Returns(libraryId);
             A.CallTo(() => membersRepository.GetMembersByLibrary(libraryId)).Returns(expectedMembers.AsQueryable());
 
             // Act
@@ -690,7 +804,7 @@ namespace UnitTesting
         {
             // Arrange
             int invalidId = -1;
-            A.CallTo(() => membersRepository.GetMemberBarcode(invalidId)).Returns(new List<string>().AsQueryable()); 
+            A.CallTo(() => membersRepository.GetMemberBarcode(invalidId)).Returns(new List<string>().AsQueryable());
 
             // Act
             string result = memberService.GetMemberBarcode(invalidId);
@@ -801,5 +915,95 @@ namespace UnitTesting
         }
 
         //TODO: Implementirati DISPOSE kad EmployeeService bude imao IDisposable implementiran! (@dmatijani21)
+        //Magdalena Markovinović
+        [Fact]
+        public void RestoreMembership_MembershipExpired_RestoresMembership()
+        {
+            // Arrange
+            var member = new Member { id = 1, Library_id = 1, membership_date = DateTime.Now.AddDays(-300) };
+            DateTime membershipRunOutDate = DateTime.Now.AddDays(-32); 
+            A.CallTo(() => membersRepository.UpdateMembershipDate(member, A<DateTime>.Ignored, true)).Returns(1);
+
+            A.CallTo(() => libraryRepository.GetLibraryMembershipDuration(member.Library_id)).Returns(membershipRunOutDate);
+
+            // Act
+            var result = memberService.RestoreMembership(member);
+
+            // Assert
+            Assert.True(result);
+            A.CallTo(() => membersRepository.UpdateMembershipDate(member, A<DateTime>.Ignored, true)).MustHaveHappenedOnceExactly();
+        }
+        //Magdalena Markovinović
+        [Fact]
+        public void RestoreMembership_MembershipNotExpired_DoesNotRestoreMembership()
+        {
+            // Arrange
+            var member = new Member { id = 1, Library_id = 1, membership_date = DateTime.Now.AddDays(-10) };
+            DateTime membershipDuration = DateTime.Now.AddDays(30);
+            A.CallTo(() => libraryRepository.GetLibraryMembershipDuration(member.Library_id)).Returns(membershipDuration);
+
+            // Act
+            var result = memberService.RestoreMembership(member);
+
+            // Assert
+            Assert.False(result);
+            A.CallTo(() => membersRepository.UpdateMembershipDate(member, A<DateTime>.Ignored, false)).MustNotHaveHappened();
+        }
+
+        //Magdalena Markovinović
+        [Fact]
+        public void RestoreMembership_MembershipExpired_RestorationFailed()
+        {
+            // Arrange
+            var member = new Member { id = 1, Library_id = 1, membership_date = DateTime.Now.AddDays(-300) };
+            DateTime membershipDuration = DateTime.Now.AddDays(30);
+            A.CallTo(() => libraryRepository.GetLibraryMembershipDuration(member.Library_id)).Returns(membershipDuration);
+            A.CallTo(() => membersRepository.UpdateMembershipDate(member, A<DateTime>.Ignored, true)).Returns(0);
+
+            // Act
+            var result = memberService.RestoreMembership(member);
+
+            // Assert
+            Assert.False(result);
+            A.CallTo(() => membersRepository.UpdateMembershipDate(member, A<DateTime>.Ignored, true)).MustHaveHappenedOnceExactly();
+        }
+        //Magdalena Markovinović
+        [Fact]
+        public void RestoreMembership_MemberHasNoMembershipDate_DoesNotRestoreMembership()
+        {
+            // Arrange
+            var member = new Member { id = 1, Library_id = 1, membership_date = null };
+            DateTime membershipDuration = DateTime.Now.AddDays(30);
+            A.CallTo(() => libraryRepository.GetLibraryMembershipDuration(member.Library_id)).Returns(membershipDuration);
+
+            // Act
+            var result = memberService.RestoreMembership(member);
+
+            // Assert
+            Assert.False(result);
+            A.CallTo(() => membersRepository.UpdateMembershipDate(member, A<DateTime>.Ignored, true)).MustNotHaveHappened();
+        }
+
+        [Fact]
+        public void Dispose_GivenFunctionIsCalled_DisposeAll()
+        {
+            // Arrange
+            A.CallTo(() => membersRepository.Dispose()).DoesNothing();
+            A.CallTo(() => empoloyeeRepositroy.Dispose()).DoesNothing();
+            A.CallTo(() => borrowRepository.Dispose()).DoesNothing();
+            A.CallTo(() => reservationRepository.Dispose()).DoesNothing();
+            A.CallTo(() => libraryRepository.Dispose()).DoesNothing();
+
+            // Act
+            memberService.Dispose();
+
+            // Assert
+            A.CallTo(() => membersRepository.Dispose()).MustHaveHappened();
+            A.CallTo(() => empoloyeeRepositroy.Dispose()).MustHaveHappened();
+            A.CallTo(() => borrowRepository.Dispose()).MustHaveHappened();
+            A.CallTo(() => reservationRepository.Dispose()).MustHaveHappened();
+            A.CallTo(() => libraryRepository.Dispose()).MustHaveHappened();
+        }
+
     }
 }

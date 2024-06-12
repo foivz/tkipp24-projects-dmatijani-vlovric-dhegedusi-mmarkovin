@@ -73,5 +73,11 @@ namespace PresentationLayer.MemberPanels
         {
             dgvNotifications.ItemsSource = unreadNotifications;
         }
+
+        private void UserControl_Unloaded(object sender, RoutedEventArgs e)
+        {
+            memberService.Dispose();
+            notificationService.Dispose();
+        }
     }
 }

@@ -137,5 +137,11 @@ namespace PresentationLayer.EmployeePanels
                 return bitmapImage;
             }
         }
+
+        private void UserControl_Unloaded(object sender, RoutedEventArgs e)
+        {
+            employeeService.Dispose();
+            memberService.Dispose();
+        }
     }
 }

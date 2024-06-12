@@ -115,22 +115,24 @@ namespace PresentationLayer
 
         private Book MakeNewBook()
         {
-            EmployeeService service = new EmployeeService();
-            var book = new Book
+            using (EmployeeService service = new EmployeeService())
             {
-                name = txtName.Text,
-                description = txtDescription.Text,
-                publish_date = ConvertIntoDateTime(txtDate),
-                pages_num = TryParseInt(txtNumberPages.Text),
-                digital = GetCheckBoxValue(),
-                url_digital = txtLinkDigital.Text,
-                url_photo = txtLinkPicture.Text,
-                total_copies = (int)TryParseInt(txtNumberCopies.Text),
-                Genre = cmbGenre.SelectedItem as Genre,
-                Library_id = service.GetEmployeeLibraryId(LoggedUser.Username)
-            };
+                var book = new Book
+                {
+                    name = txtName.Text,
+                    description = txtDescription.Text,
+                    publish_date = ConvertIntoDateTime(txtDate),
+                    pages_num = TryParseInt(txtNumberPages.Text),
+                    digital = GetCheckBoxValue(),
+                    url_digital = txtLinkDigital.Text,
+                    url_photo = txtLinkPicture.Text,
+                    total_copies = (int)TryParseInt(txtNumberCopies.Text),
+                    Genre = cmbGenre.SelectedItem as Genre,
+                    Library_id = service.GetEmployeeLibraryId(LoggedUser.Username)
+                };
 
-            return book;
+                return book;
+            }
         }
 
         private DateTime? ConvertIntoDateTime(TextBox txtDate)

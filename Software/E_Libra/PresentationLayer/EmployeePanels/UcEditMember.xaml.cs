@@ -54,5 +54,10 @@ namespace PresentationLayer.EmployeePanels
                 (Window.GetWindow(this) as EmployeePanel).contentPanel.Content = new UcMemberManagment();
             }
         }
+
+        private void UserControl_Unloaded(object sender, RoutedEventArgs e)
+        {
+            memberService.Dispose();
+        }
     }
 }
