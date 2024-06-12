@@ -173,8 +173,6 @@ namespace UnitTesting {
             Assert.Null(LoggedUser.Username);
             Assert.Null(LoggedUser.UserType);
             Assert.Equal(0, LoggedUser.LibraryId);
-
-
         }
 
         // Magdalena Markovinović
@@ -218,7 +216,6 @@ namespace UnitTesting {
             Assert.Null(LoggedUser.Username);
             Assert.Null(LoggedUser.UserType);
             Assert.Equal(0, LoggedUser.LibraryId);
-
         }
 
         // Magdalena Markovinović
@@ -255,8 +252,7 @@ namespace UnitTesting {
 
         // Magdalena Markovinović
         [Fact]
-        public void Dispose_GivenFunctionIsCalled_DisposeAll()
-        {
+        public void Dispose_GivenFunctionIsCalled_DisposeAll() {
             // Arrange
             A.CallTo(() => employeeRepository.Dispose()).DoesNothing();
 
@@ -265,6 +261,7 @@ namespace UnitTesting {
 
             // Assert
             A.CallTo(() => employeeRepository.Dispose()).MustHaveHappenedOnceExactly();
+        }
 
         //David Matijanić
         [Fact]
