@@ -410,6 +410,103 @@ namespace UnitTesting
             // Assert
             Assert.True(result);
         }
+        //Magdalena markovinović
+        [Fact]
+        public void DeleteMember_WhenBorrowsAreActive_ReturnsFalse()
+        {
+            // Arrange
+            var memberToDelete = new Member
+            {
+                id = 1,
+                name = "test1",
+                surname = "test1",
+                OIB = "12345678901",
+                membership_date = DateTime.Now,
+                barcode_id = "123456",
+                username = "test1",
+                password = "password1",
+                Library_id = 1
+            };
+
+            var activeBorrows = new List<Borrow>
+            {
+                new Borrow { borrow_status = (int)BorrowStatus.Borrowed },
+                new Borrow { borrow_status = (int)BorrowStatus.Late }
+            }.AsQueryable();
+
+            A.CallTo(() => borrowRepository.GetAllBorrowsForMember(memberToDelete.id, memberToDelete.Library_id)).Returns(activeBorrows);
+            A.CallTo(() => reservationRepository.GetReservationsForMemberNormal(memberToDelete.id)).Returns(new List<Reservation> { }.AsQueryable());
+            A.CallTo(() => membersRepository.DeleteMember(memberToDelete.id, true)).Returns(0);
+
+            // Act
+            bool result = memberService.DeleteMember(memberToDelete);
+
+            // Assert
+            Assert.False(result);
+        }
+        //Magdalena Markovinović
+        [Fact]
+        public void DeleteMember_WhenReservationsAreActive_ReturnsFalse()
+        {
+            // Arrange
+            var memberToDelete = new Member
+            {
+                id = 1,
+                name = "test1",
+                surname = "test1",
+                OIB = "12345678901",
+                membership_date = DateTime.Now,
+                barcode_id = "123456",
+                username = "test1",
+                password = "password1",
+                Library_id = 1
+            };
+
+            var activeReservations = new List<Reservation>
+            {
+                new Reservation { reservation_date = DateTime.Now }
+            }.AsQueryable();
+
+            A.CallTo(() => borrowRepository.GetAllBorrowsForMember(memberToDelete.id, memberToDelete.Library_id)).Returns(new List<Borrow> { }.AsQueryable());
+            A.CallTo(() => reservationRepository.GetReservationsForMemberNormal(memberToDelete.id)).Returns(activeReservations);
+            A.CallTo(() => membersRepository.DeleteMember(memberToDelete.id, true)).Returns(0);
+
+            // Act
+            bool result = memberService.DeleteMember(memberToDelete);
+
+            // Assert
+            Assert.False(result);
+        }
+        //Magdalena Markovinović
+        [Fact]
+        public void DeleteMember_WhenDeletionFails_ReturnsFalse()
+        {
+            // Arrange
+            var memberToDelete = new Member
+            {
+                id = 1,
+                name = "test1",
+                surname = "test1",
+                OIB = "12345678901",
+                membership_date = DateTime.Now,
+                barcode_id = "123456",
+                username = "test1",
+                password = "password1",
+                Library_id = 1
+            };
+
+            A.CallTo(() => borrowRepository.GetAllBorrowsForMember(memberToDelete.id, memberToDelete.Library_id)).Returns(new List<Borrow> { }.AsQueryable());
+            A.CallTo(() => reservationRepository.GetReservationsForMemberNormal(memberToDelete.id)).Returns(new List<Reservation> { }.AsQueryable());
+            A.CallTo(() => membersRepository.DeleteMember(memberToDelete.id, true)).Returns(0);
+
+            // Act
+            bool result = memberService.DeleteMember(memberToDelete);
+
+            // Assert
+            Assert.False(result);
+        }
+
+
 
         //Magdalena Markovinović
         [Fact]
