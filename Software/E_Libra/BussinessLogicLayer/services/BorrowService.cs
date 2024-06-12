@@ -114,9 +114,8 @@ namespace BussinessLogicLayer.services {
         private void Dispose(bool disposing) {
             if (disposing) {
                 borrowRepository?.Dispose();
-                //TODO: otkomentirati kada se realizira IDisposable sučelje u ovim servisima (@vlovric21)
-                //reservationService?.Dispose();
-                //bookService?.Dispose();
+                reservationService?.Dispose();
+                bookService?.Dispose();
             }
         }
 

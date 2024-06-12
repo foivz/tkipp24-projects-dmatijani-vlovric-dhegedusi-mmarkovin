@@ -121,11 +121,10 @@ namespace BussinessLogicLayer.services {
         private void Dispose(bool disposing) {
             if (disposing) {
                 libraryRepository?.Dispose();
-                //TODO: implementirati kada ti servisi budu realizirali sučelje IDisposable (@mmarkoovin21, @vlovric21)
                 employeeService?.Dispose();
-                //memberService?.Dispose();
+                memberService?.Dispose();
                 bookService?.Dispose();
-                //notificationService?.Dispose();
+                notificationService?.Dispose();
             }
         }
 
