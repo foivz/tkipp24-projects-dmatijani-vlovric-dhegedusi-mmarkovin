@@ -14,12 +14,12 @@ namespace UnitTesting
 {
     public class EmployeeService_unitTest
     {
-        private IEmpoloyeeRepositroy empoloyeeRepositroy;
+        private IEmpoloyeeRepositroy empoloyeeRepository;
         private EmployeeService employeeService;
         public EmployeeService_unitTest()
         {
-            empoloyeeRepositroy = A.Fake<IEmpoloyeeRepositroy>();
-            employeeService = new EmployeeService(empoloyeeRepositroy, null, null);
+            empoloyeeRepository = A.Fake<IEmpoloyeeRepositroy>();
+            employeeService = new EmployeeService(empoloyeeRepository, null, null);
 
             LoggedUser.Username = null;
             LoggedUser.UserType = null;
@@ -38,7 +38,7 @@ namespace UnitTesting
             new Employee { username = username, password = password, Library_id = 1 }
             }.AsQueryable();
 
-            A.CallTo(() => empoloyeeRepositroy.GetEmployeeLogin(username, password)).Returns(returnedEmployee);
+            A.CallTo(() => empoloyeeRepository.GetEmployeeLogin(username, password)).Returns(returnedEmployee);
 
             // Act
             employeeService.CheckLoginCredentials(username, password);
@@ -59,7 +59,7 @@ namespace UnitTesting
             string password = "invalidPassword";
             var returnedEmployee = new List<Employee>().AsQueryable();
 
-            A.CallTo(() => empoloyeeRepositroy.GetEmployeeLogin(username, password)).Returns(returnedEmployee);
+            A.CallTo(() => empoloyeeRepository.GetEmployeeLogin(username, password)).Returns(returnedEmployee);
 
             // Act
             employeeService.CheckLoginCredentials(username, password);
@@ -81,7 +81,7 @@ namespace UnitTesting
             string password = "password";
             var returnedEmployee = new List<Employee>().AsQueryable();
 
-            A.CallTo(() => empoloyeeRepositroy.GetEmployeeLogin(username, password)).Returns(returnedEmployee);
+            A.CallTo(() => empoloyeeRepository.GetEmployeeLogin(username, password)).Returns(returnedEmployee);
 
             // Act
             employeeService.CheckLoginCredentials(username, password);
@@ -105,7 +105,7 @@ namespace UnitTesting
             new Employee { username = username, password = password, Library_id = 2 }
         }.AsQueryable();
 
-            A.CallTo(() => empoloyeeRepositroy.GetEmployeeLogin(username, password)).Returns(returnedEmployee);
+            A.CallTo(() => empoloyeeRepository.GetEmployeeLogin(username, password)).Returns(returnedEmployee);
 
             // Act
             employeeService.CheckLoginCredentials(username, password);
@@ -124,7 +124,7 @@ namespace UnitTesting
             // Arrange
             string username = "testuser";
             int expectedLibraryId = 1;
-            A.CallTo(() => empoloyeeRepositroy.GetEmployeeLibraryId(username)).Returns(expectedLibraryId);
+            A.CallTo(() => empoloyeeRepository.GetEmployeeLibraryId(username)).Returns(expectedLibraryId);
 
             // Act
             int actualLibraryId = employeeService.GetEmployeeLibraryId(username);
@@ -140,7 +140,7 @@ namespace UnitTesting
             // Arrange
             string username = "testuser";
             int expectedEmployeeId = 2;
-            A.CallTo(() => empoloyeeRepositroy.GetEmployeeId(username)).Returns(expectedEmployeeId);
+            A.CallTo(() => empoloyeeRepository.GetEmployeeId(username)).Returns(expectedEmployeeId);
 
             // Act
             int actualEmployeeId = employeeService.GetEmployeeId(username);
@@ -154,13 +154,13 @@ namespace UnitTesting
         public void Dispose_GivenFunctionIsCalled_DisposeAll()
         {
             // Arrange
-            A.CallTo(() => empoloyeeRepositroy.Dispose()).DoesNothing();
+            A.CallTo(() => empoloyeeRepository.Dispose()).DoesNothing();
 
             // Act
             employeeService.Dispose();
 
             // Assert
-            A.CallTo(() => empoloyeeRepositroy.Dispose()).MustHaveHappenedOnceExactly();
+            A.CallTo(() => empoloyeeRepository.Dispose()).MustHaveHappenedOnceExactly();
         }
     }
 }
