@@ -58,7 +58,7 @@ namespace UnitTesting
                 Book = book,
             };
         }
-
+        //Viktor Lovrić
         [Fact]
         public void CheckNumberOfReservations_GivenFunctionIsCalled_ReturnsNumberOfReservations()
         {
@@ -72,7 +72,7 @@ namespace UnitTesting
             //Assert
             Assert.Equal(1, result);
         }
-
+        //Viktor Lovrić
         [Fact]
         public void CheckExistingReservation_GivenFunctionIsCalled_ReturnsTrue()
         {
@@ -87,7 +87,7 @@ namespace UnitTesting
             //Assert
             Assert.True(result);
         }
-
+        //Viktor Lovrić
         [Fact]
         public void AddReservation_GivenReservationIsAdded_ReturnsOne()
         {
@@ -100,7 +100,7 @@ namespace UnitTesting
             //Assert
             Assert.Equal(1, result);
         }
-
+        //Viktor Lovrić
         [Fact]
         public void GetReservationForMember_GivenMemberIDIsPassed_ReturnsReservationList()
         {
@@ -119,8 +119,7 @@ namespace UnitTesting
             //Assert
             Assert.Equal(reservations, result);
         }
-        //TODO Megi GetReservationsForMemberNormal
-
+        //Viktor Lovrić
         [Fact]
         public void CountExistingReservations_GivenMemberIDIsPassed_ReturnsNumberOfReservations()
         {
@@ -134,7 +133,7 @@ namespace UnitTesting
             //Assert
             Assert.Equal(1, result);
         }
-
+        //Viktor Lovrić
         [Fact]
         public void EnterDateForReservation_GivenBookIsPassed_ReturnsTrue()
         {
@@ -147,7 +146,7 @@ namespace UnitTesting
             //Assert
             Assert.True(result);
         }
-
+        //Viktor Lovrić
         [Fact]
         public void CheckReservationDates_OverdueReservationsArePassed_ReturnsVoid()
         {
@@ -167,7 +166,7 @@ namespace UnitTesting
             A.CallTo(() => reservationRepo.Remove(A<Reservation>.Ignored, false)).MustHaveHappened();
             A.CallTo(() => reservationRepo.SaveChanges()).MustHaveHappened();
         }
-
+        //Viktor Lovrić
         [Fact]
         public void CheckReservationDates_NoOverdueReservationsArePassed_ReturnsVoid()
         {
@@ -184,7 +183,7 @@ namespace UnitTesting
             A.CallTo(() => reservationRepo.Remove(A<Reservation>.Ignored, false)).MustNotHaveHappened();
             A.CallTo(() => reservationRepo.SaveChanges()).MustHaveHappened();
         }
-
+        //Viktor Lovrić
         [Fact]
         public void ReturnBook_GivenBookIsPassed_ReturnsVoid()
         {
@@ -197,7 +196,7 @@ namespace UnitTesting
             A.CallTo(() => bookRepo.InsertOneCopy(book, true)).MustHaveHappened();
             A.CallTo(() => reservationRepo.EnterDateForReservation(book)).MustHaveHappened();
         }
-
+        //Viktor Lovrić
         [Fact]
         public void GetReservationId_GivenMemberIDAndBookIDArePassed_ReturnsReservationID()
         {
@@ -212,7 +211,7 @@ namespace UnitTesting
             //Assert
             Assert.Equal(2, result);
         }
-
+        //Viktor Lovrić
         [Fact]
         public void GetReservationPosition_GivenReservationIDAndBookIDArePassed_ReturnsPosition()
         {
@@ -227,7 +226,7 @@ namespace UnitTesting
             //Assert
             Assert.Equal(2, result);
         }
-
+        //Viktor Lovrić
         [Fact]
         public void ShowExistingReservations_GivenFunctionIsCalled_ReturnsString()
         {
@@ -240,7 +239,7 @@ namespace UnitTesting
             //Assert
             Assert.Equal("Podigni rezervacije", result);
         }
-
+        //Viktor Lovrić
         [Fact]
         public void CheckValidReservationFroMember_GivenMemberIDAndBookIDArePassed_ReturnsReservation()
         {
@@ -256,7 +255,7 @@ namespace UnitTesting
             //Assert
             Assert.Equal(reservation, result);
         }
-
+        //Viktor Lovrić
         [Fact]
         public void RemoveReservation_GivenReservationIsPassed_ReturnsOne()
         {
@@ -269,7 +268,7 @@ namespace UnitTesting
             //Assert
             Assert.Equal(1, result);
         }
-
+        //Viktor Lovrić
         [Fact]
         public void RemoveReservationFromList_ReservationDateIsNull_ReturnsTrue()
         {
@@ -284,7 +283,7 @@ namespace UnitTesting
             A.CallTo(() => reservationRepo.Remove(reservation, true)).MustHaveHappened();
             A.CallTo(() => bookRepo.InsertOneCopy(book, true)).MustHaveHappened();
         }
-
+        //Viktor Lovrić
         [Fact]
         public void RemoveReservationFromList_ReservationDateIsNotNull_ReturnsTrue()
         {
@@ -300,7 +299,7 @@ namespace UnitTesting
             A.CallTo(() => bookRepo.InsertOneCopy(book, true)).MustHaveHappened();
             A.CallTo(() => reservationRepo.EnterDateForReservation(book)).MustHaveHappened();
         }
-
+        //Viktor Lovrić
         [Fact]
         public void Constructor_InitializesAll()
         {
@@ -318,7 +317,7 @@ namespace UnitTesting
             };
             Assert.Multiple(actions);
         }
-
+        //Viktor Lovrić
         [Fact]
         public void Dispose_GivenFunctionIsCalled_DisposesAll()
         {

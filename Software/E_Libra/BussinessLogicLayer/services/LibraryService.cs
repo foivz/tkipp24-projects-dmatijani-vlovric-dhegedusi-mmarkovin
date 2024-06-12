@@ -124,7 +124,7 @@ namespace BussinessLogicLayer.services {
                 //TODO: implementirati kada ti servisi budu realizirali sučelje IDisposable (@mmarkoovin21, @vlovric21)
                 employeeService?.Dispose();
                 //memberService?.Dispose();
-                //bookService?.Dispose();
+                bookService?.Dispose();
                 //notificationService?.Dispose();
             }
         }

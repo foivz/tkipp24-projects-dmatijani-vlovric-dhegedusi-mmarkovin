@@ -22,6 +22,7 @@ namespace UnitTesting
             repo = A.Fake<IAuthorRepository>();
             service = new AuthorService(repo);
         }
+        //Viktor Lovrić
         [Fact]
         public void GetAllAuthors_GivenFunctionIsCalled_ReturnsListOfAuthors()
         {
@@ -40,7 +41,7 @@ namespace UnitTesting
             //Assert
             Assert.Equal(authors, result);
         }
-
+        //Viktor Lovrić
         [Fact]
         public void AddAuthor_GivenAuthorIsPassed_ReturnsTrue()
         {
@@ -55,7 +56,7 @@ namespace UnitTesting
             //Assert
             Assert.True(result);
         }
-
+        //Viktor Lovrić
         [Fact]
         public void Constructor_InitializesAuthorRepository()
         {
@@ -67,7 +68,7 @@ namespace UnitTesting
             Assert.NotNull(testService.authorRepository);
             Assert.IsType<AuthorRepository>(testService.authorRepository);
         }
-
+        //Viktor Lovrić
         [Fact]
         public void Dispose_GivenFunctionIsCalled_ReturnsNothing()
         {

@@ -34,7 +34,7 @@ namespace PresentationLayer.AdminPanels {
         }
 
         private void btnCancel_Click(object sender, RoutedEventArgs e) {
-            AdminGuiControl.LoadPreviousControl();
+            AdminGuiControl.LoadNewControl(new UcAllLibraries());
         }
 
         private void btnAddNewLibrary_Click(object sender, RoutedEventArgs e) {
