@@ -136,7 +136,8 @@ namespace UnitTesting {
 
         //Magdalena Markovinović
         [Fact]
-        public void CheckLoginCredentials_ValidCredentials_SetsLoggedEmployee() {
+        public void CheckLoginCredentials_GivenValidCredentials_SetsLoggedEmployee()
+        {
             // Arrange
             string username = "empl1";
             string password = "password1";
@@ -144,9 +145,8 @@ namespace UnitTesting {
             {
                 new Employee { username = username, password = password, Library_id = 1 }
             }.AsQueryable();
-
             A.CallTo(() => employeeRepository.GetEmployeeLogin(username, password)).Returns(returnedEmployee);
-
+          
             // Act
             employeeService.CheckLoginCredentials(username, password);
 
@@ -158,12 +158,12 @@ namespace UnitTesting {
 
         //Magdalena Markovinović
         [Fact]
-        public void CheckLoginCredentials_InvalidCredentials_DoesNotSetLoggedEmployee() {
+        public void CheckLoginCredentials_GivenInvalidCredentials_DoesNotSetLoggedEmployee()
+        {
             // Arrange
             string username = "invalidUsername";
             string password = "invalidPassword";
             var returnedEmployee = new List<Employee>().AsQueryable();
-
             A.CallTo(() => employeeRepository.GetEmployeeLogin(username, password)).Returns(returnedEmployee);
 
             // Act
@@ -173,16 +173,18 @@ namespace UnitTesting {
             Assert.Null(LoggedUser.Username);
             Assert.Null(LoggedUser.UserType);
             Assert.Equal(0, LoggedUser.LibraryId);
+
+
         }
 
         // Magdalena Markovinović
         [Fact]
-        public void CheckLoginCredentials_NoMatchingUsers_DoesNotSetLoggedEmpoyee() {
+        public void CheckLoginCredentials_GivenNoMatchingUsers_DoesNotSetLoggedEmpoyee()
+        {
             // Arrange
             string username = "nonexistent";
             string password = "password";
             var returnedEmployee = new List<Employee>().AsQueryable();
-
             A.CallTo(() => employeeRepository.GetEmployeeLogin(username, password)).Returns(returnedEmployee);
 
             // Act
@@ -192,11 +194,13 @@ namespace UnitTesting {
             Assert.Null(LoggedUser.Username);
             Assert.Null(LoggedUser.UserType);
             Assert.Equal(0, LoggedUser.LibraryId);
+
         }
 
         // Magdalena Markovinović
         [Fact]
-        public void CheckLoginCredentials_MultipleMatchingUsers_DoesNotSetLoggedEmployee() {
+        public void CheckLoginCredentials_GivenMultipleMatchingUsers_DoesNotSetLoggedEmployee()
+        {
             // Arrange
             string username = "empl1";
             string password = "password1";
@@ -205,7 +209,6 @@ namespace UnitTesting {
                 new Employee { username = username, password = password, Library_id = 1 },
                 new Employee { username = username, password = password, Library_id = 2 }
             }.AsQueryable();
-
             A.CallTo(() => employeeRepository.GetEmployeeLogin(username, password)).Returns(returnedEmployee);
 
             // Act
@@ -215,11 +218,13 @@ namespace UnitTesting {
             Assert.Null(LoggedUser.Username);
             Assert.Null(LoggedUser.UserType);
             Assert.Equal(0, LoggedUser.LibraryId);
+
         }
 
         // Magdalena Markovinović
         [Fact]
-        public void GetEmployeeLibraryId_ReturnsCorrectId() {
+        public void GetEmployeeLibraryId_GivenFunctionIsCalled_ReturnsCorrectId()
+        {
             // Arrange
             string username = "testuser";
             int expectedLibraryId = 1;
@@ -234,7 +239,8 @@ namespace UnitTesting {
 
         // Magdalena Markovinović
         [Fact]
-        public void GetEmployeeId_ReturnsCorrectId() {
+        public void GetEmployeeId_GivenFunctionIsCalled_ReturnsCorrectId()
+        {
             // Arrange
             string username = "testuser";
             int expectedEmployeeId = 2;
@@ -246,6 +252,19 @@ namespace UnitTesting {
             // Assert
             Assert.Equal(expectedEmployeeId, actualEmployeeId);
         }
+
+        // Magdalena Markovinović
+        [Fact]
+        public void Dispose_GivenFunctionIsCalled_DisposeAll()
+        {
+            // Arrange
+            A.CallTo(() => employeeRepository.Dispose()).DoesNothing();
+
+            // Act
+            employeeService.Dispose();
+
+            // Assert
+            A.CallTo(() => employeeRepository.Dispose()).MustHaveHappenedOnceExactly();
 
         //David Matijanić
         [Fact]
@@ -541,8 +560,6 @@ namespace UnitTesting {
             //Assert
             Assert.Null(retrievedEmployee);
         }
-
-        //TODO: Implementirati DISPOSE kad EmployeeService bude imao IDisposable implementiran! (@dmatijani21)
 
         //David Matijanić
         private void PrepareEmployeeRepositoryMethods(Employee employee) {

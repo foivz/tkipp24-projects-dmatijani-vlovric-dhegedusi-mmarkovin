@@ -53,6 +53,7 @@ namespace PresentationLayer
         {
             memberId = memberService.GetMemberId(LoggedUser.Username);
             LoadDgv();
+            memberService.Dispose();
         }
 
         private void LoadDgv()

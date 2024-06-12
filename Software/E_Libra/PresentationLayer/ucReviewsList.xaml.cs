@@ -77,9 +77,8 @@ namespace PresentationLayer {
         }
 
         private void UserControl_Unloaded(object sender, RoutedEventArgs e) {
-            //TODO: otkomentirati kada MemberService bude realiziralo sučelje IDisposable (@mmarkoovin21)
             services.Dispose();
-            //memberService.Dispose();
+            memberService.Dispose();
             borrowService.Dispose();
         }
     }

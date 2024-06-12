@@ -130,8 +130,7 @@ namespace PresentationLayer.AdminPanels {
         }
 
         private void UserControl_Unloaded(object sender, RoutedEventArgs e) {
-            //TODO: ovo odkomentirati kad se realizira IDisposable u EmployeeService (@mmarkovin21)
-            //service.Dispose();
+            service.Dispose();
         }
     }
 }

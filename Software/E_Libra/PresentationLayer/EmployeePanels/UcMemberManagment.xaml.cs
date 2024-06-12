@@ -121,5 +121,10 @@ namespace PresentationLayer.EmployeePanels
                 MessageBox.Show("Odaberite člana!", "Greška", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+
+        private void UserControl_Unloaded(object sender, RoutedEventArgs e)
+        {
+            memberService.Dispose();
+        }
     }
 }

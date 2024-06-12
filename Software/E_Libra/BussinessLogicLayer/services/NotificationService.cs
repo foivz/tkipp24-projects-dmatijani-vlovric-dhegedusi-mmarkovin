@@ -58,5 +58,23 @@ namespace BussinessLogicLayer.services
         public int Remove(Notification notification, bool saveChanges = true) {
             return notificationsRepository.Remove(notification, saveChanges);
         }
+        ~NotificationService()
+        {
+            Dispose(false);
+        }
+        private void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                notificationsRepository?.Dispose();
+                memberService?.Dispose();
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
     }
 }

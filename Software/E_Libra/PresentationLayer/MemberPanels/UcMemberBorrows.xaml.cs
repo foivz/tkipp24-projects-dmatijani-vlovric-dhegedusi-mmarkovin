@@ -44,8 +44,7 @@ namespace PresentationLayer.MemberPanels {
 
         private void UserControl_Unloaded(object sender, RoutedEventArgs e) {
             borrowService.Dispose();
-            //TODO: odkomentirati liniju kada MemberService bude realizirao sučelje IDisposable (@mmarkoovin21)
-            //memberService.Dispose();
+            memberService.Dispose();
         }
     }
 }
