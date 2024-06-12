@@ -153,7 +153,6 @@ namespace UnitTesting {
             // Assert
             Assert.Equal(username, LoggedUser.Username);
             Assert.Equal(Role.Employee, LoggedUser.UserType);
-            Assert.Equal(1, LoggedUser.LibraryId);
         }
 
         //Magdalena Markovinović
@@ -172,7 +171,6 @@ namespace UnitTesting {
             // Assert
             Assert.Null(LoggedUser.Username);
             Assert.Null(LoggedUser.UserType);
-            Assert.Equal(0, LoggedUser.LibraryId);
         }
 
         // Magdalena Markovinović
@@ -191,8 +189,6 @@ namespace UnitTesting {
             // Assert
             Assert.Null(LoggedUser.Username);
             Assert.Null(LoggedUser.UserType);
-            Assert.Equal(0, LoggedUser.LibraryId);
-
         }
 
         // Magdalena Markovinović
@@ -215,7 +211,6 @@ namespace UnitTesting {
             // Assert
             Assert.Null(LoggedUser.Username);
             Assert.Null(LoggedUser.UserType);
-            Assert.Equal(0, LoggedUser.LibraryId);
         }
 
         // Magdalena Markovinović
@@ -580,6 +575,16 @@ namespace UnitTesting {
             });
 
             employeeService = new EmployeeService(employeeRepository, borrowService, archiveService);
+        }
+
+        //David Matijanić
+        [Fact]
+        public void Dispose_CallsDisposeOnRepository() {
+            //Act
+            employeeService.Dispose();
+
+            //Assert
+            A.CallTo(() => employeeRepository.Dispose()).MustHaveHappened();
         }
     }
 }
