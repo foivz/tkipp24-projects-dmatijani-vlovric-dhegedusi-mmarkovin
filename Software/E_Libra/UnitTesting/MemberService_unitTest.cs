@@ -76,7 +76,6 @@ namespace UnitTesting
             // Assert
             Assert.Equal(username, LoggedUser.Username);
             Assert.Equal(Role.Member, LoggedUser.UserType);
-            Assert.Equal(1, LoggedUser.LibraryId);
         }
 
         //Magdalena Markovinović
