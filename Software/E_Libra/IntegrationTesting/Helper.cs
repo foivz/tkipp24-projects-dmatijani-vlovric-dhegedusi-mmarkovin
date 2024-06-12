@@ -12,7 +12,7 @@ namespace IntegrationTesting
     {
         private static SqlConnection _connection;
 
-        private static void ExecuteSqlCommand(string sqlCommand)
+        public static void ExecuteSqlCommand(string sqlCommand)
         {
             using (var command = new SqlCommand(sqlCommand, _connection))
             {
@@ -42,6 +42,15 @@ namespace IntegrationTesting
             Connect();
 
             DeleteFromAllTables();
+
+            Disconnect();
+        }
+
+        public static void ExecuteCustomSql(string sql)
+        {
+            Connect();
+
+            ExecuteSqlCommand(sql);
 
             Disconnect();
         }

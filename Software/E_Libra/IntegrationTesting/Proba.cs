@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit;
+using FluentAssertions;
 
 namespace IntegrationTesting
 {
@@ -46,6 +47,39 @@ namespace IntegrationTesting
             var result = authorService.AddAuthor(author);
 
             Assert.True(result);
+        }
+
+        [Fact]
+        public void Test3()
+        {
+            //Arrange
+            string sql =
+                "INSERT [dbo].[Genre] ([name]) VALUES (N'TestGenre1');" +
+                "INSERT [dbo].[Genre] ([name]) VALUES (N'TestGenre2');";
+
+            Helper.ExecuteCustomSql(sql);
+
+            List<Genre> genres = new List<Genre>
+            {
+                new Genre
+                {
+                    id = 1,
+                    name = "TestGenre1"
+                },
+                new Genre
+                {
+                    id = 2,
+                    name = "TestGenre2"
+                }
+            };
+            GenreServices genreService = new GenreServices();
+
+            //Act
+
+            var result = genreService.GetGenres();
+
+            //Assert
+            result.Should().BeEquivalentTo(genres);
         }
     }
 }
