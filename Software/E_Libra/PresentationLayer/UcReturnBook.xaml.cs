@@ -136,30 +136,31 @@ namespace PresentationLayer {
                 }
             }
 
-            //TODO: ovdje staviti using za employeeService kad realizira sučelje IDisposable (@mmarkoovin21)
-            EmployeeService employeeService = new EmployeeService();
-            Employee thisEmployee = employeeService.GetEmployeeByUsername(LoggedUser.Username);
-            if (thisEmployee == null) {
-                return;
-            }
+            using (EmployeeService employeeService = new EmployeeService())
+            {
+                Employee thisEmployee = employeeService.GetEmployeeByUsername(LoggedUser.Username);
+                if (thisEmployee == null) {
+                    return;
+                }
 
-            Borrow updatedBorrow = new Borrow {
-                idBorrow = borrow.idBorrow,
-                borrow_date = borrow.borrow_date,
-                return_date = DateTime.Now,
-                borrow_status = (int)BorrowStatus.Returned,
-                Book = borrow.Book,
-                Member = borrow.Member,
-                Employee = borrow.Employee,
-                Employee1 = thisEmployee
-            };
+                Borrow updatedBorrow = new Borrow {
+                    idBorrow = borrow.idBorrow,
+                    borrow_date = borrow.borrow_date,
+                    return_date = DateTime.Now,
+                    borrow_status = (int)BorrowStatus.Returned,
+                    Book = borrow.Book,
+                    Member = borrow.Member,
+                    Employee = borrow.Employee,
+                    Employee1 = thisEmployee
+                };
 
-            int updateResult = borrowService.UpdateBorrow(updatedBorrow);
-            if (updateResult == 0) {
-                MessageBox.Show("Knjiga nije vraćena.");
+                int updateResult = borrowService.UpdateBorrow(updatedBorrow);
+                if (updateResult == 0) {
+                    MessageBox.Show("Knjiga nije vraćena.");
+                }
+                await UpdateParentBorrows();
+                ReturnParentUserControl();
             }
-            await UpdateParentBorrows();
-            ReturnParentUserControl();
         }
 
         private bool CheckInputFields() {

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace DataAccessLayer.Interfaces
 {
-    public interface IEmpoloyeeRepositroy
+    public interface IEmpoloyeeRepositroy: IDisposable
     {
         IQueryable<Employee> GetEmployeesByLibrary(Library library);
         IQueryable<Employee> GetEmployeesById(int employeeId);

@@ -175,9 +175,10 @@ namespace PresentationLayer {
         }
 
         private Employee GetEmployee() {
-            //TODO: koristiti using za EmployeeService kada bude realizirao sučelje IDisposable (@mmarkoovin21)
-            EmployeeService employeeService = new EmployeeService();
-            return employeeService.GetEmployeeByUsername(LoggedUser.Username);
+            using (EmployeeService employeeService = new EmployeeService())
+            {
+                return employeeService.GetEmployeeByUsername(LoggedUser.Username);
+            }
         }
 
         private void UpdateParentBorrows() {

@@ -128,9 +128,8 @@ namespace PresentationLayer {
 
         private void Window_Unloaded(object sender, RoutedEventArgs e) {
             adminService.Dispose();
-            //TODO: dodati kad se implementiraju Dispose metode na ove servise (@mmarkoovin21)
             //memberService.Dispose();
-            //employeeService.Dispose();
+            employeeService.Dispose();
         }
     }
 }

@@ -50,5 +50,11 @@ namespace PresentationLayer.EmployeePanels
                 (Window.GetWindow(this) as EmployeePanel).contentPanel.Content = new UcAllNotifications();
             }
         }
+
+        private void UserControl_Unloaded(object sender, RoutedEventArgs e)
+        {
+            employeService.Dispose();
+            //notificationService.Dispose();
+        }
     }
 }

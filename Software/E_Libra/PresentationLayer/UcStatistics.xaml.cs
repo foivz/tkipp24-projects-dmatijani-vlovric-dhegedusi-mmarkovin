@@ -226,6 +226,7 @@ namespace PresentationLayer {
 
         private void UserControl_Unloaded(object sender, RoutedEventArgs e) {
             _statisticsService.Dispose();
+            _employeeService.Dispose();
         }
     }
 }

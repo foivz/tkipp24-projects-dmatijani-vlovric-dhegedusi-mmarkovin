@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace BussinessLogicLayer.services {
     // David Matijanić: GetEmployeesByLibrary, AddEmployee, UpdateEmployee, DeleteEmployee, GetEmployeeByUsername
-    public class EmployeeService : IEmployeeService{
+    public class EmployeeService : IEmployeeService, IDisposable{
 
         private IEmpoloyeeRepositroy employeeRepository;
         private BorrowService borrowService { get; set; }
@@ -110,6 +110,27 @@ namespace BussinessLogicLayer.services {
 
         public Employee GetEmployeeByUsername(string username) {
             return employeeRepository.GetEmployeesById(GetEmployeeId(username)).FirstOrDefault();
+        }
+
+        ~EmployeeService()
+        {
+            Dispose(false);
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                employeeRepository?.Dispose();
+                borrowService?.Dispose();
+                //archiveService?.Dispose(); jos nije implementirano
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
     }
 }
