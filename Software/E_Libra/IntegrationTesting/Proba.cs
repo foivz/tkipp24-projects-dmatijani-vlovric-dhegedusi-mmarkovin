@@ -33,5 +33,19 @@ namespace IntegrationTesting
             //Assert
             Assert.True(result);
         }
+
+        [Fact]
+        public void Test2()
+        {
+            Author author = new Author
+            {
+                name = "TestAuthor"
+            };
+            AuthorService authorService = new AuthorService();
+
+            var result = authorService.AddAuthor(author);
+
+            Assert.True(result);
+        }
     }
 }
