@@ -23,7 +23,7 @@ namespace UnitTesting
 
             service = new GenreServices(repo);
         }
-
+        //Viktor Lovrić
         [Fact]
         public void GetGenres_GivenFunctionIsCalled_ReturnsListOfGenres()
         {
@@ -42,7 +42,7 @@ namespace UnitTesting
             //Assert
             Assert.Equal(genreList, result);
         }
-
+        //Viktor Lovrić
         [Fact]
         public void Add_GivenFunctionIsCalled_ReturnsTrue()
         {
@@ -57,7 +57,7 @@ namespace UnitTesting
             //Assert
             Assert.True(result);
         }
-
+        //Viktor Lovrić
         [Fact]
         public void Constructor_InitializesAuthorRepository()
         {
@@ -69,7 +69,7 @@ namespace UnitTesting
             Assert.NotNull(testService.genreRepository);
             Assert.IsType<GenreRepository>(testService.genreRepository);
         }
-
+        //Viktor Lovrić
         [Fact]
         public void Dispose_GivenFunctionIsCalled_ReturnsNothing()
         {

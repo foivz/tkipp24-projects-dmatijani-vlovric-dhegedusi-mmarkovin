@@ -114,7 +114,7 @@ namespace UnitTesting
             //Assert
             Assert.NotNull(service);
         }
-
+        //Viktor Lovrić
         [Fact]
         public void AddBook_GivenBookAndAuthor_ReturnsTrue()
         {
@@ -127,7 +127,7 @@ namespace UnitTesting
             // Assert
             Assert.True(result);
         }
-
+        //Viktor Lovrić
         [Fact]
         public void GetAllBooks_GivenFunctionIsCalled_ReturnsListOfBooks()
         {
@@ -140,7 +140,7 @@ namespace UnitTesting
             // Assert
             Assert.Equal(result, books);
         }
-
+        //Viktor Lovrić
         [Fact]
         public void GetNonArchivedBooks_GivenFunctionIsCalled_ReturnsListOfBooks()
         {
@@ -153,7 +153,7 @@ namespace UnitTesting
             // Assert
             Assert.Equal(result, books);
         }
-
+        //Viktor Lovrić
         [Fact]
         public void InsertOneCopy_GivenBook_ReturnsTrue()
         {
@@ -166,7 +166,7 @@ namespace UnitTesting
             // Assert
             Assert.True(result);
         }
-
+        //Viktor Lovrić
         [Fact]
         public void RemoveOneCopy_GivenBook_ReturnsTrue()
         {
@@ -179,7 +179,7 @@ namespace UnitTesting
             // Assert
             Assert.True(result);
         }
-
+        //Viktor Lovrić
         [Theory]
         [InlineData(1)]
         [InlineData(2)]
@@ -196,7 +196,7 @@ namespace UnitTesting
             A.CallTo(() => bookRepo.GetBookCurrentCopies(book.id)).MustHaveHappened();
             A.CallTo(() => bookRepo.InsertNewCopies(A<int>.Ignored, book, true)).MustHaveHappened(1, Times.Exactly);
         }
-
+        //Viktor Lovrić
         [Fact]
         public void InsertNewCopies_ReservationsExistMoreRezervationsThanCopies_ConfirmsReservations()
         {
@@ -212,7 +212,7 @@ namespace UnitTesting
             A.CallTo(() => reservationRepo.EnterDateForReservation(book)).MustHaveHappened(4, Times.Exactly);
             A.CallTo(() => bookRepo.InsertNewCopies(1, book, true)).MustHaveHappened(4, Times.Exactly);
         }
-
+        //Viktor Lovrić
         [Fact]
         public void InsertNewCopies_ReservationExistLessRezervationsThanCopies_ConfirmsReservationsAndAddsCopies()
         {
@@ -232,7 +232,7 @@ namespace UnitTesting
             A.CallTo(() => bookRepo.InsertNewCopies(1, book, true)).MustHaveHappened(3, Times.Exactly);
             A.CallTo(() => bookRepo.InsertNewCopies(2, book, true)).MustHaveHappened(1, Times.Exactly);
         }
-
+        //Viktor Lovrić
         [Fact]
         public void ArchiveBook_GivenBookAndArchive_ReturnsTrue()
         {
@@ -252,7 +252,7 @@ namespace UnitTesting
             // Assert
             Assert.True(result);
         }
-
+        //Viktor Lovrić
         [Fact]
         public void GetNonArchivedBooksByName_GivenSearchTerm_ReturnsListOfBooks()
         {
@@ -265,7 +265,7 @@ namespace UnitTesting
             // Assert
             Assert.Equal(result, books);
         }
-
+        //Viktor Lovrić
         [Fact]
         public void SearchBooks_GivenSearchTermAndDigital_ReturnsListOfBooks()
         {
@@ -278,7 +278,7 @@ namespace UnitTesting
             // Assert
             Assert.Equal(result, bookViewModels);
         }
-
+        //Viktor Lovrić
         [Fact]
         public void GetBooksByGenre_GivenGenreNameAndDigital_ReturnsListOfBooks()
         {
@@ -291,7 +291,7 @@ namespace UnitTesting
             // Assert
             Assert.Equal(result, bookViewModels);
         }
-
+        //Viktor Lovrić
         [Fact]
         public void GetBooksByAuthor_GivenAuthorNameAndDigital_ReturnsListOfBooks()
         {
@@ -304,7 +304,7 @@ namespace UnitTesting
             // Assert
             Assert.Equal(result, bookViewModels);
         }
-
+        //Viktor Lovrić
         [Fact]
         public void GetBooksByYear_GivenYearAndDigital_ReturnsListOfBooks()
         {
@@ -317,7 +317,7 @@ namespace UnitTesting
             // Assert
             Assert.Equal(result, bookViewModels);
         }
-
+        //Viktor Lovrić
         [Fact]
         public void GetBookById_GivenId_ReturnsBook()
         {
@@ -330,7 +330,7 @@ namespace UnitTesting
             // Assert
             Assert.Equal(result, book);
         }
-
+        //Viktor Lovrić
         [Fact]
         public void GetWishlistBooksForMember_GivenFunctionIsCalled_ReturnsListOfBooks()
         {
@@ -343,7 +343,7 @@ namespace UnitTesting
             // Assert
             Assert.Equal(result, bookViewModels);
         }
-
+        //Viktor Lovrić
         [Fact]
         public void AddBookToWishlist_GivenBookId_ReturnsTrue()
         {
@@ -357,7 +357,7 @@ namespace UnitTesting
             // Assert
             Assert.True(result);
         }
-
+        //Viktor Lovrić
         [Fact]
         public void RemoveBookFromWishlist_GivenBookId_ReturnsTrue()
         {
@@ -371,7 +371,7 @@ namespace UnitTesting
             // Assert
             Assert.True(result);
         }
-
+        //Viktor Lovrić
         [Fact]
         public void Constructor_InitializesAll()
         {
@@ -391,7 +391,7 @@ namespace UnitTesting
             };
             Assert.Multiple(actions);
         }
-
+        //Viktor Lovrić
         [Fact]
         public void Dispose_FunctionIsCalled_DisposesAll()
         {
