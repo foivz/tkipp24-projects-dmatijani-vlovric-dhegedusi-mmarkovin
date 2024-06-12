@@ -20,6 +20,10 @@ namespace UnitTesting
         {
             empoloyeeRepositroy = A.Fake<IEmpoloyeeRepositroy>();
             employeeService = new EmployeeService(empoloyeeRepositroy, null, null);
+
+            LoggedUser.Username = null;
+            LoggedUser.UserType = null;
+            LoggedUser.LibraryId = 0;
         }
 
         //Magdalena Markovinović
@@ -44,10 +48,6 @@ namespace UnitTesting
             Assert.Equal(Role.Employee, LoggedUser.UserType);
             Assert.Equal(1, LoggedUser.LibraryId);
 
-            // Annihilate
-            LoggedUser.Username = null;
-            LoggedUser.UserType = null;
-            LoggedUser.LibraryId = 0;
 
         }
         //Magdalena Markovinović
@@ -69,10 +69,6 @@ namespace UnitTesting
             Assert.Null(LoggedUser.UserType);
             Assert.Equal(0, LoggedUser.LibraryId);
 
-            // Annihilate
-            LoggedUser.Username = null;
-            LoggedUser.UserType = null;
-            LoggedUser.LibraryId = 0;
 
         }
 
@@ -94,11 +90,6 @@ namespace UnitTesting
             Assert.Null(LoggedUser.Username);
             Assert.Null(LoggedUser.UserType);
             Assert.Equal(0, LoggedUser.LibraryId);
-
-            // Annihilate
-            LoggedUser.Username = null;
-            LoggedUser.UserType = null;
-            LoggedUser.LibraryId = 0;
 
         }
         // Magdalena Markovinović
@@ -123,11 +114,6 @@ namespace UnitTesting
             Assert.Null(LoggedUser.Username);
             Assert.Null(LoggedUser.UserType);
             Assert.Equal(0, LoggedUser.LibraryId);
-
-            // Annihilate
-            LoggedUser.Username = null;
-            LoggedUser.UserType = null;
-            LoggedUser.LibraryId = 0;
 
         }
 
