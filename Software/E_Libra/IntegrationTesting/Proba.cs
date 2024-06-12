@@ -1,7 +1,9 @@
 ﻿using BussinessLogicLayer.services;
+using DataAccessLayer;
 using EntitiesLayer;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,17 +13,22 @@ namespace IntegrationTesting
 {
     public class Proba
     {
+        public Proba()
+        {
+            Helper.ResetDatabase();
+        }
+
         [Fact]
         public void Test1()
         {
             //Arrange
-            Member member = new Member
+            Genre genre = new Genre
             {
-                username = "anabol1",
+                name = "TestGenre"
             };
-            MemberService memberService = new MemberService();
+            GenreServices genreService = new GenreServices();
             //Act
-            var result = memberService.CheckExistingUsername(member);
+            var result = genreService.Add(genre);
 
             //Assert
             Assert.True(result);

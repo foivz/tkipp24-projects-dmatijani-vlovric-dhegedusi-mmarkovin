@@ -24,4 +24,8 @@
     <ProjectReference Include="..\EntitiesLayer\EntitiesLayer.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="System.Configuration" />
+  </ItemGroup>
+
 </Project>
