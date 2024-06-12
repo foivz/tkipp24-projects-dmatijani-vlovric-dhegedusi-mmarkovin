@@ -217,9 +217,9 @@ namespace BussinessLogicLayer.services {
             {
                 membersRepository?.Dispose();
                 libraryRepository?.Dispose();
-                employeeService.Dispose();
+                employeeService?.Dispose();
                 borrowService?.Dispose();
-                reservationService.Dispose();
+                reservationService?.Dispose();
             }
         }
 

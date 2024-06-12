@@ -58,6 +58,7 @@
     <Compile Include="Exceptions\WrongLibraryException.cs" />
     <Compile Include="IEmployeeService.cs" />
     <Compile Include="ILibraryService.cs" />
+    <Compile Include="IMemberService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="services\ArchiveServices.cs" />
     <Compile Include="services\BorrowService.cs" />

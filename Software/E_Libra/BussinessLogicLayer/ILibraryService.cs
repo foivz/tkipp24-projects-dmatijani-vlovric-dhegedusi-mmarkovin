@@ -11,7 +11,7 @@ namespace BussinessLogicLayer
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
-    public interface ILibraryService 
+    public interface ILibraryService : IDisposable
     {
         List<Library> GetAllLibraries();
         Task<List<Library>> GetAllLibrariesAsync();

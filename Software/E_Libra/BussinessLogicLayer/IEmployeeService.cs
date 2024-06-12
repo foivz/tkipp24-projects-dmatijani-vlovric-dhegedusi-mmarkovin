@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BussinessLogicLayer
 {
-    public interface IEmployeeService
+    public interface IEmployeeService : IDisposable
     {
         List<Employee> GetEmployeesByLibrary(Library library);
 

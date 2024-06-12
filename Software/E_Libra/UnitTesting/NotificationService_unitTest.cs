@@ -1,5 +1,7 @@
-﻿using BussinessLogicLayer.services;
+﻿using BussinessLogicLayer;
+using BussinessLogicLayer.services;
 using DataAccessLayer.Interfaces;
+using DataAccessLayer.Repositories;
 using EntitiesLayer;
 using FakeItEasy;
 using System;
@@ -216,6 +218,22 @@ namespace UnitTesting
             // Assert
             Assert.Equal(fakeNotifications.Count(), result.Count);
             Assert.All(result, n => Assert.Contains(n, fakeNotifications));
+        }
+
+        [Fact]
+        public void Dispose_GivenFunctionIsCalled_DisposeAll()
+        {
+            // Arrange
+            IMemberService fakeMemberService = A.Fake<IMemberService>();
+            A.CallTo(() => notificationsRepository.Dispose()).DoesNothing();
+            A.CallTo(() => memberRepository.Dispose()).DoesNothing();
+            // Act
+            notificationService?.Dispose();
+            fakeMemberService?.Dispose();
+
+            // Assert
+            A.CallTo(() => notificationsRepository.Dispose()).MustHaveHappenedOnceExactly();
+            A.CallTo(() => fakeMemberService.Dispose()).MustHaveHappenedOnceExactly();
         }
     }
 }
