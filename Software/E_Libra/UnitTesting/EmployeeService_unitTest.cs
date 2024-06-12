@@ -24,7 +24,7 @@ namespace UnitTesting
 
         //Magdalena Markovinović
         [Fact]
-        public void CheckLoginCredentials_ValidCredentials_SetsLoggedEmployee()
+        public void CheckLoginCredentials_GivenValidCredentials_SetsLoggedEmployee()
         {
             // Arrange
             string username = "empl1";
@@ -43,10 +43,16 @@ namespace UnitTesting
             Assert.Equal(username, LoggedUser.Username);
             Assert.Equal(Role.Employee, LoggedUser.UserType);
             Assert.Equal(1, LoggedUser.LibraryId);
+
+            // Annihilate
+            LoggedUser.Username = null;
+            LoggedUser.UserType = null;
+            LoggedUser.LibraryId = 0;
+
         }
         //Magdalena Markovinović
         [Fact]
-        public void CheckLoginCredentials_InvalidCredentials_DoesNotSetLoggedEmployee()
+        public void CheckLoginCredentials_GivenInvalidCredentials_DoesNotSetLoggedEmployee()
         {
             // Arrange
             string username = "invalidUsername";
@@ -62,11 +68,17 @@ namespace UnitTesting
             Assert.Null(LoggedUser.Username);
             Assert.Null(LoggedUser.UserType);
             Assert.Equal(0, LoggedUser.LibraryId);
+
+            // Annihilate
+            LoggedUser.Username = null;
+            LoggedUser.UserType = null;
+            LoggedUser.LibraryId = 0;
+
         }
 
         // Magdalena Markovinović
         [Fact]
-        public void CheckLoginCredentials_NoMatchingUsers_DoesNotSetLoggedEmpoyee()
+        public void CheckLoginCredentials_GivenNoMatchingUsers_DoesNotSetLoggedEmpoyee()
         {
             // Arrange
             string username = "nonexistent";
@@ -82,10 +94,16 @@ namespace UnitTesting
             Assert.Null(LoggedUser.Username);
             Assert.Null(LoggedUser.UserType);
             Assert.Equal(0, LoggedUser.LibraryId);
+
+            // Annihilate
+            LoggedUser.Username = null;
+            LoggedUser.UserType = null;
+            LoggedUser.LibraryId = 0;
+
         }
         // Magdalena Markovinović
         [Fact]
-        public void CheckLoginCredentials_MultipleMatchingUsers_DoesNotSetLoggedEmployee()
+        public void CheckLoginCredentials_GivenMultipleMatchingUsers_DoesNotSetLoggedEmployee()
         {
             // Arrange
             string username = "empl1";
@@ -105,11 +123,17 @@ namespace UnitTesting
             Assert.Null(LoggedUser.Username);
             Assert.Null(LoggedUser.UserType);
             Assert.Equal(0, LoggedUser.LibraryId);
+
+            // Annihilate
+            LoggedUser.Username = null;
+            LoggedUser.UserType = null;
+            LoggedUser.LibraryId = 0;
+
         }
 
         // Magdalena Markovinović
         [Fact]
-        public void GetEmployeeLibraryId_ReturnsCorrectId()
+        public void GetEmployeeLibraryId_GivenFunctionIsCalled_ReturnsCorrectId()
         {
             // Arrange
             string username = "testuser";
@@ -125,7 +149,7 @@ namespace UnitTesting
 
         // Magdalena Markovinović
         [Fact]
-        public void GetEmployeeId_ReturnsCorrectId()
+        public void GetEmployeeId_GivenFunctionIsCalled_ReturnsCorrectId()
         {
             // Arrange
             string username = "testuser";
@@ -137,6 +161,20 @@ namespace UnitTesting
 
             // Assert
             Assert.Equal(expectedEmployeeId, actualEmployeeId);
+        }
+
+        // Magdalena Markovinović
+        [Fact]
+        public void Dispose_GivenFunctionIsCalled_DisposeAll()
+        {
+            // Arrange
+            A.CallTo(() => empoloyeeRepositroy.Dispose()).DoesNothing();
+
+            // Act
+            employeeService.Dispose();
+
+            // Assert
+            A.CallTo(() => empoloyeeRepositroy.Dispose()).MustHaveHappenedOnceExactly();
         }
     }
 }

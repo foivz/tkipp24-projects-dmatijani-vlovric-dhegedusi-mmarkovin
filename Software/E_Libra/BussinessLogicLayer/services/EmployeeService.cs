@@ -123,7 +123,7 @@ namespace BussinessLogicLayer.services {
             {
                 employeeRepository?.Dispose();
                 borrowService?.Dispose();
-                //archiveService?.Dispose(); jos nije implementirano
+                archiveService?.Dispose();
             }
         }
 
