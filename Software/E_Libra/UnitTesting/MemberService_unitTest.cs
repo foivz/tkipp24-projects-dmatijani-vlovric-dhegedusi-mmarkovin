@@ -400,10 +400,15 @@ namespace UnitTesting
                 password = "password1",
                 Library_id = 1
             };
-            //A.CallTo(() => membersRepository.Delete(memberToDelete)).Returns(1);
+            A.CallTo(() => borrowRepository.GetAllBorrowsForMember(memberToDelete.id, memberToDelete.Library_id)).Returns(new List<Borrow> { }.AsQueryable());
+            A.CallTo(() => reservationRepository.GetReservationsForMemberNormal(memberToDelete.id)).Returns(new List<Reservation> { }.AsQueryable());
+            A.CallTo(() => membersRepository.DeleteMember(memberToDelete.id, true)).Returns(1);
+
+            //Act
+            bool result = memberService.DeleteMember(memberToDelete);
 
             // Assert
-            Assert.True(false);
+            Assert.True(result);
         }
 
         //Magdalena Markovinović
