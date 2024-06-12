@@ -141,7 +141,7 @@ namespace PresentationLayer.EmployeePanels
         private void UserControl_Unloaded(object sender, RoutedEventArgs e)
         {
             employeeService.Dispose();
-            //memberService.Dispose();
+            memberService.Dispose();
         }
     }
 }

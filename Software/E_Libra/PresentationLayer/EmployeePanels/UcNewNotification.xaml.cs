@@ -54,7 +54,7 @@ namespace PresentationLayer.EmployeePanels
         private void UserControl_Unloaded(object sender, RoutedEventArgs e)
         {
             employeService.Dispose();
-            //notificationService.Dispose();
+            notificationService.Dispose();
         }
     }
 }

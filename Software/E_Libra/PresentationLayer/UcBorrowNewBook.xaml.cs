@@ -147,14 +147,17 @@ namespace PresentationLayer {
         }
 
         private Member GetEnteredMember() {
-            //TODO: koristiti using za MemberService kada bude realizirao sučelje IDisposable (@mmarkoovin21)
-            MemberService memberService = new MemberService();
-            try {
-                Member enteredMember = memberService.GetMemberByBarcodeId(LoggedUser.LibraryId, tbMemberBarcode.Text);
-                return enteredMember;
-            } catch (Exception ex) {
-                MessageBox.Show(ex.Message);
-                return null;
+            using (MemberService memberService = new MemberService())
+            {
+                try
+                {
+                    Member enteredMember = memberService.GetMemberByBarcodeId(LoggedUser.LibraryId, tbMemberBarcode.Text);
+                    return enteredMember;
+                } catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                    return null;
+                }
             }
         }
 
