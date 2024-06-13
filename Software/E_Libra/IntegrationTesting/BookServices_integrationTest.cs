@@ -362,13 +362,156 @@ namespace IntegrationTesting
                 Genre_id = genre.id
             };
 
+            string sqlBook = $"INSERT INTO [dbo].[Book] ([name], [pages_num], [digital], [barcode_id], [total_copies], [current_copies], [Genre_id], [Library_id]) " +
+                   $"VALUES ('{book.name}', '{book.pages_num}', '{book.digital}', '{book.barcode_id}', '{book.total_copies}', '{book.current_copies}', '{book.Genre.id}', '{book.Library_id}');";
+
+            Helper.ExecuteCustomSql(sqlBook);
+
+            //Act
+            var result = bookServices.InsertNewCopies(currCopies, book);
+
+            //Assert
+            result.Should().BeTrue();
+        }
+
+        //Viktor Lovrić
+        [Fact]
+        public void ArchiveBook_GivenBookAndArchive_ReturnsTrue()
+        {
+            //Arrange
+            List<Book> books = new List<Book>
+            {
+                new Book
+                {
+                    id = 1,
+                    name = "BookName1",
+                    description = null,
+                    publish_date = null,
+                    pages_num = 10,
+                    digital = 0,
+                    url_digital = null,
+                    barcode_id = "12345",
+                    url_photo = null,
+                    total_copies = 10,
+                    current_copies = 10,
+                    Genre = genre,
+                    Library_id = 1,
+                    Genre_id = genre.id
+                },
+                new Book
+                {
+                    id = 2,
+                    name = "BookName2",
+                    description = null,
+                    publish_date = null,
+                    pages_num = 10,
+                    digital = 0,
+                    url_digital = null,
+                    barcode_id = "12346",
+                    url_photo = null,
+                    total_copies = 10,
+                    current_copies = 10,
+                    Genre = genre,
+                    Library_id = 1,
+                    Genre_id = genre.id
+                }
+            };
+            string sqlBook1 = $"INSERT INTO [dbo].[Book] ([name], [pages_num], [digital], [barcode_id], [total_copies], [current_copies], [Genre_id], [Library_id]) " +
+                   $"VALUES ('{books[0].name}', '{books[0].pages_num}', '{books[0].digital}', '{books[0].barcode_id}', '{books[0].total_copies}', '{books[0].current_copies}', '{books[0].Genre.id}', '{books[0].Library_id}');";
+            string sqlBook2 = $"INSERT INTO [dbo].[Book] ([name], [pages_num], [digital], [barcode_id], [total_copies], [current_copies], [Genre_id], [Library_id]) " +
+                   $"VALUES ('{books[1].name}', '{books[1].pages_num}', '{books[1].digital}', '{books[1].barcode_id}', '{books[1].total_copies}', '{books[1].current_copies}', '{books[1].Genre.id}', '{books[1].Library_id}');";
+
+            Helper.ExecuteCustomSql(sqlBook1);
+            Helper.ExecuteCustomSql(sqlBook2);
+
+            var archive = new Archive
+            {
+                Book_id = 1,
+                Employee_id = 1,
+                arhive_date = DateTime.Now.Date,
+            };
+
+            //Act
+            var result = bookServices.ArchiveBook(books[0], archive);
+
+            //Assert
+            result.Should().BeTrue();
+        }
+
+        //Viktor Lovrić
+        [Fact]
+        public void GetNonArchivedBooksByName_GivenSearchTerm_ReturnsListOfBooks()
+        {
+            //Arrange
+            LoggedUser.LibraryId = 1;
+            List<Book> books = new List<Book>
+            {
+                new Book
+                {
+                    id = 1,
+                    name = "Prvo",
+                    description = null,
+                    publish_date = null,
+                    pages_num = 10,
+                    digital = 0,
+                    url_digital = null,
+                    barcode_id = "12345",
+                    url_photo = null,
+                    total_copies = 10,
+                    current_copies = 10,
+                    Genre = genre,
+                    Library_id = 1,
+                    Genre_id = genre.id
+                },
+                new Book
+                {
+                    id = 2,
+                    name = "Drugo",
+                    description = null,
+                    publish_date = null,
+                    pages_num = 10,
+                    digital = 0,
+                    url_digital = null,
+                    barcode_id = "12346",
+                    url_photo = null,
+                    total_copies = 10,
+                    current_copies = 10,
+                    Genre = genre,
+                    Library_id = 1,
+                    Genre_id = genre.id
+                }
+            };
+
+            string sqlBook1 = $"INSERT INTO [dbo].[Book] ([name], [pages_num], [digital], [barcode_id], [total_copies], [current_copies], [Genre_id], [Library_id]) " +
+                   $"VALUES ('{books[0].name}', '{books[0].pages_num}', '{books[0].digital}', '{books[0].barcode_id}', '{books[0].total_copies}', '{books[0].current_copies}', '{books[0].Genre.id}', '{books[0].Library_id}');";
+            string sqlBook2 = $"INSERT INTO [dbo].[Book] ([name], [pages_num], [digital], [barcode_id], [total_copies], [current_copies], [Genre_id], [Library_id]) " +
+                   $"VALUES ('{books[1].name}', '{books[1].pages_num}', '{books[1].digital}', '{books[1].barcode_id}', '{books[1].total_copies}', '{books[1].current_copies}', '{books[1].Genre.id}', '{books[1].Library_id}');";
+
+            Helper.ExecuteCustomSql(sqlBook1);
+            Helper.ExecuteCustomSql(sqlBook2);
+
+            List<Book> expectedBooks = new List<Book> { books[0] };
+
+            //Act
+            var result = bookServices.GetNonArchivedBooksByName("Prv");
+
+            //Assert
+            result.Should().BeEquivalentTo(expectedBooks, options => options
+            .Excluding(e => e.Library)
+            .Excluding(e => e.Genre.Books)
+            );
+        }
+
+        //Viktor Lovrić
+        [Fact]
+        public void SearchBooks_GivenSearchTermAndDigital_ReturnsListOfBooks()
+        {
+            //Arrange
 
             //Act
 
             //Assert
         }
-
-
 
     }
 }
