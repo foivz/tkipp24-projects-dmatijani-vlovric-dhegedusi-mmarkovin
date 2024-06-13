@@ -14,32 +14,32 @@ namespace IntegrationTesting
     {
         ArchiveServices service;
 
-        string createLibrary =
+        readonly string createLibrary =
             "INSERT [dbo].[Library] ([id], [name], [OIB], [phone], [email], [price_day_late], [address], [membership_duration]) " +
             "VALUES (1, N'Knjiznica', 12345, 331, N'email', 3, N'adresa', GETDATE())";
 
-        string createBooks =
+        readonly string createBooks =
             "INSERT [dbo].[Book] ([name], [pages_num], [digital], [barcode_id], [total_copies], [current_copies], [Genre_id],  [Library_id]) " +
             "VALUES (N'Book1', 10, 0, 12345, 10, 10, 1, 1); " +
             "INSERT [dbo].[Book] ([name], [pages_num], [digital], [barcode_id], [total_copies], [current_copies], [Genre_id],  [Library_id]) " +
             "VALUES (N'Book2', 10, 0, 12346, 10, 10, 1, 1); ";
        
-        string createEmployees =
+        readonly string createEmployees =
              "INSERT [dbo].[Employee] ([name], [surname], [username], [password], [OIB], [Library_id]) " +
             "VALUES (N'ime1', N'prezime1', N'Employee1', N'123', N'1234', 1) " +
              "INSERT [dbo].[Employee] ([name], [surname], [username], [password], [OIB], [Library_id]) " +
             "VALUES (N'ime2', N'prezime2', N'Employee2', N'123', N'1235', 1) ";
 
-        string createGenres =
+        readonly string createGenres =
             "INSERT [dbo].[Genre] ([name]) VALUES (N'zanr')";
         
-        string createArchives =
+        readonly string createArchives =
             "INSERT [dbo].[Archive] ([Book_id], [Employee_id], [arhive_date]) " +
             "VALUES (1, 1, GETDATE()); " +
             "INSERT [dbo].[Archive] ([Book_id], [Employee_id], [arhive_date]) " +
             "VALUES (2, 2, GETDATE()); ";
 
-        List<ArchivedBookInfo> archivedBookInfos = new List<ArchivedBookInfo>
+        readonly List<ArchivedBookInfo> archivedBookInfos = new List<ArchivedBookInfo>
             {
                 new ArchivedBookInfo { BookName = "Book1", EmployeeName = "ime1 prezime1", ArchiveDate = DateTime.Now.Date },
                 new ArchivedBookInfo { BookName = "Book2", EmployeeName = "ime2 prezime2", ArchiveDate = DateTime.Now.Date },
@@ -51,6 +51,7 @@ namespace IntegrationTesting
             service = new ArchiveServices();
         }
 
+        //Viktor Lovrić
         [Fact]
         public void GetArchive_GivenFunctionIsCalled_ReturnsArchiveList()
         {
@@ -69,6 +70,7 @@ namespace IntegrationTesting
             result.Should().BeEquivalentTo(archivedBookInfos);
         }
 
+        //Viktor Lovrić
         [Fact]
         public void GetArchivesForEmployee_GivenFunctionIsCalled_ReturnsArchiveList()
         {
