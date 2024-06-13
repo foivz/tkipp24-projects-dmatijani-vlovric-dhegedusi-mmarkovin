@@ -31,13 +31,9 @@ namespace IntegrationTesting
 
             library = new Library
             {
-                id = 123,
-                name = "Testna knjiznica",
-                OIB = "11112222333",
-                price_day_late = 3.5m,
-                membership_duration = GetDateFromMembershipDuration(30)
+                id = 123
             };
-            InsertLibraryIntoDatabase(library);
+            InsertLibraryIntoDatabase();
 
             members = new List<Member>
             {
@@ -452,11 +448,12 @@ namespace IntegrationTesting
             );
         }
 
-        private void InsertLibraryIntoDatabase(Library library)
+        private void InsertLibraryIntoDatabase()
         {
-            var formattedMembershipDuration = library.membership_duration.ToString("yyyy-MM-dd");
-            string sqlInsertLibrary = $"INSERT [dbo].[Library] ([id], [name], [OIB], [price_day_late], [membership_duration]) VALUES ('{library.id}', '{library.name}', '{library.OIB}', {library.price_day_late}, '{formattedMembershipDuration}');";
-            Helper.ExecuteCustomSql(sqlInsertLibrary);
+            string createLibrary =
+            "INSERT [dbo].[Library] ([id], [name], [OIB], [phone], [email], [price_day_late], [address], [membership_duration]) " +
+            "VALUES (123, N'Knjiznica', 123, 331, N'email', 3, N'adresa', GETDATE())";
+            Helper.ExecuteCustomSql(createLibrary);
         }
 
         private void InsertEmployeesIntoDatabase(List<Employee> employeeList)
