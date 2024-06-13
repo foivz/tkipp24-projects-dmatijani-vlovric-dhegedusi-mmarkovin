@@ -1,61 +1,57 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Configuration;
 
 namespace IntegrationTesting
 {
     public static class Helper
     {
-        private static SqlConnection _connection;
+        private static readonly object _dbLock = new object();
+        private static string connectionString = ConfigurationManager.ConnectionStrings["DatabaseModelConfig"].ConnectionString;
 
         public static void ExecuteSqlCommand(string sqlCommand)
         {
-            using (var command = new SqlCommand(sqlCommand, _connection))
+            lock (_dbLock)
             {
-                command.ExecuteNonQuery();
-            }
-        }
-        
-        private static void Connect()
-        {
-            string connectionString = ConfigurationManager.ConnectionStrings["DatabaseModelConfig"].ConnectionString;
-            _connection = new SqlConnection(connectionString);
-            _connection.Open();
-        }
-
-        private static void Disconnect()
-        {
-            if (_connection != null && _connection.State != System.Data.ConnectionState.Closed)
-            {
-                _connection.Close();
-                _connection.Dispose();
-                _connection = null;
+                using (var connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+                    using (var command = new SqlCommand(sqlCommand, connection))
+                    {
+                        command.ExecuteNonQuery();
+                    }
+                }
             }
         }
 
         public static void ResetDatabase()
         {
-            Connect();
-
-            DeleteFromAllTables();
-
-            Disconnect();
+            lock (_dbLock)
+            {
+                using (var connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+                    DeleteFromAllTables(connection);
+                }
+            }
         }
 
         public static void ExecuteCustomSql(string sql)
         {
-            Connect();
-
-            ExecuteSqlCommand(sql);
-
-            Disconnect();
+            lock (_dbLock)
+            {
+                using (var connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+                    using (var command = new SqlCommand(sql, connection))
+                    {
+                        command.ExecuteNonQuery();
+                    }
+                }
+            }
         }
 
-        public static void DeleteFromAllTables()
+        private static void DeleteFromAllTables(SqlConnection connection)
         {
             string sqlCommand =
                 "DELETE FROM [dbo].[WishList]; " +
@@ -73,11 +69,13 @@ namespace IntegrationTesting
                 "DELETE FROM [dbo].[Employee]; DBCC CHECKIDENT ('[dbo].[Employee]', RESEED, 0);" +
                 "DELETE FROM [dbo].[Library]; ";
 
-            ExecuteSqlCommand(sqlCommand);
+            using (var command = new SqlCommand(sqlCommand, connection))
+            {
+                command.ExecuteNonQuery();
+            }
 
             //DBCC CHECKIDENT ('[dbo].[Library]', RESEED, 0);" 
             //DBCC CHECKIDENT ('[dbo].[Author]', RESEED, 0);"
         }
-
     }
 }

@@ -10,9 +10,11 @@ using BussinessLogicLayer.services;
 
 namespace IntegrationTesting
 {
+    [Collection("Database collection")]
     public class ArchiveServices_integrationTest
     {
-        ArchiveServices service;
+        readonly ArchiveServices service;
+        readonly DatabaseFixture fixture;
 
         readonly string createLibrary =
             "INSERT [dbo].[Library] ([id], [name], [OIB], [phone], [email], [price_day_late], [address], [membership_duration]) " +
@@ -45,10 +47,18 @@ namespace IntegrationTesting
                 new ArchivedBookInfo { BookName = "Book2", EmployeeName = "ime2 prezime2", ArchiveDate = DateTime.Now.Date },
             };
 
-        public ArchiveServices_integrationTest()
+        public ArchiveServices_integrationTest(DatabaseFixture fixture)
         {
-            Helper.ResetDatabase();
+            this.fixture = fixture;
+            this.fixture.ResetDatabase();
+            
+            Helper.ExecuteCustomSql(createLibrary);
+            Helper.ExecuteCustomSql(createGenres);
+            Helper.ExecuteCustomSql(createBooks);
+            Helper.ExecuteCustomSql(createEmployees);
+            Helper.ExecuteCustomSql(createArchives);
             service = new ArchiveServices();
+
         }
 
         //Viktor Lovrić
@@ -56,12 +66,7 @@ namespace IntegrationTesting
         public void GetArchive_GivenFunctionIsCalled_ReturnsArchiveList()
         {
             //Arrange
-            Helper.ExecuteCustomSql(createLibrary);
-            Helper.ExecuteCustomSql(createGenres);
-            Helper.ExecuteCustomSql(createBooks);
-            Helper.ExecuteCustomSql(createEmployees);
-            Helper.ExecuteCustomSql(createArchives);
-
+            
             //Act
             var result = service.GetArchive();
 
@@ -75,11 +80,6 @@ namespace IntegrationTesting
         public void GetArchivesForEmployee_GivenFunctionIsCalled_ReturnsArchiveList()
         {
             //Arrange
-            Helper.ExecuteCustomSql(createLibrary);
-            Helper.ExecuteCustomSql(createGenres);
-            Helper.ExecuteCustomSql(createBooks);
-            Helper.ExecuteCustomSql(createEmployees);
-            Helper.ExecuteCustomSql(createArchives);
 
             //Act
             var result = service.GetArchivesForEmployee(1);

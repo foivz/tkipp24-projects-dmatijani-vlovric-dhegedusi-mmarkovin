@@ -10,14 +10,19 @@ using EntitiesLayer;
 
 namespace IntegrationTesting
 {
+    [Collection("Database collection")]
     public class AuthorService_integrationTest
     {
-        AuthorService service;
-        public AuthorService_integrationTest()
+        readonly AuthorService service;
+        readonly DatabaseFixture fixture;
+        public AuthorService_integrationTest(DatabaseFixture fixture)
         {
-            Helper.ResetDatabase();
+            this.fixture = fixture;
+            this.fixture.ResetDatabase();
             service = new AuthorService();
+
         }
+
         //Viktor Lovrić
         [Fact]
         public void GetAllAuthors_GivenFunctionIsCalled_ReturnsListOfAuthors()
@@ -41,6 +46,7 @@ namespace IntegrationTesting
             //Assert
             result.Should().BeEquivalentTo(authors);
         }
+
         //Viktor Lovrić
         [Fact]
         public void AddAuthor_GivenAuthorIsPassed_ReturnsTrue()

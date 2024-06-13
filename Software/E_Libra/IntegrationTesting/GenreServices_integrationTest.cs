@@ -10,14 +10,19 @@ using EntitiesLayer;
 
 namespace IntegrationTesting
 {
+    [Collection("Database collection")]
     public class GenreServices_integrationTest
     {
         readonly GenreServices genreServices;
-        public GenreServices_integrationTest()
+        readonly DatabaseFixture fixture;
+        public GenreServices_integrationTest(DatabaseFixture fixture)
         {
-            Helper.ResetDatabase();
             genreServices = new GenreServices();
+            this.fixture = fixture;
+            this.fixture.ResetDatabase();
+
         }
+
         //Viktor Lovrić
         [Fact]
         public void GetGenres_GivenFunctionIsCalled_ReturnsListOfGenres()
@@ -40,6 +45,7 @@ namespace IntegrationTesting
             //Assert
             result.Should().BeEquivalentTo(genreList);
         }
+
         //Viktor Lovrić
         [Fact]
         public void Add_GivenFunctionIsCalled_ReturnsTrue()
