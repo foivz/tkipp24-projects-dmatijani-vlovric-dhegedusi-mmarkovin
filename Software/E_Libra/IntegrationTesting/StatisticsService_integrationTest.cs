@@ -25,15 +25,8 @@ namespace IntegrationTesting {
 
             var library = new Library {
                 id = 1,
-                name = "Testna knjiznica",
-                OIB = "564363463364",
-                phone = "227264",
-                email = "probknjiznjica@gmail.com",
-                price_day_late = 3.5m,
-                address = "Vladimira43",
-                membership_duration = new DateTime(2024, 6, 23)
             };
-            InsertLibraryIntoDatabase(library);
+            InsertLibraryIntoDatabase();
 
 
             var members = new List<Member>
@@ -45,7 +38,6 @@ namespace IntegrationTesting {
                     username = "iivic",
                     password = "ivo123",
                     OIB = "57647557445",
-                    membership_date = new DateTime(2024, 28, 8),
                     barcode_id = "B001",
                     Library_id = library.id
                 },
@@ -56,7 +48,6 @@ namespace IntegrationTesting {
                     username = "aanic",
                     password = "ana123",
                     OIB = "64363434343",
-                    membership_date = new DateTime(2024, 23, 6),
                     barcode_id = "B002",
                     Library_id = library.id
                 }
@@ -83,13 +74,11 @@ namespace IntegrationTesting {
                 new Author {
                     idAuthor = 1,
                     name = "William",
-                    surname = "Shakespare",
-                    birth_date = new DateTime(1570, 11, 6) },
+                    surname = "Shakespare"},
                 new Author {
                     idAuthor = 2,
                     name = "Cecilije",
-                    surname = "Borovski",
-                    birth_date = new DateTime(1980, 3, 5) }
+                    surname = "Borovski"}
             };
             InsertAuthorIntoDatabase(authors);
 
@@ -100,7 +89,6 @@ namespace IntegrationTesting {
                     id = 1,
                     name = "Hamlet",
                     description = "Nema opisa",
-                    publish_date = new DateTime(1620, 24, 8),
                     pages_num = 300,
                     digital = 1,
                     url_photo = "slika1",
@@ -112,7 +100,6 @@ namespace IntegrationTesting {
                 new Book { id = 2,
                     name = "Romeo i Julija",
                     description = "Description 2",
-                    publish_date = new DateTime(1600, 2, 9),
                     pages_num = 400,
                     digital = 0,
                     url_photo = "slika2",
@@ -130,8 +117,6 @@ namespace IntegrationTesting {
                     Book_id = 1,
                     Member_id = 1,
                     borrow_status = (int)BorrowStatus.Waiting,
-                    borrow_date = new DateTime(2024, 13, 6),
-                    return_date = new DateTime(2024, 11, 7),
                     Employee_borrow_id = 1,
                     Employee_return_id = null
                 },
@@ -139,8 +124,6 @@ namespace IntegrationTesting {
                     Book_id = 2,
                     Member_id = 1,
                     borrow_status = (int)BorrowStatus.Waiting,
-                    borrow_date = new DateTime(2024, 14, 6),
-                    return_date = new DateTime(2023, 25, 6),
                     Employee_borrow_id = 1,
                     Employee_return_id = null
                 },
@@ -148,8 +131,6 @@ namespace IntegrationTesting {
                     Book_id = 1,
                     Member_id = 2,
                     borrow_status = (int)BorrowStatus.Waiting,
-                    borrow_date = new DateTime(2023, 9, 6),
-                    return_date = new DateTime(2023, 30, 6),
                     Employee_borrow_id = 1,
                     Employee_return_id = null
                 }
@@ -164,21 +145,18 @@ namespace IntegrationTesting {
                     Book_id = 1,
                     comment = "Odlicna knjiga!",
                     rating = 5,
-                    date = new DateTime(2023, 1, 15)
                 },
                 new Review {
                     Member_id = 1,
                     Book_id = 2,
                     comment = "Preporucujem",
                     rating = 5,
-                    date = new DateTime(2023, 1, 20)
                 },
                 new Review {
                     Member_id = 2,
                     Book_id = 1,
                     comment = "Knjiga mi se ne svidja.",
                     rating = 2,
-                    date = new DateTime(2023, 2, 5)
                 }
             };
             InsertReviewIntoDatabase(reviews);
@@ -187,28 +165,28 @@ namespace IntegrationTesting {
 
         private void InsertBorrowIntoDatabase(List<Borrow> borrows) {
             foreach (var borrow in borrows) {
-                string sqlInsertBorrow = $"INSERT [dbo].[Borrow] ([Book_id], [Member_id], [borrow_status], [borrow_date], [return_date], [Employee_borrow_id], [Employee_return_id]) VALUES ({borrow.Book_id}, {borrow.Member_id}, {borrow.borrow_status}, '{(borrow.borrow_date)}', {borrow.return_date}, {borrow.Employee_borrow_id}, {borrow.Employee_return_id});";
+                string sqlInsertBorrow = $"INSERT [dbo].[Borrow] ([Book_id], [Member_id], [borrow_status], [borrow_date], [return_date], [Employee_borrow_id], [Employee_return_id]) VALUES ({borrow.Book_id}, {borrow.Member_id}, {borrow.borrow_status}, GETDATE(), GETDATE(), {borrow.Employee_borrow_id}, {borrow.Employee_return_id});";
                 Helper.ExecuteCustomSql(sqlInsertBorrow);
             }
         }
 
         private void InsertReviewIntoDatabase(List<Review> reviews) {
             foreach (var review in reviews) {
-                string sqlInsertReview = $"INSERT INTO [dbo].[Review] ( [Member_id], [Book_id], [comment], [rating], [date]) VALUES {review.Member_id}, {review.Book_id}, '{review.comment}', {review.rating}, '{review.date}');";
+                string sqlInsertReview = $"INSERT INTO [dbo].[Review] ( [Member_id], [Book_id], [comment], [rating], [date]) VALUES {review.Member_id}, {review.Book_id}, '{review.comment}', {review.rating}, GETDATE());";
                 Helper.ExecuteCustomSql(sqlInsertReview);
             }
         }
 
         private void InsertBookIntoDatabase(List<Book> books) {
             foreach (var book in books) {
-                string sqlInsertBook = $"INSERT [dbo].[Book] ([id], [name], [description], [publish_date], [pages_num], [digital], [photo], [barcode_id], [total_copies], [current_copies], [Genre_id], [Library_id]) VALUES ('{book.id}', '{book.name}', '{book.description}', '{book.publish_date}', {book.pages_num}, '{book.digital}', '{book.url_photo}', '{book.barcode_id}', {book.total_copies}, {book.current_copies}, {book.Genre_id}, {book.Library_id});";
+                string sqlInsertBook = $"INSERT [dbo].[Book] ([id], [name], [description], [publish_date], [pages_num], [digital], [photo], [barcode_id], [total_copies], [current_copies], [Genre_id], [Library_id]) VALUES ('{book.id}', '{book.name}', '{book.description}', GETDATE(), {book.pages_num}, '{book.digital}', '{book.url_photo}', '{book.barcode_id}', {book.total_copies}, {book.current_copies}, {book.Genre_id}, {book.Library_id});";
                 Helper.ExecuteCustomSql(sqlInsertBook);
             }
         }
 
         private void InsertAuthorIntoDatabase(List<Author> authors) {
             foreach (var author in authors) {
-                string sqlInsertAuthor = $"INSERT [dbo].[Author] ([id], [name], [surname], [birth_date]) VALUES ('{author.idAuthor}', '{author.name}', '{author.surname}', '{author.birth_date}');";
+                string sqlInsertAuthor = $"INSERT [dbo].[Author] ([id], [name], [surname], [birth_date]) VALUES ('{author.idAuthor}', '{author.name}', '{author.surname}', GETDATE());";
                 Helper.ExecuteCustomSql(sqlInsertAuthor);
             }
         }
@@ -222,15 +200,17 @@ namespace IntegrationTesting {
 
         private void InsertMemberIntoDatabase(List<Member> members) {
             foreach (var member in members) {
-                string InsertMember = $"INSERT INTO [dbo].[Member] ([id], [name], [surname], [username], [password], [OIB], [membership_date], [barcode_id], [Library_id]) VALUES ({member.id}, '{member.name}', '{member.surname}', '{member.username}', '{member.password}', '{member.OIB}', '{member.membership_date}', '{member.barcode_id}', {member.Library_id});";
+                string InsertMember = $"INSERT INTO [dbo].[Member] ([id], [name], [surname], [username], [password], [OIB], [membership_date], [barcode_id], [Library_id]) VALUES ({member.id}, '{member.name}', '{member.surname}', '{member.username}', '{member.password}', '{member.OIB}', GETDATE(), '{member.barcode_id}', {member.Library_id});";
                 Helper.ExecuteCustomSql(InsertMember);
             }
         }
 
 
-        private void InsertLibraryIntoDatabase(Library library) {
-            string sqlInsertLibrary = $"INSERT INTO [dbo].[Library] ([id], [name], [OIB], [phone], [email], [price_day_late], [address], [membership_duration]) VALUES ({library.id}, '{library.name}', '{library.OIB}', '{library.phone}', '{library.email}', {library.price_day_late}, '{library.address}', '{library.membership_duration}');";
-            Helper.ExecuteCustomSql(sqlInsertLibrary);
+        private void InsertLibraryIntoDatabase() {
+            string createLibrary =
+            "INSERT [dbo].[Library] ([id], [name], [OIB], [phone], [email], [price_day_late], [address], [membership_duration]) " +
+            "VALUES (123, N'Knjiznica', 123, 331, N'email', 3, N'adresa', GETDATE())";
+            Helper.ExecuteCustomSql(createLibrary);
         }
 
         [Fact]
