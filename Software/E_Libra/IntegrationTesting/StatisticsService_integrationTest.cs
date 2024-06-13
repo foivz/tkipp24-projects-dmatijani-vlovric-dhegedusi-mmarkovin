@@ -16,14 +16,13 @@ namespace IntegrationTesting {
         readonly DatabaseFixture fixture;
 
 
-        public StatisticsService_integrationTest(DatabaseFixture fixture)
-        {
+        public StatisticsService_integrationTest(DatabaseFixture fixture) {
             statisticsService = new StatisticsService();
             this.fixture = fixture;
             this.fixture.ResetDatabase();
 
 
-            var library = new Library{
+            var library = new Library {
                 id = 123,
                 name = "Testna knjiznica",
                 OIB = "11112222333",
@@ -35,27 +34,27 @@ namespace IntegrationTesting {
 
             var members = new List<Member>
             {
-                new Member { 
-                    id = 1, 
-                    name = "Ivo", 
-                    surname = "Ivic", 
-                    username = "iivic", 
-                    password = "ivo123", 
-                    OIB = "57647557445", 
-                    membership_date = new DateTime(2024, 28, 8), 
-                    barcode_id = "B001", 
-                    Library_id = library.id 
+                new Member {
+                    id = 1,
+                    name = "Ivo",
+                    surname = "Ivic",
+                    username = "iivic",
+                    password = "ivo123",
+                    OIB = "57647557445",
+                    membership_date = new DateTime(2024, 28, 8),
+                    barcode_id = "B001",
+                    Library_id = library.id
                 },
-                new Member { 
-                    id = 2, 
-                    name = "Ana", 
-                    surname = "Anic", 
-                    username = "aanic", 
-                    password = "ana123", 
-                    OIB = "64363434343", 
-                    membership_date = new DateTime(2024, 23, 6), 
-                    barcode_id = "B002", 
-                    Library_id = library.id 
+                new Member {
+                    id = 2,
+                    name = "Ana",
+                    surname = "Anic",
+                    username = "aanic",
+                    password = "ana123",
+                    OIB = "64363434343",
+                    membership_date = new DateTime(2024, 23, 6),
+                    barcode_id = "B002",
+                    Library_id = library.id
                 }
             };
             InsertMemberIntoDatabase(members);
@@ -63,13 +62,13 @@ namespace IntegrationTesting {
 
             var genres = new List<Genre>
             {
-                new Genre { 
-                    id = 1, 
-                    name = "Tragedija" 
+                new Genre {
+                    id = 1,
+                    name = "Tragedija"
                 },
-                new Genre { 
-                    id = 2, 
-                    name = "Drama" 
+                new Genre {
+                    id = 2,
+                    name = "Drama"
                 }
             };
             InsertGenreIntoDatabase(genres);
@@ -77,15 +76,15 @@ namespace IntegrationTesting {
 
             var authors = new List<Author>
             {
-                new Author { 
-                    idAuthor = 1, 
-                    name = "William", 
-                    surname = "Shakespare", 
+                new Author {
+                    idAuthor = 1,
+                    name = "William",
+                    surname = "Shakespare",
                     birth_date = new DateTime(1570, 11, 6) },
-                new Author { 
-                    idAuthor = 2, 
-                    name = "Cecilije", 
-                    surname = "Borovski", 
+                new Author {
+                    idAuthor = 2,
+                    name = "Cecilije",
+                    surname = "Borovski",
                     birth_date = new DateTime(1980, 3, 5) }
             };
             InsertAuthorIntoDatabase(authors);
@@ -93,30 +92,30 @@ namespace IntegrationTesting {
 
             var books = new List<Book>
            {
-                new Book { 
-                    id = 1, 
-                    name = "Hamlet", 
-                    description = "Nema opisa", 
-                    publish_date = new DateTime(1620, 24, 8), 
-                    pages_num = 300, 
-                    digital = 1, 
-                    url_photo = "slika1", 
-                    barcode_id = "BC0011", 
-                    total_copies = 5, 
-                    current_copies = 3, 
-                    Genre_id = 1, 
+                new Book {
+                    id = 1,
+                    name = "Hamlet",
+                    description = "Nema opisa",
+                    publish_date = new DateTime(1620, 24, 8),
+                    pages_num = 300,
+                    digital = 1,
+                    url_photo = "slika1",
+                    barcode_id = "BC0011",
+                    total_copies = 5,
+                    current_copies = 3,
+                    Genre_id = 1,
                     Library_id = library.id },
-                new Book { id = 2, 
-                    name = "Romeo i Julija", 
-                    description = "Description 2", 
-                    publish_date = new DateTime(1600, 2, 9), 
-                    pages_num = 400, 
-                    digital = 0, 
-                    url_photo = "slika2", 
-                    barcode_id = "BC0022", 
-                    total_copies = 10, 
-                    current_copies = 7, 
-                    Genre_id = 2, 
+                new Book { id = 2,
+                    name = "Romeo i Julija",
+                    description = "Description 2",
+                    publish_date = new DateTime(1600, 2, 9),
+                    pages_num = 400,
+                    digital = 0,
+                    url_photo = "slika2",
+                    barcode_id = "BC0022",
+                    total_copies = 10,
+                    current_copies = 7,
+                    Genre_id = 2,
                     Library_id = library.id }
             };
             InsertBookIntoDatabase(books);
@@ -153,6 +152,37 @@ namespace IntegrationTesting {
                 }
             };
             InsertReviewIntoDatabase(reviews);
+
+
+            var borrows = new List<Borrow> {
+                new Borrow {
+                    Book_id = 1,
+                    Member_id = 1,
+                    borrow_status = (int)BorrowStatus.Waiting,
+                    borrow_date = DateTime.Now.AddDays(-3),
+                    return_date = DateTime.Now.AddDays(2),
+                    Employee_borrow_id = 1,
+                    Employee_return_id = null
+                },
+                new Borrow {
+                    Book_id = 2,
+                    Member_id = 1,
+                    borrow_status = (int)BorrowStatus.Waiting,
+                    borrow_date = DateTime.Now.AddDays(-3),
+                    return_date = DateTime.Now.AddDays(2),
+                    Employee_borrow_id = 1,
+                    Employee_return_id = null
+                },
+                new Borrow {
+                    Book_id = 1,
+                    Member_id = 1,
+                    borrow_status = (int)BorrowStatus.Waiting,
+                    borrow_date = DateTime.Now.AddDays(-3),
+                    return_date = DateTime.Now.AddDays(2),
+                    Employee_borrow_id = 1,
+                    Employee_return_id = null
+                }
+            };
         }
 
         private void InsertReviewIntoDatabase(List<Review> reviews) {
