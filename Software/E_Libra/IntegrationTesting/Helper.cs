@@ -71,8 +71,7 @@ namespace IntegrationTesting
                 "DELETE FROM [dbo].[Book]; DBCC CHECKIDENT ('[dbo].[Book]', RESEED, 0);" +
                 "DELETE FROM [dbo].[Genre]; DBCC CHECKIDENT ('[dbo].[Genre]', RESEED, 0);" +
                 "DELETE FROM [dbo].[Employee]; DBCC CHECKIDENT ('[dbo].[Employee]', RESEED, 0);" +
-                "DELETE FROM [dbo].[Library]; "+
-                "DELETE FROM [dbo].[Administrator]; DBCC CHECKIDENT ('[dbo].[Administrator]', RESEED, 0);";
+                "DELETE FROM [dbo].[Library]; ";
 
             ExecuteSqlCommand(sqlCommand);
 
