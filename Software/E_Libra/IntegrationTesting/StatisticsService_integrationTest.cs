@@ -27,7 +27,10 @@ namespace IntegrationTesting {
                 id = 1,
                 name = "Testna knjiznica",
                 OIB = "564363463364",
+                phone = "227264",
+                email = "probknjiznjica@gmail.com",
                 price_day_late = 3.5m,
+                address = "Vladimira43",
                 membership_duration = new DateTime(2024, 6, 23)
             };
             InsertLibraryIntoDatabase(library);
@@ -226,7 +229,7 @@ namespace IntegrationTesting {
 
 
         private void InsertLibraryIntoDatabase(Library library) {
-            string sqlInsertLibrary = $"INSERT [dbo].[Library] ([id], [name], [OIB], [price_day_late], [membership_duration]) VALUES ('{library.id}', '{library.name}', '{library.OIB}', {library.price_day_late}, '{library.membership_duration}');";
+            string sqlInsertLibrary = $"INSERT INTO [dbo].[Library] ([id], [name], [OIB], [phone], [email], [price_day_late], [address], [membership_duration]) VALUES ({library.id}, '{library.name}', '{library.OIB}', '{library.phone}', '{library.email}', {library.price_day_late}, '{library.address}', '{library.membership_duration}');";
             Helper.ExecuteCustomSql(sqlInsertLibrary);
         }
 
