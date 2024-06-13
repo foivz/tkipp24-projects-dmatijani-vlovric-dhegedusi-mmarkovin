@@ -8,6 +8,7 @@ using FluentAssertions;
 using DataAccessLayer.Repositories;
 using BussinessLogicLayer.services;
 using EntitiesLayer;
+using BussinessLogicLayer.Exceptions;
 
 namespace IntegrationTesting
 {
@@ -142,6 +143,75 @@ namespace IntegrationTesting
             );
         }
 
+        //David Matijanić
+        [Fact]
+        public void AddEmployee_EmployeeWithSameUsernameExists_ThrowsEmployeeWithSameUsernameException()
+        {
+            //Arrange
+            Employee employee = employees[0];
+            Employee employeeToAdd = new Employee
+            {
+                name = "Novi",
+                surname = "Novic",
+                username = employee.username,
+                password = "newpassword",
+                OIB = "11199944832",
+                Library = library,
+                Library_id = library.id
+            };
+            InsertEmployeeIntoDatabase(employee);
+
+            //Act & assert
+            Assert.Throws<EmployeeWithSameUsernameException>(() => employeeService.AddEmployee(employeeToAdd));
+        }
+
+        //David Matijanić
+        [Fact]
+        public void AddEmployee_EmployeeWithSameOIBExists_ThrowsEmployeeWithSameOIBException()
+        {
+            //Arrange
+            Employee employee = employees[0];
+            Employee employeeToAdd = new Employee
+            {
+                name = "Novi",
+                surname = "Novic",
+                username = "noviusername",
+                password = "newpassword",
+                OIB = employee.OIB,
+                Library = library,
+                Library_id = library.id
+            };
+            InsertEmployeeIntoDatabase(employee);
+
+            //Act & assert
+            Assert.Throws<EmployeeWithSameOIBException>(() => employeeService.AddEmployee(employeeToAdd));
+        }
+
+        //David Matijanić
+        [Fact]
+        public void AddEmployee_EmployeeHasUniqueData_NewEmployeeIsAdded()
+        {
+            //Arrange
+            Employee employee = employees[0];
+            Employee employeeToAdd = new Employee
+            {
+                name = "Novi",
+                surname = "Novic",
+                username = "noviusername",
+                password = "newpassword",
+                OIB = "11199944832",
+                Library = library,
+                Library_id = library.id
+            };
+            InsertEmployeeIntoDatabase(employee);
+
+            //Act
+            int added = employeeService.AddEmployee(employeeToAdd);
+
+            //Assert
+            Assert.Equal(1, added);
+        }
+
         private DateTime GetDateFromMembershipDuration(decimal duration)
         {
             DateTime startDate = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Unspecified);
@@ -161,9 +231,14 @@ namespace IntegrationTesting
         {
             foreach (Employee employee in employeeList)
             {
-                string sqlInsertEmployee = $"INSERT [dbo].[Employee] ([name], [surname], [username], [password], [OIB], [Library_id]) VALUES ('{employee.name}', '{employee.surname}', '{employee.username}', '{employee.password}', '{employee.OIB}', {employee.Library_id});";
-                Helper.ExecuteCustomSql(sqlInsertEmployee);
+                InsertEmployeeIntoDatabase(employee);
             }
         } 
+
+        public void InsertEmployeeIntoDatabase(Employee employee)
+        {
+            string sqlInsertEmployee = $"INSERT [dbo].[Employee] ([name], [surname], [username], [password], [OIB], [Library_id]) VALUES ('{employee.name}', '{employee.surname}', '{employee.username}', '{employee.password}', '{employee.OIB}', {employee.Library_id});";
+            Helper.ExecuteCustomSql(sqlInsertEmployee);
+        }
     }
 }
