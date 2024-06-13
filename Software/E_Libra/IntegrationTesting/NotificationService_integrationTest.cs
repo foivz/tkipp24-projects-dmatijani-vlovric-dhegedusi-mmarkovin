@@ -38,15 +38,30 @@ namespace IntegrationTesting
             memberService = new MemberService();
             this.fixture = fixture;
             this.fixture.ResetDatabase();
+
+            InitializeDatabase();
         }
+
+        private void InitializeDatabase()
+        {
+            Helper.ExecuteCustomSql(createLibrary);
+            Helper.ExecuteCustomSql(createNotifications);
+            Helper.ExecuteCustomSql(createMember);
+        }
+
+        private Member GetMemberByUsername(string username)
+        {
+            var member = memberService.GetMemberByUsername(username);
+            memberService.Dispose();
+            return member;
+        }
+
         //Magdalena Markovinović
         [Fact]
 
         public void GetAllNotificationByLibrary_GivenFunctionIsCalled_ReturnsListOfNotifications()
         {
             //Arrange
-            Helper.ExecuteCustomSql(createLibrary);
-            Helper.ExecuteCustomSql(createNotifications);
 
             var notificationList = new List<Notification>
             {
@@ -67,7 +82,7 @@ namespace IntegrationTesting
         private void AddNewNotification_GivenFunctionIsCalled_ReturnsTrue()
         {
             //Arrange
-            Helper.ExecuteCustomSql(createLibrary);
+
             var notification = new Notification { id = 3, Library_id = 1, title = "Notification3", description = "Notification3" };
 
             //Act
@@ -82,12 +97,8 @@ namespace IntegrationTesting
         private void AddNotificationRead_GivenFunctionIsCalled_ReturnsTrue()
         {
             //Arrange
-            Helper.ExecuteCustomSql(createLibrary);
-            Helper.ExecuteCustomSql(createNotifications);
-            Helper.ExecuteCustomSql(createMember);
 
-            var member = memberService.GetMemberByUsername("username");
-            memberService.Dispose();
+            var member = GetMemberByUsername("username");
             var notifications = notifService.GetAllNotificationByLibrary(1);
 
             //Act
@@ -104,8 +115,6 @@ namespace IntegrationTesting
         private void EditNotification_GivenFunctionIsCalled_ReturnsTrue()
         {
             //Arrange
-            Helper.ExecuteCustomSql(createLibrary);
-            Helper.ExecuteCustomSql(createNotifications);
 
             var notification = notifService.GetAllNotificationByLibrary(1)[0];
             notification.title = "Notification1Edited";
@@ -123,16 +132,13 @@ namespace IntegrationTesting
         //Magdalena Markovinović
         [Fact]
         private void GetReadNotificationsForMember_GivenFunctionIsCalled_ReturnsTrue() 
-        { 
+        {
             // Arrange
-            Helper.ExecuteCustomSql(createLibrary);
-            Helper.ExecuteCustomSql(createNotifications);
-            Helper.ExecuteCustomSql(createMember);
 
-            var member = memberService.GetMemberByUsername("username");
+            var member = GetMemberByUsername("username");
             memberService.Dispose();
             var notifications = notifService.GetAllNotificationByLibrary(1);
-            var readNotifications = notifService.AddNotificationRead(notifications[0], member);
+            notifService.AddNotificationRead(notifications[0], member);
 
             // Act
             var result = notifService.GetReadNotificationsForMember(member);
@@ -146,8 +152,6 @@ namespace IntegrationTesting
         public void Remove_GivenFunctionIsCalled_ReturnsTrue()
         {
             //Arrange
-            Helper.ExecuteCustomSql(createLibrary);
-            Helper.ExecuteCustomSql(createNotifications);
 
             var notification = notifService.GetAllNotificationByLibrary(1)[0];
 
