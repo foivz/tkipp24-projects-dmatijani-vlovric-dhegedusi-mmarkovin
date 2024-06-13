@@ -119,10 +119,50 @@ namespace IntegrationTesting {
                     Genre_id = 2, 
                     Library_id = library.id }
             };
-            InsertBookIntoDatabse(books);
+            InsertBookIntoDatabase(books);
+
+            var reviews = new List<Review>
+            {
+                new Review {
+                    Member_id = 1,
+                    Book_id = 1,
+                    comment = "Odlicna knjiga!",
+                    rating = 5,
+                    date = new DateTime(2023, 1, 15)
+                },
+                new Review {
+                    Member_id = 1,
+                    Book_id = 2,
+                    comment = "Kraj mi se ne svidja",
+                    rating = 4,
+                    date = new DateTime(2023, 1, 20)
+                },
+                new Review {
+                    Member_id = 2,
+                    Book_id = 1,
+                    comment = "Knjiga mi se ne svidja.",
+                    rating = 2,
+                    date = new DateTime(2023, 2, 5)
+                },
+                new Review {
+                    Member_id = 2,
+                    Book_id = 2,
+                    comment = "Preporucujem knjigu svima",
+                    rating = 5,
+                    date = new DateTime(2023, 2, 10)
+                }
+            };
+            InsertReviewIntoDatabase(reviews);
         }
 
-        private void InsertBookIntoDatabse(List<Book> books) {
+        private void InsertReviewIntoDatabase(List<Review> reviews) {
+            foreach (var review in reviews) {
+                string sqlInsertReview = $"INSERT INTO [dbo].[Review] ( [Member_id], [Book_id], [comment], [rating], [date]) VALUES {review.Member_id}, {review.Book_id}, '{review.comment}', {review.rating}, '{review.date}');";
+                Helper.ExecuteCustomSql(sqlInsertReview);
+            }
+        }
+
+        private void InsertBookIntoDatabase(List<Book> books) {
             foreach (var book in books) {
                 string sqlInsertBook = $"INSERT [dbo].[Book] ([id], [name], [description], [publish_date], [pages_num], [digital], [photo], [barcode_id], [total_copies], [current_copies], [Genre_id], [Library_id]) VALUES ('{book.id}', '{book.name}', '{book.description}', '{book.publish_date}', {book.pages_num}, '{book.digital}', '{book.url_photo}', '{book.barcode_id}', {book.total_copies}, {book.current_copies}, {book.Genre_id}, {book.Library_id});";
                 Helper.ExecuteCustomSql(sqlInsertBook);
