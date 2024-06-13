@@ -374,7 +374,7 @@ namespace UnitTesting {
         [InlineData(3)]
         [InlineData(4)]
         [InlineData(5)]
-        public void GetLibraryMembershipDuration(int libraryId) {
+        public void GetLibraryMembershipDuration_LibraryIdIsEntered_CorrectPriceDayLateIsReturned(int libraryId) {
             //Arrange
             DateTime correctMembershipDurationDatetime = libraries.Where(l => l.id == libraryId).First().membership_duration;
             decimal correctMembershipDuration = CalculateMembershipDurationFromDate(correctMembershipDurationDatetime);

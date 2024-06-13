@@ -274,6 +274,34 @@ namespace IntegrationTesting
             //Assert
             Assert.Equal(1, updated);
         }
+
+        //David Matijanić
+        [Fact]
+        public void GetLibraryPriceDayLate_LibraryIsEntered_CorrectPriceDayLateIsReturned()
+        {
+            //Arrange
+            Library library = libraries.First();
+
+            //Act
+            decimal priceDayLate = libraryService.GetLibraryPriceDayLate(library);
+
+            //Assert
+            Assert.Equal(library.price_day_late, priceDayLate);
+        }
+
+        //David Matijanić
+        [Fact]
+        public void GetLibraryMembershipDuration_LibraryIdIsEntered_CorrectMembershipDurationIsReturned()
+        {
+            //Arrange
+            Library library = libraries.First();
+
+            //Act
+            decimal membershipDuration = libraryService.GetLibraryMembershipDuration(library.id);
+
+            //Assert
+            Assert.Equal(CalculateMembershipDurationFromDate(library.membership_duration), membershipDuration);
+        }
         
         private void InsertLibrariesIntoDatabase(List<Library> libraryList)
         {
@@ -297,6 +325,11 @@ namespace IntegrationTesting
             DateTime durationDate = startDate.AddDays(Convert.ToDouble(duration) - 1);
 
             return durationDate;
+        }
+
+        private decimal CalculateMembershipDurationFromDate(DateTime date)
+        {
+            return (date - new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Unspecified)).Days + 1;
         }
     }
 }
