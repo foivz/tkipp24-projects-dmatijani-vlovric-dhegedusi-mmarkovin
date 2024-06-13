@@ -8,6 +8,7 @@ using FluentAssertions;
 using BussinessLogicLayer.services;
 using EntitiesLayer;
 using BussinessLogicLayer.Exceptions;
+using DataAccessLayer.Repositories;
 
 namespace IntegrationTesting
 {
@@ -211,6 +212,7 @@ namespace IntegrationTesting
             {
                 new Borrow
                 {
+                    idBorrow = 1,
                     Book_id = 1,
                     Member_id = 1,
                     borrow_status = (int)BorrowStatus.Waiting,
@@ -221,6 +223,7 @@ namespace IntegrationTesting
                 },
                 new Borrow
                 {
+                    idBorrow = 2,
                     Book_id = 2,
                     Member_id = 2,
                     borrow_status = (int)BorrowStatus.Waiting,
@@ -231,6 +234,7 @@ namespace IntegrationTesting
                 },
                 new Borrow
                 {
+                    idBorrow = 3,
                     Book_id = 3,
                     Member_id = 2,
                     borrow_status = (int)BorrowStatus.Borrowed,
@@ -241,6 +245,7 @@ namespace IntegrationTesting
                 },
                 new Borrow
                 {
+                    idBorrow = 4,
                     Book_id = 3,
                     Member_id = 3,
                     borrow_status = (int)BorrowStatus.Borrowed,
@@ -251,6 +256,7 @@ namespace IntegrationTesting
                 },
                 new Borrow
                 {
+                    idBorrow = 5,
                     Book_id = 4,
                     Member_id = 1,
                     borrow_status = (int)BorrowStatus.Late,
@@ -261,6 +267,7 @@ namespace IntegrationTesting
                 },
                 new Borrow
                 {
+                    idBorrow = 6,
                     Book_id = 4,
                     Member_id = 2,
                     borrow_status = (int)BorrowStatus.Late,
@@ -271,6 +278,7 @@ namespace IntegrationTesting
                 },
                 new Borrow
                 {
+                    idBorrow = 7,
                     Book_id = 4,
                     Member_id = 3,
                     borrow_status = (int)BorrowStatus.Returned,
@@ -281,6 +289,7 @@ namespace IntegrationTesting
                 },
                 new Borrow
                 {
+                    idBorrow = 8,
                     Book_id = 4,
                     Member_id = 4,
                     borrow_status = (int)BorrowStatus.Returned,
@@ -546,6 +555,42 @@ namespace IntegrationTesting
 
             //Assert
             Assert.Equal(1, borrowed);
+        }
+
+        //David Matijanić
+        [Fact]
+        public void UpdateBorrow_BookHasNoMoreCopies_ThrowsNoMoreBookCopiesException()
+        {
+            //Arrange
+            Book book = books[0];
+            book.current_copies = 0;
+
+            Borrow borrow = borrows[2];
+            borrow.Book = book;
+
+            //Act
+            Action act = () => borrowService.UpdateBorrow(borrow);
+
+            //Assert
+            act.Should().Throw<NoMoreBookCopiesException>().WithMessage("Odabrane knjige trenutno nema na stanju!");
+        }
+
+        //David Matijanić
+        [Fact]
+        public void UpdateBorrow_BorrowHasStatusBorrowedAndHasCopiesAnd_BorrowIsUpdated()
+        {
+            //Arrange
+            Borrow borrow = borrowService.GetBorrowsForEmployee(employees[1].id).First();
+            borrow.borrow_date = DateTime.Now;
+            borrow.borrow_status = (int)BorrowStatus.Borrowed;
+            borrow.Employee = employees[2];
+            borrow.Employee_borrow_id = borrow.Employee.id;
+
+            //Act
+            int borrowed = borrowService.UpdateBorrow(borrow);
+
+            //Assert
+            Assert.Equal(2, borrowed);
         }
 
         private void InsertLibraryIntoDatabase()
