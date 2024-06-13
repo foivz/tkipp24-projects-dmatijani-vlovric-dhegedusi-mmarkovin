@@ -32,7 +32,6 @@ namespace IntegrationTesting {
             var members = new List<Member>
             {
                 new Member {
-                    id = 1,
                     name = "Ivo",
                     surname = "Ivic",
                     username = "iivic",
@@ -42,7 +41,6 @@ namespace IntegrationTesting {
                     Library_id = library.id
                 },
                 new Member {
-                    id = 2,
                     name = "Ana",
                     surname = "Anic",
                     username = "aanic",
@@ -58,11 +56,9 @@ namespace IntegrationTesting {
             var genres = new List<Genre>
             {
                 new Genre {
-                    id = 1,
                     name = "Tragedija"
                 },
                 new Genre {
-                    id = 2,
                     name = "Drama"
                 }
             };
@@ -86,7 +82,6 @@ namespace IntegrationTesting {
             var books = new List<Book>
            {
                 new Book {
-                    id = 1,
                     name = "Hamlet",
                     description = "Nema opisa",
                     pages_num = 300,
@@ -97,7 +92,7 @@ namespace IntegrationTesting {
                     current_copies = 3,
                     Genre_id = 1,
                     Library_id = library.id },
-                new Book { id = 2,
+                new Book {
                     name = "Romeo i Julija",
                     description = "Description 2",
                     pages_num = 400,
@@ -118,21 +113,18 @@ namespace IntegrationTesting {
                     Member_id = 1,
                     borrow_status = (int)BorrowStatus.Waiting,
                     Employee_borrow_id = 1,
-                    Employee_return_id = null
                 },
                 new Borrow {
                     Book_id = 2,
                     Member_id = 1,
                     borrow_status = (int)BorrowStatus.Waiting,
                     Employee_borrow_id = 1,
-                    Employee_return_id = null
                 },
                 new Borrow {
                     Book_id = 1,
                     Member_id = 2,
                     borrow_status = (int)BorrowStatus.Waiting,
                     Employee_borrow_id = 1,
-                    Employee_return_id = null
                 }
             };
             InsertBorrowIntoDatabase(borrows);
@@ -165,7 +157,7 @@ namespace IntegrationTesting {
 
         private void InsertBorrowIntoDatabase(List<Borrow> borrows) {
             foreach (var borrow in borrows) {
-                string sqlInsertBorrow = $"INSERT [dbo].[Borrow] ([Book_id], [Member_id], [borrow_status], [borrow_date], [return_date], [Employee_borrow_id], [Employee_return_id]) VALUES ({borrow.Book_id}, {borrow.Member_id}, {borrow.borrow_status}, GETDATE(), GETDATE(), {borrow.Employee_borrow_id}, {borrow.Employee_return_id});";
+                string sqlInsertBorrow = $"INSERT [dbo].[Borrow] ([Book_id], [Member_id], [borrow_status], [borrow_date], [return_date], [Employee_borrow_id], [Employee_return_id]) VALUES ({borrow.Book_id}, {borrow.Member_id}, {borrow.borrow_status}, GETDATE(), GETDATE(), {borrow.Employee_borrow_id}, NULL);";
                 Helper.ExecuteCustomSql(sqlInsertBorrow);
             }
         }
@@ -179,37 +171,36 @@ namespace IntegrationTesting {
 
         private void InsertBookIntoDatabase(List<Book> books) {
             foreach (var book in books) {
-                string sqlInsertBook = $"INSERT [dbo].[Book] ([id], [name], [description], [publish_date], [pages_num], [digital], [photo], [barcode_id], [total_copies], [current_copies], [Genre_id], [Library_id]) VALUES ('{book.id}', '{book.name}', '{book.description}', GETDATE(), {book.pages_num}, '{book.digital}', '{book.url_photo}', '{book.barcode_id}', {book.total_copies}, {book.current_copies}, {book.Genre_id}, {book.Library_id});";
+                string sqlInsertBook = $"INSERT [dbo].[Book] ([name], [description], [publish_date], [pages_num], [digital], [url_photo], [barcode_id], [total_copies], [current_copies], [Genre_id], [Library_id]) VALUES ('{book.name}', '{book.description}', GETDATE(), {book.pages_num}, '{book.digital}', '{book.url_photo}', '{book.barcode_id}', {book.total_copies}, {book.current_copies}, {book.Genre_id}, {book.Library_id});";
                 Helper.ExecuteCustomSql(sqlInsertBook);
             }
         }
 
         private void InsertAuthorIntoDatabase(List<Author> authors) {
             foreach (var author in authors) {
-                string sqlInsertAuthor = $"INSERT [dbo].[Author] ([id], [name], [surname], [birth_date]) VALUES ('{author.idAuthor}', '{author.name}', '{author.surname}', GETDATE());";
+                string sqlInsertAuthor = $"INSERT [dbo].[Author] ([idAuthor], [name], [surname], [birth_date]) VALUES ('{author.idAuthor}', '{author.name}', '{author.surname}', GETDATE());";
                 Helper.ExecuteCustomSql(sqlInsertAuthor);
             }
         }
 
         private void InsertGenreIntoDatabase(List<Genre> genres) {
             foreach (var genre in genres) {
-                string sqlInsertGenre = $"INSERT [dbo].[Genre] ([id], [name]) VALUES ('{genre.id}', '{genre.name}');";
+                string sqlInsertGenre = $"INSERT [dbo].[Genre] ([name]) VALUES ('{genre.name}');";
                 Helper.ExecuteCustomSql(sqlInsertGenre);
             }
         }
 
         private void InsertMemberIntoDatabase(List<Member> members) {
             foreach (var member in members) {
-                string InsertMember = $"INSERT INTO [dbo].[Member] ([id], [name], [surname], [username], [password], [OIB], [membership_date], [barcode_id], [Library_id]) VALUES ({member.id}, '{member.name}', '{member.surname}', '{member.username}', '{member.password}', '{member.OIB}', GETDATE(), '{member.barcode_id}', {member.Library_id});";
+                string InsertMember = $"INSERT INTO [dbo].[Member] ([name], [surname], [username], [password], [OIB], [membership_date], [barcode_id], [Library_id]) VALUES ('{member.name}', '{member.surname}', '{member.username}', '{member.password}', '{member.OIB}', GETDATE(), '{member.barcode_id}', {member.Library_id});";
                 Helper.ExecuteCustomSql(InsertMember);
             }
         }
 
-
         private void InsertLibraryIntoDatabase() {
             string createLibrary =
             "INSERT [dbo].[Library] ([id], [name], [OIB], [phone], [email], [price_day_late], [address], [membership_duration]) " +
-            "VALUES (123, N'Knjiznica', 123, 331, N'email', 3, N'adresa', GETDATE())";
+            "VALUES (1, N'Knjiznica', 123, 331, N'email', 3, N'adresa', GETDATE())";
             Helper.ExecuteCustomSql(createLibrary);
         }
 
