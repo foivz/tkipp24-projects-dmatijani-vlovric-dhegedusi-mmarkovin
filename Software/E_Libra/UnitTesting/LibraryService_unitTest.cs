@@ -97,6 +97,7 @@ namespace UnitTesting {
             Assert.NotNull(service);
         }
 
+        //David Matijanić
         [Fact]
         public void GetAllLibraries_NoLibrariesExist_NoLibrariesReturned() {
             //Arrange
@@ -109,6 +110,7 @@ namespace UnitTesting {
             Assert.Empty(retrievedLibraries);
         }
 
+        //David Matijanić
         [Fact]
         public void GetAllLibraries_LibrariesExist_LibrariesRetrieved() {
             //Arrange
@@ -121,6 +123,7 @@ namespace UnitTesting {
             Assert.Equal(libraries, retrievedLibraries);
         }
 
+        //David Matijanić
         [Fact]
         public async Task GetAllLibrariesAsync_NoLibrariesExist_NoLibrariesReturned() {
             //Arrange
@@ -133,6 +136,7 @@ namespace UnitTesting {
             Assert.Empty(retrievedLibraries);
         }
 
+        //David Matijanić
         [Fact]
         public async Task GetAllLibrariesAsync_LibrariesExist_LibrariesRetrieved() {
             //Arrange
@@ -145,6 +149,7 @@ namespace UnitTesting {
             Assert.Equal(libraries, retrievedLibraries);
         }
 
+        //David Matijanić
         [Theory]
         [InlineData(1)]
         [InlineData(2)]
@@ -162,6 +167,7 @@ namespace UnitTesting {
             Assert.Throws<LibraryWithSameIDException>(() => libraryService.AddLibrary(library));
         }
 
+        //David Matijanić
         [Theory]
         [InlineData("11111111111")]
         [InlineData("22222222222")]
@@ -180,6 +186,7 @@ namespace UnitTesting {
             Assert.Throws<LibraryWithSameOIBException>(() => libraryService.AddLibrary(library));
         }
 
+        //David Matijanić
         [Fact]
         public void AddLibrary_LibraryWithUniqueIdAndOib_LibraryIsAdded() {
             //Arrange
@@ -202,6 +209,7 @@ namespace UnitTesting {
             Assert.Contains(library, libraries);
         }
 
+        //David Matijanić
         [Fact]
         public void DeleteLibrary_LibraryHasEmployees_ThrowsLibraryHasEmployeesException() {
             //Arrange
@@ -212,6 +220,7 @@ namespace UnitTesting {
             Assert.Throws<LibraryHasEmployeesException>(() => libraryService.DeleteLibrary(library));
         }
 
+        //David Matijanić
         [Fact]
         public void DeleteLibrary_LibraryHasMembers_ThrowsLibraryHasMemberrsException() {
             //Arrange
@@ -222,6 +231,7 @@ namespace UnitTesting {
             Assert.Throws<LibraryHasMembersException>(() => libraryService.DeleteLibrary(library));
         }
 
+        //David Matijanić
         [Fact]
         public void DeleteLibrary_LibraryHasBooks_ThrowsLibraryHasBooksException() {
             //Arrange
@@ -232,6 +242,7 @@ namespace UnitTesting {
             Assert.Throws<LibraryHasBooksException>(() => libraryService.DeleteLibrary(library));
         }
 
+        //David Matijanić
         [Fact]
         public void DeleteLibrary_LibraryHasNotifications_ThrowsLibraryException() {
             //Arrange
@@ -242,6 +253,7 @@ namespace UnitTesting {
             Assert.Throws<LibraryException>(() => libraryService.DeleteLibrary(library));
         }
 
+        //David Matijanić
         [Fact]
         public void DeleteLibrary_LibraryHasNothing_DeletesLibrary() {
             //Arrange
@@ -259,6 +271,7 @@ namespace UnitTesting {
             Assert.DoesNotContain(library, libraries);
         }
 
+        //David Matijanić
         [Theory]
         [InlineData(6)]
         [InlineData(7)]
@@ -275,6 +288,7 @@ namespace UnitTesting {
             Assert.Throws<LibraryWithSameIDException>(() => libraryService.UpdateLibrary(library));
         }
 
+        //David Matijanić
         [Theory]
         [InlineData(1, "22222222222")]
         [InlineData(2, "33333333333")]
@@ -294,6 +308,7 @@ namespace UnitTesting {
             Assert.Throws<LibraryWithSameOIBException>(() => libraryService.UpdateLibrary(library));
         }
 
+        //David Matijanić
         [Fact]
         public void UpdateLibrary_LibraryExistsAndHasNameChanged_LibraryIsUpdated() {
             //Arrange
@@ -313,6 +328,7 @@ namespace UnitTesting {
             Assert.Equal(newLibrary.name, library.name);
         }
 
+        //David Matijanić
         [Fact]
         public void UpdateLibrary_LibraryExistsAndHasOIBChanged_LibraryIsUpdated() {
             //Arrange
@@ -331,6 +347,7 @@ namespace UnitTesting {
             Assert.Equal(newLibrary.OIB, library.OIB);
         }
 
+        //David Matijanić
         [Theory]
         [InlineData(1)]
         [InlineData(2)]
@@ -349,6 +366,7 @@ namespace UnitTesting {
             Assert.Equal(correctPriceDayLate, priceDayLate);
         }
 
+        //David Matijanić
         [Theory]
         [InlineData(1)]
         [InlineData(2)]
@@ -368,6 +386,7 @@ namespace UnitTesting {
             Assert.Equal(correctPriceDayLate, priceDayLate);
         }
 
+        //David Matijanić
         [Theory]
         [InlineData(1)]
         [InlineData(2)]
