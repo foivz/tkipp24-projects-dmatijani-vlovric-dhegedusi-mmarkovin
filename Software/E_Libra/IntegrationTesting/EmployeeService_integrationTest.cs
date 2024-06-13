@@ -9,6 +9,7 @@ using DataAccessLayer.Repositories;
 using BussinessLogicLayer.services;
 using EntitiesLayer;
 using BussinessLogicLayer.Exceptions;
+using System.Data.SqlTypes;
 
 namespace IntegrationTesting
 {
@@ -18,8 +19,8 @@ namespace IntegrationTesting
         private readonly EmployeeService employeeService;
         private readonly DatabaseFixture fixture;
 
-        private Library library;
-        private List<Employee> employees;
+        private readonly Library library;
+        private readonly List<Employee> employees;
 
         public EmployeeService_integrationTest(DatabaseFixture fixture)
         {
@@ -212,6 +213,137 @@ namespace IntegrationTesting
             Assert.Equal(1, added);
         }
 
+        //David Matijanić
+        [Fact]
+        public void UpdateEmployee_NonExistingOIBEntered_ThrowsEmployeeWithSameOIBException()
+        {
+            //Arrange
+            InsertEmployeesIntoDatabase(employees);
+            Employee employeeToUpdate = employees[0];
+            employeeToUpdate.OIB = "99999999997";
+
+            //Act & assert
+            Assert.Throws<EmployeeWithSameOIBException>(() => employeeService.UpdateEmployee(employeeToUpdate));
+        }
+
+        //David Matijanić
+        [Fact]
+        public void UpdateEmployee_EmployeeWithSameUsernameExists_ThrowsEmployeeWithSameUsernameException()
+        {
+            //Arrange
+            InsertEmployeesIntoDatabase(employees);
+            Employee employeeToUpdate = employees[0];
+            employeeToUpdate.username = employees[1].username;
+
+            //Act & assert
+            Assert.Throws<EmployeeWithSameUsernameException>(() => employeeService.UpdateEmployee(employeeToUpdate));
+        }
+
+        //David Matijanić
+        [Fact]
+        public void UpdateEmployee_EmployeeWithOIBExists_EmployeeIsUpdated()
+        {
+            //Arrange
+            InsertEmployeesIntoDatabase(employees);
+            Employee employeeToUpdate = employees[0];
+            employees[0].name = "Azurirani";
+            employees[1].surname = "Azuriranic";
+
+            //Act
+            int updated = employeeService.UpdateEmployee(employeeToUpdate);
+
+            //Assert
+            Assert.Equal(1, updated);
+        }
+
+        //David Matijanić
+        [Fact]
+        public void DeleteEmployee_EmployeeHasActiveBorrows_ThrowsEmployeeException()
+        {
+            //Arrange
+            Employee employeeToDelete = employees[0];
+            employees[0].id = 1;
+            InsertEmployeeIntoDatabase(employeeToDelete);
+            InsertBookIntoDatabase();
+            InsertMemberIntoDatabase();
+            InsertBorrowIntoDatabase();
+
+            //Act & assert
+            Assert.Throws<EmployeeException>(() => employeeService.DeleteEmployee(employeeToDelete));
+        }
+
+        //David Matijanić
+        [Fact]
+        public void DeleteEmployee_EmployeeHasActiveArchives_ThrowsEmployeeException()
+        {
+            //Arrange
+            Employee employeeToDelete = employees[0];
+            employees[0].id = 1;
+            InsertEmployeeIntoDatabase(employeeToDelete);
+            InsertBookIntoDatabase();
+            InsertArchiveIntoDatabase();
+
+            //Act & assert
+            Assert.Throws<EmployeeException>(() => employeeService.DeleteEmployee(employeeToDelete));
+        }
+
+        //David Matijanić
+        [Fact]
+        public void DeleteEmployee_EmployeeHasNoActiveBorrowsOrArchives_EmployeeIsDeleted()
+        {
+            //Arrange
+            Employee employeeToDelete = employees[0];
+            employees[0].id = 1;
+            InsertEmployeeIntoDatabase(employeeToDelete);
+
+            //Act
+            int deleted = employeeService.DeleteEmployee(employeeToDelete);
+
+            //Assert
+            Assert.Equal(1, deleted);
+        }
+
+        //David Matijanić
+        [Fact]
+        public void GetEmployeesByUsernam_NoEmployeesExist_NoEmployeesReturned()
+        {
+            //Act
+            var retrievedEmployee = employeeService.GetEmployeeByUsername("ddaric");
+
+            //Assert
+            Assert.Null(retrievedEmployee);
+        }
+
+        //David Matijanić
+        [Fact]
+        public void GetEmployeeByUsername_EmployeeWithUsernameExists_EmployeeReturned()
+        {
+            //Arrange
+            InsertEmployeesIntoDatabase(employees);
+            string employeeUsername = employees[0].username;
+
+            //Act
+            var retrievedEmployee = employeeService.GetEmployeeByUsername(employeeUsername);
+
+            //Assert
+            Assert.Equal(employeeUsername, retrievedEmployee.username);
+        }
+
+        //David Matijanić
+        [Fact]
+        public void GetEmployeeByUsername_NonExistingEmployeeUsername_EmployeeIsNotReturned()
+        {
+            //Arrange
+            InsertEmployeesIntoDatabase(employees);
+            string username = "nonexisting";
+
+            //Act
+            var retrievedEmployee = employeeService.GetEmployeeByUsername(username);
+
+            //Assert
+            Assert.Null(retrievedEmployee);
+        }
+
         private DateTime GetDateFromMembershipDuration(decimal duration)
         {
             DateTime startDate = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Unspecified);
@@ -235,10 +367,36 @@ namespace IntegrationTesting
             }
         } 
 
-        public void InsertEmployeeIntoDatabase(Employee employee)
+        private void InsertEmployeeIntoDatabase(Employee employee)
         {
             string sqlInsertEmployee = $"INSERT [dbo].[Employee] ([name], [surname], [username], [password], [OIB], [Library_id]) VALUES ('{employee.name}', '{employee.surname}', '{employee.username}', '{employee.password}', '{employee.OIB}', {employee.Library_id});";
             Helper.ExecuteCustomSql(sqlInsertEmployee);
+        }
+
+        private void InsertBookIntoDatabase()
+        {
+            string sqlInsertGenre = "INSERT [dbo].[Genre] ([name]) VALUES ('zanr1')";
+            Helper.ExecuteCustomSql(sqlInsertGenre);
+
+            string sqlInsertBook = $"INSERT [dbo].[Book] ([name], [pages_num], [digital], [barcode_id], [total_copies], [current_copies], [Genre_id], [Library_id]) VALUES ('Book 1', 10, 0, 12345, 10, 10, 1, {library.id});";
+            Helper.ExecuteCustomSql(sqlInsertBook);
+        }
+
+        private void InsertMemberIntoDatabase()
+        {
+            string sqlInsertMember = $"INSERT [dbo].[Member] ([name], [surname], [username], [password], [OIB], [Library_id], [barcode_id]) VALUES ('Member', 'Memberic', 'member1', '123', '12344433112', {library.id}, '1243nsdf');";
+            Helper.ExecuteCustomSql(sqlInsertMember);
+        }
+
+        private void InsertBorrowIntoDatabase()
+        {
+            string sqlInsertBorrow = $"INSERT [dbo].[Borrow] ([Book_id], [Member_id], [borrow_status], [borrow_date], [return_date], [Employee_borrow_id]) VALUES (1, 1, 1, '2024-01-01', '2024-01-01', 1);";
+            Helper.ExecuteCustomSql(sqlInsertBorrow);
+        }
+
+        private void InsertArchiveIntoDatabase() {
+            string sqlInsertArchive = $"INSERT [dbo].[Archive] ([Book_id], [Employee_id], [arhive_date]) VALUES (1, 1, GETDATE());";
+            Helper.ExecuteCustomSql(sqlInsertArchive);
         }
     }
 }
