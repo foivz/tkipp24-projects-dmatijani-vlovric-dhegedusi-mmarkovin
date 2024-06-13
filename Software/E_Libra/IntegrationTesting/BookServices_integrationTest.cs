@@ -401,7 +401,13 @@ namespace IntegrationTesting
             };
 
             return bookViewModels;
+        }
 
+        private void CreateMember()
+        {
+            string sqlMember = "INSERT INTO [dbo].[Member] ([name], [surname], [OIB], [membership_date], [barcode_id], [username], [password], [Library_id]) " +
+                "VALUES (N'ime', N'prezime', 1234, GETDATE(), 12345, 'Member1', '123', 1);";
+            Helper.ExecuteCustomSql(sqlMember);
         }
 
 
@@ -732,10 +738,28 @@ namespace IntegrationTesting
         public void GetWishlistBooksForMember_GivenFunctionIsCalled_ReturnsListOfBooks()
         {
             //Arrange
-            
+            var books = CreateSearchableBooks();
+            LoggedUser.Username = "Member1";
+
+            CreateMember();
+
+            string sqlWishlist1 = "INSERT INTO [dbo].[WishList] ([Member_id], [Book_id]) " +
+                "VALUES (1, 2);";
+            string sqlWishlist2 = "INSERT INTO [dbo].[WishList] ([Member_id], [Book_id]) " +
+                "VALUES (1, 3);";
+
+            Helper.ExecuteCustomSql(sqlWishlist1);
+            Helper.ExecuteCustomSql(sqlWishlist2);
+
+            List<BookViewModel> expectedBooks = new List<BookViewModel> { books[1], books[2] };
+
             //Act
+            var result = bookServices.GetWishlistedBooks();
 
             //Assert
+            result.Should().BeEquivalentTo(expectedBooks, options => options
+            .Excluding(e => e.PublishDateDisplay)
+            );
         }
 
         //Viktor Lovrić
@@ -743,10 +767,16 @@ namespace IntegrationTesting
         public void AddBookToWishlist_GivenBookId_ReturnsTrue()
         {
             //Arrange
+            LoggedUser.Username = "Member1";
+            CreateMember();
+            var book = CreateSingleBook();
 
             //Act
+            var result = bookServices.AddBookToWishlist(book.id);
 
             //Assert
+            result.Should().BeTrue();
+
         }
 
         //Viktor Lovrić
@@ -754,10 +784,19 @@ namespace IntegrationTesting
         public void RemoveBookFromWishlist_GivenBookId_ReturnsTrue()
         {
             //Arrange
+            LoggedUser.Username = "Member1";
+            CreateMember();
+            var book = CreateSingleBook();
+
+            string sqlWishlist = "INSERT INTO [dbo].[WishList] ([Member_id], [Book_id]) " +
+                "VALUES (1, 1);";
+            Helper.ExecuteCustomSql(sqlWishlist);
 
             //Act
+            var result = bookServices.RemoveBookFromWishlist(book.id);
 
             //Assert
+            result.Should().BeTrue();
         }
     }
 }
