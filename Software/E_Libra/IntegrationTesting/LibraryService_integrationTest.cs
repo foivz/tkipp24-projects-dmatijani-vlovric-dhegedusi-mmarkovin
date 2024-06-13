@@ -163,6 +163,118 @@ namespace IntegrationTesting
             Assert.Equal(1, result);
         }
 
+        //David Matijanić
+        [Fact]
+        public void DeleteLibrary_LibraryHasEmployees_ThrowsLibraryHasEmployeesException()
+        {
+            //Arrange
+            Library library = libraries.First();
+            string sqlEmployee = "INSERT INTO [dbo].[Employee] ([username], [password], [OIB], [library_id]) " +
+                $"VALUES (N'zaposlenik1', N'lozinka1', '11111111111', {library.id})";
+            Helper.ExecuteCustomSql(sqlEmployee);
+
+            //Act
+            Action act = () => libraryService.DeleteLibrary(library);
+
+            //Assert
+            act.Should().Throw<LibraryHasEmployeesException>();
+        }
+
+        //David Matijanić
+        [Fact]
+        public void DeleteLibrary_LibraryHasMembers_ThrowsLibraryHasMembersException()
+        {
+            //Arrange
+            Library library = libraries.First();
+            string sqlMember = "INSERT INTO [dbo].[Member] ([name], [surname], [username], [password], [OIB], [Library_id], [barcode_id]) " + $"VALUES ('Member', 'Memberic', 'member1', '123', '12344433112', {library.id}, '1243nsdf')";
+            Helper.ExecuteCustomSql(sqlMember);
+
+            //Act
+            Action act = () => libraryService.DeleteLibrary(library);
+
+            //Assert
+            act.Should().Throw<LibraryHasMembersException>();
+        }
+
+        //David Matijanić
+        [Fact]
+        public void DeleteLibrary_LibraryHasBooks_ThrowsLibraryHasBooksException()
+        {
+            //Arrange
+            Library library = libraries.First();
+            string sqlGenre = $"INSERT [dbo].[Genre] ([name]) VALUES ('Knjigin zanr')";
+            Helper.ExecuteCustomSql(sqlGenre);
+            
+            string sqlBook = $"INSERT [dbo].[Book] ([name], [pages_num], [digital], [barcode_id], [total_copies], [current_copies], [Genre_id], [Library_id]) VALUES ('Knjiznicina knjiga', 82, 0, '234xcv', 5, 4, 1, {library.id});";
+            Helper.ExecuteCustomSql(sqlBook);
+
+            //Act
+            Action act = () => libraryService.DeleteLibrary(library);
+
+            //Assert
+            act.Should().Throw<LibraryHasBooksException>();
+        }
+
+        //David Matijanić
+        [Fact]
+        public void DeleteLibrary_LibraryHasNotifications_ThrowsLibraryException()
+        {
+            //Arrange
+            Library library = libraries.First();
+            string sqlNotification = $"INSERT [dbo].[Notification] ([title], [description], [Library_id]) VALUES ('Naslov notifikacije', 'Ovo je notifikacija koja sprjecava brisanje', {library.id})";
+            Helper.ExecuteCustomSql(sqlNotification);
+
+            //Act
+            Action act = () => libraryService.DeleteLibrary(library);
+
+            //Assert
+            act.Should().Throw<LibraryException>();
+        }
+
+        //David Matijanić
+        [Fact]
+        public void DeleteLibrary_LibraryHasNothing_DeletesLibrary()
+        {
+            //Arrange
+            Library library = libraries.First();
+
+            //Act
+            int deleted = libraryService.DeleteLibrary(library);
+
+            //Assert
+            Assert.Equal(1, deleted);
+        }
+
+        //David Matijanić
+        [Fact]
+        public void UpdateLibrary_LibraryWithSameOIBExists_ThrowsLibraryWithSameOIBException()
+        {
+            //Arrange
+            Library library = libraries.First();
+            library.OIB = "55555555555";
+
+            //Act
+            Action act = () => libraryService.UpdateLibrary(library);
+
+            //Assert
+            act.Should().Throw<LibraryWithSameOIBException>().WithMessage("Druga knjižnica već ima taj OIB!");
+        }
+
+        //David Matijanić
+        [Fact]
+        public void UpdateLibrary_LibraryExistsAndHasNameChanged_LibraryIsUpdated()
+        {
+            //Arrange
+            Library library = libraries.First();
+            library.name = "Novi naziv";
+
+            //Act
+            int updated = libraryService.UpdateLibrary(library);
+
+            //Assert
+            Assert.Equal(1, updated);
+        }
+        
         private void InsertLibrariesIntoDatabase(List<Library> libraryList)
         {
             foreach (var library in libraryList)
