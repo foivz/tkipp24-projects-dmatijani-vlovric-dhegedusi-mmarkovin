@@ -1,5 +1,6 @@
 ﻿using BussinessLogicLayer.services;
 using EntitiesLayer;
+using EntitiesLayer.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,9 +24,9 @@ namespace IntegrationTesting {
 
 
             var library = new Library {
-                id = 123,
+                id = 1,
                 name = "Testna knjiznica",
-                OIB = "11112222333",
+                OIB = "564363463364",
                 price_day_late = 3.5m,
                 membership_duration = new DateTime(2024, 6, 23)
             };
@@ -230,10 +231,27 @@ namespace IntegrationTesting {
         }
 
         [Fact]
-        private int probnaMetoda() {
-            var a = 3;
-            return a;
+        public void MostPopularBooks_WithBorrowedBooks_ShouldShowBooksInDgv() {
+            // Arrange
+            int libraryId = 1;
 
+            var expectedBooks = new List<MostPopularBooks>
+            {
+        new MostPopularBooks { Book_Name = "Hamlet", Author_Name = "William Shakespare", Times_Borrowed = 2 },
+        new MostPopularBooks { Book_Name = "Romeo I Julija", Author_Name = "Cecilije Borovski", Times_Borrowed = 1 }
+            };
+
+            // Act
+            var actualBooks = statisticsService.GetMostPopularBooks(libraryId);
+
+            Assert.True(true);
+            // Assert
+            Assert.Equal(expectedBooks.Count, actualBooks.Count);
+
+            for (int i = 0; i < expectedBooks.Count; i++) {
+                Assert.Equal(expectedBooks[i].Book_Name, actualBooks[i].Book_Name);
+                Assert.Equal(expectedBooks[i].Times_Borrowed, actualBooks[i].Times_Borrowed);
+            }
         }
 
     }
