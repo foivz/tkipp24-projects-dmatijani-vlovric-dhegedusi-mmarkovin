@@ -37,7 +37,6 @@ namespace DataAccessLayer.Repositories
         }
         public IQueryable<Notification> GetReadNotificationsForMember(Member member)
         {
-            Context.Members.Attach(member);
             var query = from n in Entities
                         where n.Members.Any(m => m.id == member.id)
                         select n;
