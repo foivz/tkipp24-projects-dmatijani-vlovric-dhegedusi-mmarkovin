@@ -21,16 +21,14 @@ namespace IntegrationTesting
              "INSERT [dbo].[Library] ([id], [name], [OIB], [phone], [email], [price_day_late], [address], [membership_duration]) " +
              "VALUES (1, N'Knjiznica', 12345, 331, N'email', 3, N'adresa', GETDATE())";
 
-        readonly string createGenres =
+        readonly string createGenre =
             "INSERT [dbo].[Genre] ([name]) VALUES (N'zanr')";
 
         readonly Genre genre = new Genre { id = 1, name = "zanr" };
 
-        readonly string createEmployees =
+        readonly string createEmployee =
              "INSERT [dbo].[Employee] ([name], [surname], [username], [password], [OIB], [Library_id]) " +
-            "VALUES (N'ime1', N'prezime1', N'Employee1', N'123', N'1234', 1) " +
-             "INSERT [dbo].[Employee] ([name], [surname], [username], [password], [OIB], [Library_id]) " +
-            "VALUES (N'ime2', N'prezime2', N'Employee2', N'123', N'1235', 1) ";
+            "VALUES (N'ime1', N'prezime1', N'Employee1', N'123', N'1234', 1);";
 
         public BookServices_integrationTest(DatabaseFixture fixture)
         {
@@ -39,8 +37,8 @@ namespace IntegrationTesting
             bookServices = new BookServices();
 
             Helper.ExecuteCustomSql(createLibrary);
-            Helper.ExecuteCustomSql(createGenres);
-            Helper.ExecuteCustomSql(createEmployees);
+            Helper.ExecuteCustomSql(createGenre);
+            Helper.ExecuteCustomSql(createEmployee);
         }
         //Viktor Lovrić
         [Fact]
@@ -336,6 +334,38 @@ namespace IntegrationTesting
 
             //Assert
             result.Should().BeTrue();
+        }
+
+        //Viktor Lovrić
+        [Theory]
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(5)]
+        public void InsertNewCopies_GivenNumberOfCopies_AddsToCopies(int currCopies)
+        {
+            //Arrange
+            Book book = new Book
+            {
+                id = 1,
+                name = "BookName1",
+                description = null,
+                publish_date = null,
+                pages_num = 10,
+                digital = 0,
+                url_digital = null,
+                barcode_id = "12345",
+                url_photo = null,
+                total_copies = 10,
+                current_copies = 10,
+                Genre = genre,
+                Library_id = 1,
+                Genre_id = genre.id
+            };
+
+
+            //Act
+
+            //Assert
         }
 
 
