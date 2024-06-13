@@ -368,6 +368,90 @@ namespace IntegrationTesting
             );
         }
 
+        //David Matijanić
+        [Fact]
+        public void GetBorrowsForMemberAndBook_GivenThereAreNoBorrows_NoBorrowsRetrieved()
+        {
+            //Act
+            var borrowsForMember = borrowService.GetBorrowsForMemberAndBook(5, 1, library.id);
+
+            //Assert
+            Assert.Empty(borrowsForMember);
+        }
+
+        //David Matijanić
+        [Theory]
+        [InlineData(1, 1)]
+        [InlineData(1, 2)]
+        [InlineData(1, 3)]
+        [InlineData(1, 4)]
+        [InlineData(2, 1)]
+        [InlineData(2, 2)]
+        [InlineData(2, 3)]
+        [InlineData(3, 2)]
+        [InlineData(3, 4)]
+        [InlineData(4, 3)]
+        [InlineData(5, 1)]
+        [InlineData(5, 2)]
+        public void GetBorrowsForMemberAndBook_GivenTheCorrectMemberAndBookIdIsEntered_CorrectBorrowIsRetrieved(int memberId, int bookId)
+        {
+            //Act
+            var borrowsForMember = borrowService.GetBorrowsForMemberAndBook(memberId, bookId, library.id);
+
+            //Assert
+            borrowsForMember.Should().BeEquivalentTo(borrows.Where(b => b.Member_id == memberId && b.Book_id == bookId), option => option
+                .Excluding(b => b.Book)
+                .Excluding(b => b.Employee)
+                .Excluding(b => b.Employee1)
+                .Excluding(b => b.Member)
+                .Excluding(b => b.idBorrow)
+                .Excluding(b => b.borrow_date)
+                .Excluding(b => b.return_date)
+            );
+        }
+
+        //David Matijanić
+        [Fact]
+        public async Task GetAllBorrowsForLibraryAsync_GivenAnExistingLibraryIsEntered_CorrectBorrowsRetrieved()
+        {
+            //Act
+            var borrowsForLibrary = await borrowService.GetAllBorrowsForLibraryAsync(library);
+
+            //Assert
+            borrowsForLibrary.Should().BeEquivalentTo(borrows, option => option
+                .Excluding(b => b.Book)
+                .Excluding(b => b.Employee)
+                .Excluding(b => b.Employee1)
+                .Excluding(b => b.Member)
+                .Excluding(b => b.idBorrow)
+                .Excluding(b => b.borrow_date)
+                .Excluding(b => b.return_date)
+            );
+        }
+
+        //David Matijanić
+        [Theory]
+        [InlineData(BorrowStatus.Waiting)]
+        [InlineData(BorrowStatus.Borrowed)]
+        [InlineData(BorrowStatus.Late)]
+        [InlineData(BorrowStatus.Returned)]
+        public async Task GetAllBorrowsForLibraryByStatusAsync_GivenAnExistingLibraryIsEntered_CorrectBorrowsRetrieved(BorrowStatus borrowStatus)
+        {
+            //Act
+            var borrowsForLibrary = await borrowService.GetBorrowsForLibraryByStatusAsync(library, borrowStatus);
+
+            //Assert
+            borrowsForLibrary.Should().BeEquivalentTo(borrows.Where(b => b.borrow_status == (int)borrowStatus), option => option
+                .Excluding(b => b.Book)
+                .Excluding(b => b.Employee)
+                .Excluding(b => b.Employee1)
+                .Excluding(b => b.Member)
+                .Excluding(b => b.idBorrow)
+                .Excluding(b => b.borrow_date)
+                .Excluding(b => b.return_date)
+            );
+        }
+
         private void InsertLibraryIntoDatabase(Library library)
         {
             var formattedMembershipDuration = library.membership_duration.ToString("yyyy-MM-dd");
