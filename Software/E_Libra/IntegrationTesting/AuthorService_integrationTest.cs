@@ -18,7 +18,7 @@ namespace IntegrationTesting
             Helper.ResetDatabase();
             service = new AuthorService();
         }
-
+        //Viktor Lovrić
         [Fact]
         public void GetAllAuthors_GivenFunctionIsCalled_ReturnsListOfAuthors()
         {
@@ -40,6 +40,22 @@ namespace IntegrationTesting
 
             //Assert
             result.Should().BeEquivalentTo(authors);
+        }
+        //Viktor Lovrić
+        [Fact]
+        public void AddAuthor_GivenAuthorIsPassed_ReturnsTrue()
+        {
+            //Arrange
+            var author = new Author { idAuthor = 1, name = "Author1", surname = "Surname1", birth_date = DateTime.Now.Date };
+            var formattedBirthDate = author.birth_date.HasValue ? author.birth_date.Value.ToString("yyyy-MM-dd") : "NULL";
+
+            Helper.ExecuteCustomSql($"INSERT INTO dbo.Author (idAuthor, name, surname, birth_date) VALUES ({author.idAuthor}, '{author.name}', '{author.surname}', '{formattedBirthDate}')");
+
+            //Act
+            var result = service.AddAuthor(author);
+
+            //Assert
+            result.Should().BeTrue();
         }
     }
 }
