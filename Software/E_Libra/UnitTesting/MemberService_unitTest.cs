@@ -611,37 +611,6 @@ namespace UnitTesting
             // Assert
             Assert.Equal(expectedId, result);
         }
-        //Magdalena Markovinović
-        [Fact]
-        public void GetMemberNameSurname_ExistingMemberId_ReturnsMemberNameSurname()
-        {
-            // Arrange
-            int existingMemberId = 1;
-            var expectedNameSurname = new List<string> { "test1", "test1" }.AsQueryable();
-            A.CallTo(() => membersRepository.GetMemberNameSurname(existingMemberId)).Returns(expectedNameSurname);
-
-            // Act
-            var result = memberService.GetMemberNameSurname(existingMemberId);
-
-            // Assert
-            Assert.Equal(expectedNameSurname, result);
-        }
-
-        [Fact]
-        //Magdalena Markovinović
-        public void GetMemberNameSurname_NonExistingMemberId_ReturnsEmptyQueryable()
-        {
-            // Arrange
-            int nonExistingMemberId = 999;
-            IQueryable<string> expected = Enumerable.Empty<string>().AsQueryable();
-            A.CallTo(() => membersRepository.GetMemberNameSurname(nonExistingMemberId)).Returns(expected);
-
-            // Act
-            var result = memberService.GetMemberNameSurname(nonExistingMemberId);
-
-            // Assert
-            Assert.Empty(result);
-        }
 
         [Fact]
         //Magdalena Markovinović

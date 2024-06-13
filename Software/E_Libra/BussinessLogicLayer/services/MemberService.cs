@@ -135,10 +135,6 @@ namespace BussinessLogicLayer.services {
         public int GetMemberId(string username) {
             return membersRepository.GetMemberId(username);
         }
-
-        public IQueryable<string> GetMemberNameSurname(int memberId) {
-            return membersRepository.GetMemberNameSurname(memberId);
-        }
         public int GetMemberLibraryId(string username) {
             return membersRepository.GetMemberLibraryId(username);
         }
