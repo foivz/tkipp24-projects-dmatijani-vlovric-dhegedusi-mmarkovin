@@ -120,8 +120,41 @@ namespace IntegrationTesting {
             };
             InsertBookIntoDatabase(books);
 
+
+            var borrows = new List<Borrow> {
+                new Borrow {
+                    Book_id = 1,
+                    Member_id = 1,
+                    borrow_status = (int)BorrowStatus.Waiting,
+                    borrow_date = new DateTime(2024, 13, 6),
+                    return_date = new DateTime(2024, 11, 7),
+                    Employee_borrow_id = 1,
+                    Employee_return_id = null
+                },
+                new Borrow {
+                    Book_id = 2,
+                    Member_id = 1,
+                    borrow_status = (int)BorrowStatus.Waiting,
+                    borrow_date = new DateTime(2024, 14, 6),
+                    return_date = new DateTime(2023, 25, 6),
+                    Employee_borrow_id = 1,
+                    Employee_return_id = null
+                },
+                new Borrow {
+                    Book_id = 1,
+                    Member_id = 2,
+                    borrow_status = (int)BorrowStatus.Waiting,
+                    borrow_date = new DateTime(2023, 9, 6),
+                    return_date = new DateTime(2023, 30, 6),
+                    Employee_borrow_id = 1,
+                    Employee_return_id = null
+                }
+            };
+            InsertBorrowIntoDatabase(borrows);
+
+
             var reviews = new List<Review>
-            {
+{
                 new Review {
                     Member_id = 1,
                     Book_id = 1,
@@ -132,8 +165,8 @@ namespace IntegrationTesting {
                 new Review {
                     Member_id = 1,
                     Book_id = 2,
-                    comment = "Kraj mi se ne svidja",
-                    rating = 4,
+                    comment = "Preporucujem",
+                    rating = 5,
                     date = new DateTime(2023, 1, 20)
                 },
                 new Review {
@@ -142,47 +175,17 @@ namespace IntegrationTesting {
                     comment = "Knjiga mi se ne svidja.",
                     rating = 2,
                     date = new DateTime(2023, 2, 5)
-                },
-                new Review {
-                    Member_id = 2,
-                    Book_id = 2,
-                    comment = "Preporucujem knjigu svima",
-                    rating = 5,
-                    date = new DateTime(2023, 2, 10)
                 }
             };
             InsertReviewIntoDatabase(reviews);
+        }
 
 
-            var borrows = new List<Borrow> {
-                new Borrow {
-                    Book_id = 1,
-                    Member_id = 1,
-                    borrow_status = (int)BorrowStatus.Waiting,
-                    borrow_date = DateTime.Now.AddDays(-3),
-                    return_date = DateTime.Now.AddDays(2),
-                    Employee_borrow_id = 1,
-                    Employee_return_id = null
-                },
-                new Borrow {
-                    Book_id = 2,
-                    Member_id = 1,
-                    borrow_status = (int)BorrowStatus.Waiting,
-                    borrow_date = DateTime.Now.AddDays(-3),
-                    return_date = DateTime.Now.AddDays(2),
-                    Employee_borrow_id = 1,
-                    Employee_return_id = null
-                },
-                new Borrow {
-                    Book_id = 1,
-                    Member_id = 1,
-                    borrow_status = (int)BorrowStatus.Waiting,
-                    borrow_date = DateTime.Now.AddDays(-3),
-                    return_date = DateTime.Now.AddDays(2),
-                    Employee_borrow_id = 1,
-                    Employee_return_id = null
-                }
-            };
+        private void InsertBorrowIntoDatabase(List<Borrow> borrows) {
+            foreach (var borrow in borrows) {
+                string sqlInsertBorrow = $"INSERT [dbo].[Borrow] ([Book_id], [Member_id], [borrow_status], [borrow_date], [return_date], [Employee_borrow_id], [Employee_return_id]) VALUES ({borrow.Book_id}, {borrow.Member_id}, {borrow.borrow_status}, '{(borrow.borrow_date)}', {borrow.return_date}, {borrow.Employee_borrow_id}, {borrow.Employee_return_id});";
+                Helper.ExecuteCustomSql(sqlInsertBorrow);
+            }
         }
 
         private void InsertReviewIntoDatabase(List<Review> reviews) {
@@ -226,6 +229,12 @@ namespace IntegrationTesting {
             Helper.ExecuteCustomSql(sqlInsertLibrary);
         }
 
+        [Fact]
+        private int probnaMetoda() {
+            var a = 3;
+            return a;
+
+        }
 
     }
 }
