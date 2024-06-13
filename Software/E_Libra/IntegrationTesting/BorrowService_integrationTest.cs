@@ -7,6 +7,7 @@ using Xunit;
 using FluentAssertions;
 using BussinessLogicLayer.services;
 using EntitiesLayer;
+using BussinessLogicLayer.Exceptions;
 
 namespace IntegrationTesting
 {
@@ -140,6 +141,15 @@ namespace IntegrationTesting
                     password = "jasamlea",
                     OIB = "22738449503",
                     Library_id = library.id
+                },
+                new Employee {
+                    id = 5,
+                    name = "Nemko",
+                    surname = "Njemic",
+                    username = "nnjemic",
+                    password = "sad32asd",
+                    OIB = "33433443312",
+                    Library_id = library.id
                 }
             };
             InsertEmployeesIntoDatabase(employees);
@@ -148,6 +158,7 @@ namespace IntegrationTesting
             {
                 new Book
                 {
+                    id = 1,
                     name = "Dune",
                     pages_num = 412,
                     digital = 0,
@@ -159,6 +170,7 @@ namespace IntegrationTesting
                 },
                 new Book
                 {
+                    id = 2,
                     name = "Cool book",
                     pages_num = 223,
                     digital = 0,
@@ -170,6 +182,7 @@ namespace IntegrationTesting
                 },
                 new Book
                 {
+                    id = 3,
                     name = "Scary book",
                     pages_num = 123,
                     digital = 0,
@@ -181,6 +194,7 @@ namespace IntegrationTesting
                 },
                 new Book
                 {
+                    id = 4,
                     name = "Programiranje 2",
                     pages_num = 0,
                     digital = 1,
@@ -446,6 +460,92 @@ namespace IntegrationTesting
                 .Excluding(b => b.borrow_date)
                 .Excluding(b => b.return_date)
             );
+        }
+
+        //David Matijanić
+        [Fact]
+        public void GetBorrowsForEmployee_EmployeeHasNoBorrows_NoBorrowsReturned()
+        {
+            //Arrange
+            int employeeId = employees[4].id;
+
+            //Act
+            var borrowsForEmployee = borrowService.GetBorrowsForEmployee(employeeId);
+
+            //Assert
+            Assert.Empty(borrowsForEmployee);
+        }
+
+        //David Matijanić
+        [Theory]
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(3)]
+        [InlineData(4)]
+        public void GetBorrowsForEmployee_GivenTheCorrectEmployeeIdIsEntered_BorrowsRetrieved(int employeeId)
+        {
+            //Act
+            var borrowsForEmployee = borrowService.GetBorrowsForEmployee(employeeId);
+
+            //Assert
+            borrowsForEmployee.Should().BeEquivalentTo(borrows.Where(b => b.Employee_borrow_id == employeeId || b.Employee_return_id == employeeId), option => option
+                .Excluding(b => b.Book)
+                .Excluding(b => b.Employee)
+                .Excluding(b => b.Employee1)
+                .Excluding(b => b.Member)
+                .Excluding(b => b.idBorrow)
+                .Excluding(b => b.borrow_date)
+                .Excluding(b => b.return_date)
+            );
+        }
+
+        //David Matijanić
+        [Fact]
+        public void AddNewBorrow_BookHasNoCopies_ThrowsNoMoreBookCopiesException()
+        {
+            //Arrange
+            Book book = books[0];
+            book.current_copies = 0;
+
+            Borrow borrow = new Borrow
+            {
+                Book = book,
+                Member = members[0],
+                borrow_status = (int)BorrowStatus.Borrowed,
+                borrow_date = DateTime.Now,
+                return_date = DateTime.Now.AddDays(7),
+                Employee_borrow_id = employees[0].id,
+                Employee_return_id = null
+            };
+
+            //Act
+            Action act = () => borrowService.AddNewBorrow(borrow);
+
+            //Assert
+            act.Should().Throw<NoMoreBookCopiesException>().WithMessage("Odabrane knjige trenutno nema na stanju!");
+        }
+
+        //David Matijanić
+        [Fact]
+        public void AddNewBorrow_BorrowHasStatusBorrowedAndHasCopiesAndNoReservationExists_BorrowIsAdded()
+        {
+            //Arrange
+            Borrow borrow = new Borrow
+            {
+                Book = books[2],
+                Member = members[0],
+                borrow_status = (int)BorrowStatus.Borrowed,
+                borrow_date = DateTime.Now,
+                return_date = DateTime.Now.AddDays(7),
+                Employee_borrow_id = employees[0].id,
+                Employee_return_id = null
+            };
+
+            //Act
+            int borrowed = borrowService.AddNewBorrow(borrow);
+
+            //Assert
+            Assert.Equal(1, borrowed);
         }
 
         private void InsertLibraryIntoDatabase()
