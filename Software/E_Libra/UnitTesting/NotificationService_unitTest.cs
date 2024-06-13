@@ -17,7 +17,6 @@ namespace UnitTesting
     //Magdalena markovinović
     public class NotificationService_unitTest
     {
-        private MemberService memberService;
         private NotificationService notificationService;
         private INotificationsRepository notificationsRepository;
         private IMembersRepository memberRepository;
@@ -25,8 +24,7 @@ namespace UnitTesting
         {
             notificationsRepository = A.Fake<INotificationsRepository>();
             memberRepository = A.Fake<IMembersRepository>();
-            memberService = new MemberService(memberRepository, null, null, null, null);
-            notificationService = new NotificationService(notificationsRepository, memberService);
+            notificationService = new NotificationService(notificationsRepository);
         }
 
         [Fact]
@@ -104,7 +102,7 @@ namespace UnitTesting
         public void EditNotification_GivenNotificationIsEdited_ReturnsTrue()
         {
             // Arrange
-            var notificationService = new NotificationService(notificationsRepository, memberService);
+            var notificationService = new NotificationService(notificationsRepository);
             Notification notification = new Notification
             {
                 id = 3,
@@ -158,7 +156,7 @@ namespace UnitTesting
         public void Remove_NotificationDoesNotExist_ReturnsZero()
         {
             // Arrange
-            var notificationToRemove = new Notification(); // Create a notification object
+            var notificationToRemove = new Notification();
             A.CallTo(() => notificationsRepository.Remove(notificationToRemove, true)).Returns(0);
 
             // Act
@@ -181,7 +179,7 @@ namespace UnitTesting
                 .Returns(1);
 
             // Act
-            bool result = notificationService.AddNotificationRead(new Notification());
+            bool result = notificationService.AddNotificationRead(new Notification(), new Member { username = "testuser" });
 
             // Assert
             Assert.True(result);
@@ -226,13 +224,12 @@ namespace UnitTesting
             // Arrange
             var fakeMemberService = A.Fake<MemberService>();
             var fakeNotifRepo = A.Fake<INotificationsRepository>();
-            var fakeNotifService = new NotificationService(fakeNotifRepo, fakeMemberService);
+            var fakeNotifService = new NotificationService(fakeNotifRepo);
             // Act
             fakeNotifService.Dispose();
 
             // Assert
             A.CallTo(() => fakeNotifRepo.Dispose()).MustHaveHappened();
-            A.CallTo(() => fakeMemberService.Dispose()).MustHaveHappened();
         }
     }
 }

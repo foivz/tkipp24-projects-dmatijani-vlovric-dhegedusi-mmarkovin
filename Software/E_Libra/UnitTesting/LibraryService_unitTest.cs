@@ -427,7 +427,7 @@ namespace UnitTesting {
 
             INotificationsRepository notificationRepository = A.Fake<INotificationsRepository>();
             A.CallTo(() => notificationRepository.GetAllNotificationsForLibrary(library.id)).Returns(library.Notifications.AsQueryable());
-            NotificationService notificationService = new NotificationService(notificationRepository, null);
+            NotificationService notificationService = new NotificationService(notificationRepository);
 
             libraryService = new LibraryService(libraryRepository, employeeService, memberService, bookService, notificationService);
         }

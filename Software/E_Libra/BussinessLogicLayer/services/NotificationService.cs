@@ -15,14 +15,12 @@ namespace BussinessLogicLayer.services
     public class NotificationService
     {
         private INotificationsRepository notificationsRepository;
-        private MemberService memberService;
 
-        public NotificationService(INotificationsRepository notificationsRepo, MemberService memberService)
+        public NotificationService(INotificationsRepository notificationsRepo)
         {
             this.notificationsRepository = notificationsRepo;
-            this.memberService = memberService;
         }
-        public NotificationService() : this(new NotificationsRepository(), new MemberService())
+        public NotificationService() : this(new NotificationsRepository())
         {
         }
 
@@ -36,10 +34,9 @@ namespace BussinessLogicLayer.services
             if (added != 0) return true;
             return false;
         }
-        public bool AddNotificationRead(Notification notification)
+        public bool AddNotificationRead(Notification notification, Member loggedMember)
         {
-            Member member = memberService.GetMemberByUsername(LoggedUser.Username);
-            var added = notificationsRepository.AddReadNotification(notification, member);
+            var added = notificationsRepository.AddReadNotification(notification, loggedMember);
             if (added != 0) return true;
             return false;
         }
@@ -67,7 +64,6 @@ namespace BussinessLogicLayer.services
             if (disposing)
             {
                 notificationsRepository?.Dispose();
-                memberService?.Dispose();
             }
         }
 
