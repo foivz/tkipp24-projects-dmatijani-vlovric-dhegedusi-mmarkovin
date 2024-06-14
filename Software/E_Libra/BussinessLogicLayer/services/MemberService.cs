@@ -206,6 +206,10 @@ namespace BussinessLogicLayer.services {
         public int MembershipExpieringSoon()
         {
             DateTime? membershipDate = membersRepository.GetMembershipDate(LoggedUser.Username);
+            if (membershipDate == null)
+            {
+                return 0;
+            }
             return 5;
         }
 
