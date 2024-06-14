@@ -611,37 +611,6 @@ namespace UnitTesting
             // Assert
             Assert.Equal(expectedId, result);
         }
-        //Magdalena Markovinović
-        [Fact]
-        public void GetMemberNameSurname_ExistingMemberId_ReturnsMemberNameSurname()
-        {
-            // Arrange
-            int existingMemberId = 1;
-            var expectedNameSurname = new List<string> { "test1", "test1" }.AsQueryable();
-            A.CallTo(() => membersRepository.GetMemberNameSurname(existingMemberId)).Returns(expectedNameSurname);
-
-            // Act
-            var result = memberService.GetMemberNameSurname(existingMemberId);
-
-            // Assert
-            Assert.Equal(expectedNameSurname, result);
-        }
-
-        [Fact]
-        //Magdalena Markovinović
-        public void GetMemberNameSurname_NonExistingMemberId_ReturnsEmptyQueryable()
-        {
-            // Arrange
-            int nonExistingMemberId = 999;
-            IQueryable<string> expected = Enumerable.Empty<string>().AsQueryable();
-            A.CallTo(() => membersRepository.GetMemberNameSurname(nonExistingMemberId)).Returns(expected);
-
-            // Act
-            var result = memberService.GetMemberNameSurname(nonExistingMemberId);
-
-            // Assert
-            Assert.Empty(result);
-        }
 
         [Fact]
         //Magdalena Markovinović
@@ -911,8 +880,6 @@ namespace UnitTesting
             // Assert
             Assert.Equal(expectedDuration, result);
         }
-
-        //TODO: Implementirati DISPOSE kad EmployeeService bude imao IDisposable implementiran! (@dmatijani21)
         //Magdalena Markovinović
         [Fact]
         public void RestoreMembership_MembershipExpired_RestoresMembership()
@@ -982,6 +949,7 @@ namespace UnitTesting
             A.CallTo(() => membersRepository.UpdateMembershipDate(member, A<DateTime>.Ignored, true)).MustNotHaveHappened();
         }
 
+        //Magdalena Markovinović
         [Fact]
         public void Dispose_GivenFunctionIsCalled_DisposeAll()
         {
