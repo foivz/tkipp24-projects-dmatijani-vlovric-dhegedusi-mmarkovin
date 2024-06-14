@@ -3,10 +3,10 @@ name: Build and run unit test on branch push
 on:
   push:
     branches:
-      - 45-nova-funkcionalnost-13
+      - 45-nova-funkcionalnost-f13
   pull_request:
     branches:
-      - 45-nova-funkcionalnost-13
+      - 45-nova-funkcionalnost-f13
   workflow_dispatch:
 
 jobs:
