@@ -47,9 +47,11 @@ namespace PresentationLayer
 
         private void HideReserve()
         {
-            //TODO: koristiti using za memberService kada budu realizirali sučelje IDisposable (@mmarkoovin21)
-            MemberService memberService = new MemberService();
-            int memberId = memberService.GetMemberId(LoggedUser.Username);
+            int memberId;
+            using (MemberService memberService = new MemberService())
+            {
+                memberId = memberService.GetMemberId(LoggedUser.Username);
+            }
             //0 je, ja rezerviram
             //ak opet dodem bit ce sakriveno rezerviraj i pisat tekst
             using (ReservationService reservationService = new ReservationService())
@@ -238,9 +240,12 @@ namespace PresentationLayer
             btnBorrow.Visibility = Visibility.Visible;
 
             using (var borrowService = new BorrowService()) {
-                //TODO: koristiti using za memberService kada bude realizirao sučelje IDisposable (@mmarkoovin21), ovdje ćeš vjerojatno imat using u using, pa je to ok, tj. using blok u using bloku, onda sve ovo samo pukni u using
-                MemberService memberService = new MemberService();
-                Member loggedMember = memberService.GetMemberByUsername(LoggedUser.Username);
+                Member loggedMember;
+                using (MemberService memberService = new MemberService())
+                {
+                    loggedMember = memberService.GetMemberByUsername(LoggedUser.Username);
+                }
+                    
 
                 List<Borrow> borrows = borrowService.GetBorrowsForMemberAndBook(loggedMember.id, book.id, LoggedUser.LibraryId);
                 if (borrows.Count == 0) {
