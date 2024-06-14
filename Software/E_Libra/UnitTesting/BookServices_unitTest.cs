@@ -405,7 +405,7 @@ namespace UnitTesting
             {
                 () => A.CallTo(() => bookRepo.Dispose()).MustHaveHappened(),
                 () => A.CallTo(() => reservationRepo.Dispose()).MustHaveHappened(),
-                //TODO () => A.CallTo(() => memberRepo.Dispose()).MustHaveHappened(),
+                () => A.CallTo(() => memberRepo.Dispose()).MustHaveHappened(),
             };
             Assert.Multiple(actions);
         }
