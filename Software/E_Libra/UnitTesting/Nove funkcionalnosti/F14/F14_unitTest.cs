@@ -7,9 +7,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Xunit;
 
 namespace UnitTesting.Nove_funkcionalnosti.F14
 {
+    // Magdalena Markovinović
     public class F14_unitTest
     {
         private MemberService memberService;
@@ -23,6 +25,21 @@ namespace UnitTesting.Nove_funkcionalnosti.F14
             LoggedUser.Username = null;
             LoggedUser.UserType = null;
             LoggedUser.LibraryId = 0;
+        }
+
+        [Fact]
+        public void MembershipExpieringSoon_GivenMembershipExpiresIn5days_ReturnDaysUntilexpiration()
+        {
+            // Arrange
+            string username = "username";
+            DateTime? expirationDate = DateTime.Today.AddDays(5);
+            A.CallTo(() => membersRepository.GetMembershipDate(username)).Returns(expirationDate);
+
+            // Act
+            var daysUntilExpiration = memberService.MembershipExpieringSoon();
+
+            // Assert
+            Assert.Equal(5, daysUntilExpiration);
         }
     }
 }

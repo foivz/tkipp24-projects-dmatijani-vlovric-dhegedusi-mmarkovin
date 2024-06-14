@@ -203,6 +203,12 @@ namespace BussinessLogicLayer.services {
             return (date - new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Unspecified)).Days + 1;
         }
 
+        public int MembershipExpieringSoon()
+        {
+            DateTime? membershipDate = membersRepository.GetMembershipDate(LoggedUser.Username);
+            return 5;
+        }
+
         ~MemberService()
         {
             Dispose(false);
