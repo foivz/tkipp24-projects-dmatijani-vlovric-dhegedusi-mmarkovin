@@ -9,16 +9,14 @@ using System.Threading.Tasks;
 using Xunit;
 
 namespace IntegrationTesting {
-
     [Collection("Database collection")]
-    public class StatisticsService_integrationTest {
+    public class ReviewService_integrationTest {
 
-        readonly StatisticsService statisticsService;
+        readonly ReviewService reviewService;
         readonly DatabaseFixture fixture;
-
-
-        public StatisticsService_integrationTest(DatabaseFixture fixture) {
-            statisticsService = new StatisticsService();
+        public ReviewService_integrationTest(DatabaseFixture fixture)
+        {
+            reviewService = new ReviewService();
             this.fixture = fixture;
             this.fixture.ResetDatabase();
 
@@ -173,8 +171,6 @@ namespace IntegrationTesting {
                 }
             };
             InsertReviewIntoDatabase(reviews);
-
-           
         }
 
         private void InsertEmployeeIntoDatabase(List<Employee> employees) {
@@ -233,214 +229,96 @@ namespace IntegrationTesting {
             Helper.ExecuteCustomSql(createLibrary);
         }
 
-
-
         [Fact]
-        public void MostPopularBooks_WithBorrowedBooks_ShouldShowBooksInDgv() {
+        public void GetReviewsForBook_WithReviews_ShouldReturnCorrectReviews() {
             // Arrange
-            int libraryId = 1;
+            int bookId = 1;
 
-            var expectedBooks = new List<MostPopularBooks>
+            var expectedReviews = new List<ReviewInfo>
             {
-                 new MostPopularBooks { Book_Name = "Hamlet", Author_Name = "William Shakespare", Times_Borrowed = 2 },
-                 new MostPopularBooks { Book_Name = "Romeo i Julija", Author_Name = "Cecilije Borovski", Times_Borrowed = 1 }
+                new ReviewInfo { Member_Name = "Ivo Ivic", Rating = 5, Comment = "Odlicna knjiga!", Date = DateTime.Now },
+                new ReviewInfo { Member_Name = "Ana Anic", Rating = 2, Comment = "Knjiga mi se ne svidja.", Date = DateTime.Now }
             };
 
             // Act
-            var actualBooks = statisticsService.GetMostPopularBooks(libraryId);
+            var actualReviews = reviewService.GetReviewsForBook(bookId);
 
-           //  Assert
-            Assert.Equal(expectedBooks.Count, actualBooks.Count);
+            // Assert
+            Assert.Equal(expectedReviews.Count, actualReviews.Count);
 
-            for (int i = 0; i < expectedBooks.Count; i++) {
-                Assert.Equal(expectedBooks[i].Book_Name, actualBooks[i].Book_Name);
-                Assert.Equal(expectedBooks[i].Times_Borrowed, actualBooks[i].Times_Borrowed);
+            for (int i = 0; i < expectedReviews.Count; i++) {
+                Assert.Equal(expectedReviews[i].Member_Name, actualReviews[i].Member_Name);
+                Assert.Equal(expectedReviews[i].Rating, actualReviews[i].Rating);
+                Assert.Equal(expectedReviews[i].Comment, actualReviews[i].Comment);
             }
         }
 
         [Fact]
-        public void MostPopularBooks_NoBorrowedBooks_ShouldReturnEmptyList() {
+        public void AddReview_ShouldAddReview() {
             // Arrange
-            int libraryId = 1;
-
-            string sqlDeleteBorrows = "DELETE FROM [dbo].[Borrow]";
-            Helper.ExecuteCustomSql(sqlDeleteBorrows);
-
-            var expectedBooks = new List<MostPopularBooks>
-            {
-                new MostPopularBooks { Book_Name = "Hamlet", Author_Name = null, Times_Borrowed = 0 },
-                new MostPopularBooks { Book_Name = "Romeo i Julija", Author_Name = null, Times_Borrowed = 0 }
+            var newReview = new Review {
+                Member_id = 2,
+                Book_id = 2,
+                comment = "Knjiga nije losa",
+                rating = 4,
+                date = DateTime.Now
             };
 
             // Act
-            var actualBooks = statisticsService.GetMostPopularBooks(libraryId);
+            var reviewId = reviewService.AddReview(newReview);
 
             // Assert
-            Assert.Equal(expectedBooks.Count, actualBooks.Count);
-
-            for (int i = 0; i < expectedBooks.Count; i++) {
-                Assert.Equal(expectedBooks[i].Book_Name, actualBooks[i].Book_Name);
-                Assert.Equal(expectedBooks[i].Times_Borrowed, actualBooks[i].Times_Borrowed);
-            }
+            var addedReview = reviewService.GetReviewsForBook(2).FirstOrDefault(r => r.Comment == newReview.comment && r.Rating == newReview.rating);
+            Assert.NotNull(addedReview);
+            Assert.Equal("Ana Anic", addedReview.Member_Name);
+            Assert.Equal(newReview.rating, addedReview.Rating);
+            Assert.Equal(newReview.comment, addedReview.Comment);
+            Assert.Equal(newReview.date.Date, addedReview.Date.Date);
         }
 
         [Fact]
-        public void GetReviewCount_WithThreeReviews_ShouldReturnCorrectStatistics() {
+        public void DeleteReview_ShouldDeleteReview() {
             // Arrange
-            int libraryId = 1;
-
-            var expectedReviewStatistics = new List<ReviewStatistics>
-            {
-                new ReviewStatistics { Grade = "5", Number_Count = 2 },
-                new ReviewStatistics { Grade = "2", Number_Count = 1 }
-    };
+            int reviewId = 1;
+            int bookId = 1;
 
             // Act
-            var actualReviewStatistics = statisticsService.GetReviewCount(libraryId);
+            var result = reviewService.DeleteReview(reviewId, bookId);
 
             // Assert
-            Assert.Equal(expectedReviewStatistics.Count, actualReviewStatistics.Count);
-
-            foreach (var expected in expectedReviewStatistics) {
-                var actual = actualReviewStatistics.FirstOrDefault(r => r.Grade == expected.Grade);
-                Assert.Equal(expected.Grade, actual.Grade);
-                Assert.Equal(expected.Number_Count, actual.Number_Count);
-            }
+            var deletedReview = reviewService.GetReviewsForBook(bookId).FirstOrDefault(r => r.Comment == "Odlicna knjiga!");
+            Assert.Null(deletedReview);
+            Assert.Equal(0, result);
         }
 
         [Fact]
-        public void GetReviewCount_NoReviews_ShouldReturnEmptyList() {
+        public void HasUserReviewedBook_WithExistingReview_ShouldReturnTrue() {
             // Arrange
-            int libraryId = 1;
-
-            string sqlDeleteReviews = "DELETE FROM [dbo].[Review]";
-            Helper.ExecuteCustomSql(sqlDeleteReviews);
-
-            var expectedReviewStatistics = new List<ReviewStatistics>();
+            int memberId = 2;
+            int bookId = 1;
 
             // Act
-            var actualReviewStatistics = statisticsService.GetReviewCount(libraryId);
+            var hasReviewed = reviewService.HasUserReviewedBook(memberId, bookId);
 
             // Assert
-            Assert.Equal(expectedReviewStatistics.Count, actualReviewStatistics.Count);
+            Assert.True(hasReviewed);
         }
 
         [Fact]
-        public void GetMostPopularGenres_WithBooks_ShouldReturnCorrectStatistics() {
+        public void HasUserReviewedBook_WithNoReview_ShouldReturnFalse() {
             // Arrange
-            int libraryId = 1;
-
-            var expectedGenreStatistics = new List<MostPopularGenres>
-            {
-                new MostPopularGenres { Genre_name = "Tragedija", Times_Borrowed = 2 },
-                new MostPopularGenres { Genre_name = "Drama", Times_Borrowed = 1 }
-    };
+            int memberId = 1;
+            int bookId = 1;
 
             // Act
-            var actualGenreStatistics = statisticsService.GetMostPopularGenres(libraryId);
+            var hasReviewed = reviewService.HasUserReviewedBook(memberId, bookId);
 
             // Assert
-            Assert.Equal(expectedGenreStatistics.Count, actualGenreStatistics.Count);
-
-            for (int i = 0; i < expectedGenreStatistics.Count; i++) {
-                Assert.Equal(expectedGenreStatistics[i].Genre_name, actualGenreStatistics[i].Genre_name);
-                Assert.Equal(expectedGenreStatistics[i].Times_Borrowed, actualGenreStatistics[i].Times_Borrowed);
-            }
+            Assert.False(hasReviewed);
         }
 
-        [Fact]
-        public void GetMostPopularGenres_NoGenres_ShouldReturnEmptyList() {
-            // Arrange
-            int libraryId = 1;
 
-            string sqlDeleteReviews = "DELETE FROM [dbo].[Review]";
-            Helper.ExecuteCustomSql(sqlDeleteReviews);
 
-            string sqlDeleteBorrows = "DELETE FROM [dbo].[Borrow]";
-            Helper.ExecuteCustomSql(sqlDeleteBorrows);
-
-            string sqlDeleteBooks = "DELETE FROM [dbo].[Book]";
-            Helper.ExecuteCustomSql(sqlDeleteBooks);
-
-            string sqlDeleteGenres = "DELETE FROM [dbo].[Genre]";
-            Helper.ExecuteCustomSql(sqlDeleteGenres);
-
-            var expectedGenreStatistics = new List<MostPopularGenres>();
-
-            // Act
-            var actualGenreStatistics = statisticsService.GetMostPopularGenres(libraryId);
-
-            // Assert
-            Assert.Equal(expectedGenreStatistics.Count, actualGenreStatistics.Count);
-        }
-
-        [Fact]
-        public void GetMemberCount_WithMembers_ShouldReturnCorrectCount() {
-            // Arrange
-            int libraryId = 1;
-
-            var expectedMemberCount = 2;
-
-            // Act
-            var actualMemberCount = statisticsService.GetMemberCount(libraryId);
-
-            // Assert
-            Assert.Equal(expectedMemberCount, actualMemberCount);
-        }
-
-        [Fact]
-        public void GetIncomeStatistics_WithMembers_ShouldReturnCorrectStatistics() {
-            // Arrange
-            int libraryId = 1;
-            int memberCount = 2; 
-            int incomePerMember = 12;
-            int expectedTotalIncome = memberCount * incomePerMember;
-
-            var expectedIncomeStatistics = new IncomeStatistics {
-                MemberCount = memberCount,
-                TotalIncome = expectedTotalIncome
-            };
-
-            // Act
-            var actualIncomeStatistics = statisticsService.GetIncomeStatistics(libraryId);
-
-            // Assert
-            Assert.Equal(expectedIncomeStatistics.MemberCount, actualIncomeStatistics.MemberCount);
-            Assert.Equal(expectedIncomeStatistics.TotalIncome, actualIncomeStatistics.TotalIncome);
-        }
-
-        [Fact]
-        public void GetIncomeStatistics_NoMembers_ShouldReturnZeroStatistics() {
-            // Arrange
-            int libraryId = 1;
-
-            string sqlDeleteBorrows = "DELETE FROM [dbo].[Borrow]";
-            Helper.ExecuteCustomSql(sqlDeleteBorrows);
-
-            string sqlDeleteReviews = "DELETE FROM [dbo].[Review]";
-            Helper.ExecuteCustomSql(sqlDeleteReviews);
-
-            string sqlDeleteReservations = "DELETE FROM [dbo].[Reservation]";
-            Helper.ExecuteCustomSql(sqlDeleteReservations);
-
-            string sqlDeleteNotificationReads = "DELETE FROM [dbo].[NotificationRead]";
-            Helper.ExecuteCustomSql(sqlDeleteNotificationReads);
-
-            string sqlDeleteMembers = "DELETE FROM [dbo].[Member]";
-            Helper.ExecuteCustomSql(sqlDeleteMembers);
-
-            var expectedIncomeStatistics = new IncomeStatistics {
-                MemberCount = 0,
-                TotalIncome = 0
-            };
-
-            // Act
-            var actualIncomeStatistics = statisticsService.GetIncomeStatistics(libraryId);
-
-            // Assert
-            Assert.Equal(expectedIncomeStatistics.MemberCount, actualIncomeStatistics.MemberCount);
-            Assert.Equal(expectedIncomeStatistics.TotalIncome, actualIncomeStatistics.TotalIncome);
-        }
 
     }
 }
