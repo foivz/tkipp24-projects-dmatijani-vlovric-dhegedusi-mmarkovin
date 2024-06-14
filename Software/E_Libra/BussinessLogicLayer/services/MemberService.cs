@@ -218,8 +218,14 @@ namespace BussinessLogicLayer.services {
                 return 0;
             }
 
-            return daysUntilExpiration;
+            if (daysUntilExpiration <= 5 || daysUntilExpiration <= 1)
+            {
+                return daysUntilExpiration;
+            }
+
+            return 0;
         }
+
 
 
         ~MemberService()

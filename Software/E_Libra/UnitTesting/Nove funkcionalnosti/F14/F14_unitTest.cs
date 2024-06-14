@@ -99,8 +99,7 @@ namespace UnitTesting.Nove_funkcionalnosti.F14
             var daysUntilExpiration = memberService.MembershipExpieringSoon();
 
             // Assert
-            // This assertion is expected to fail because the actual days until expiration is 6, not 5.
-            Assert.Equal(5, daysUntilExpiration);
+            Assert.Equal(daysUntilExpiration, 0);
         }
 
     }
