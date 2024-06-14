@@ -94,6 +94,9 @@ namespace IntegrationTesting
             // Arrange
             string username = "invalidUsername";
             string password = "password123";
+            LoggedUser.Username = null;
+            LoggedUser.UserType = Role.Employee;
+            LoggedUser.LibraryId = 0;
 
             // Act
             memberService.CheckLoginCredentials(username, password);
