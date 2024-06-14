@@ -56,5 +56,25 @@ namespace UnitTesting.Nove_funkcionalnosti.F14
             // Assert
             Assert.Equal(daysUntilExpiration, 0);
         }
+
+        [Theory]
+        [InlineData(4)]
+        [InlineData(3)]
+        [InlineData(2)]
+        [InlineData(1)]
+        public void MembershipExpieringSoon_GivenMembershipExpiresInLessThan5days_ReturnDaysUntilexpiration(int daysUntilExpiration)
+        {
+            // Arrange
+            string username = "username";
+            DateTime? expirationDate = DateTime.Today.AddDays(daysUntilExpiration);
+            A.CallTo(() => membersRepository.GetMembershipDate(username)).Returns(expirationDate);
+
+            // Act
+            var result = memberService.MembershipExpieringSoon();
+
+            // Assert
+            Assert.Equal(daysUntilExpiration, result);
+        }
+
     }
 }
