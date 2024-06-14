@@ -29,4 +29,4 @@ jobs:
         run: msbuild.exe Software\E_Libra\E_Libra.sln /p:platform="Any CPU" /p:configuration="Release"
 
       - name: List build artifacts
-        run: dir Software\E_Libra
+        run: tree Software\E_Libra
