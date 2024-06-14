@@ -16,6 +16,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4.1.6
 
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '6.0.x'
+
       - name: Install MSBuild
         uses: microsoft/setup-msbuild@v2
 
@@ -26,7 +31,7 @@ jobs:
         run: nuget restore Software\E_Libra\E_Libra.sln
 
       - name: Build solution
-        run: msbuild.exe Software\E_Libra\E_Libra.sln /p:platform="Any CPU" /p:configuration="Release"
+        run: dotnet build Software\E_Libra\E_Libra.sln --configuration Release
 
       - name: List build artifacts
         run: dir Software\E_Libra\UnitTesting\bin\Release\net4.8
