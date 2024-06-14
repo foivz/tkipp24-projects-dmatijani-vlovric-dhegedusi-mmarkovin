@@ -106,54 +106,83 @@ namespace IntegrationTesting {
             };
             InsertBookIntoDatabase(books);
 
+            var employees = new List<Employee>
+            {
+                new Employee {
+                    name = "Darko",
+                    surname = "Daric",
+                    username = "ddaric",
+                    password = "jakalozinka",
+                    OIB = "11892593283",
+                    Library = library,
+                    Library_id = library.id
+                },
+                new Employee {
+                    name = "Marina",
+                    surname = "Misic",
+                    username = "mmisic",
+                    password = "mypw",
+                    OIB = "85738923405",
+                    Library = library,
+                    Library_id = library.id
+                }
+            };
+            InsertEmployeeIntoDatabase(employees);
 
             var borrows = new List<Borrow> {
                 new Borrow {
                     Book_id = 1,
                     Member_id = 1,
                     borrow_status = (int)BorrowStatus.Waiting,
-                    Employee_borrow_id = 1,
+                    Employee_borrow_id = 1
                 },
                 new Borrow {
                     Book_id = 2,
                     Member_id = 1,
                     borrow_status = (int)BorrowStatus.Waiting,
-                    Employee_borrow_id = 1,
+                    Employee_borrow_id = 1
                 },
                 new Borrow {
                     Book_id = 1,
                     Member_id = 2,
                     borrow_status = (int)BorrowStatus.Waiting,
-                    Employee_borrow_id = 1,
+                    Employee_borrow_id = 1
                 }
             };
             InsertBorrowIntoDatabase(borrows);
 
 
-            var reviews = new List<Review>
-{
+            var reviews = new List<Review>{
                 new Review {
                     Member_id = 1,
                     Book_id = 1,
                     comment = "Odlicna knjiga!",
-                    rating = 5,
+                    rating = 5
                 },
                 new Review {
                     Member_id = 1,
                     Book_id = 2,
                     comment = "Preporucujem",
-                    rating = 5,
+                    rating = 5
                 },
                 new Review {
                     Member_id = 2,
                     Book_id = 1,
                     comment = "Knjiga mi se ne svidja.",
-                    rating = 2,
+                    rating = 2
                 }
             };
             InsertReviewIntoDatabase(reviews);
+
+           
         }
 
+        private void InsertEmployeeIntoDatabase(List<Employee> employees) {
+            foreach (var employee in employees) {
+                string sqlInsertEmployee = $"INSERT [dbo].[Employee] ([name], [surname], [username], [password], [OIB], [Library_id]) VALUES ('{employee.name}', '{employee.surname}', '{employee.username}', '{employee.password}', '{employee.OIB}', {employee.Library_id});";
+                Helper.ExecuteCustomSql(sqlInsertEmployee);
+            }
+        }
 
         private void InsertBorrowIntoDatabase(List<Borrow> borrows) {
             foreach (var borrow in borrows) {
@@ -164,7 +193,7 @@ namespace IntegrationTesting {
 
         private void InsertReviewIntoDatabase(List<Review> reviews) {
             foreach (var review in reviews) {
-                string sqlInsertReview = $"INSERT INTO [dbo].[Review] ( [Member_id], [Book_id], [comment], [rating], [date]) VALUES {review.Member_id}, {review.Book_id}, '{review.comment}', {review.rating}, GETDATE());";
+                string sqlInsertReview = $"INSERT INTO [dbo].[Review] ([Member_id], [Book_id], [comment], [rating], [date]) VALUES ({review.Member_id}, {review.Book_id}, '{review.comment}', {review.rating}, GETDATE());";
                 Helper.ExecuteCustomSql(sqlInsertReview);
             }
         }
@@ -211,14 +240,39 @@ namespace IntegrationTesting {
 
             var expectedBooks = new List<MostPopularBooks>
             {
-        new MostPopularBooks { Book_Name = "Hamlet", Author_Name = "William Shakespare", Times_Borrowed = 2 },
-        new MostPopularBooks { Book_Name = "Romeo I Julija", Author_Name = "Cecilije Borovski", Times_Borrowed = 1 }
+                 new MostPopularBooks { Book_Name = "Hamlet", Author_Name = "William Shakespare", Times_Borrowed = 2 },
+                 new MostPopularBooks { Book_Name = "Romeo i Julija", Author_Name = "Cecilije Borovski", Times_Borrowed = 1 }
             };
 
             // Act
             var actualBooks = statisticsService.GetMostPopularBooks(libraryId);
 
-            Assert.True(true);
+           //  Assert
+            Assert.Equal(expectedBooks.Count, actualBooks.Count);
+
+            for (int i = 0; i < expectedBooks.Count; i++) {
+                Assert.Equal(expectedBooks[i].Book_Name, actualBooks[i].Book_Name);
+                Assert.Equal(expectedBooks[i].Times_Borrowed, actualBooks[i].Times_Borrowed);
+            }
+        }
+
+        [Fact]
+        public void MostPopularBooks_NoBorrowedBooks_ShouldReturnEmptyList() {
+            // Arrange
+            int libraryId = 1;
+
+            string sqlDeleteBorrows = "DELETE FROM [dbo].[Borrow]";
+            Helper.ExecuteCustomSql(sqlDeleteBorrows);
+
+            var expectedBooks = new List<MostPopularBooks>
+            {
+                new MostPopularBooks { Book_Name = "Hamlet", Author_Name = null, Times_Borrowed = 0 },
+                new MostPopularBooks { Book_Name = "Romeo i Julija", Author_Name = null, Times_Borrowed = 0 }
+            };
+
+            // Act
+            var actualBooks = statisticsService.GetMostPopularBooks(libraryId);
+
             // Assert
             Assert.Equal(expectedBooks.Count, actualBooks.Count);
 
@@ -226,6 +280,87 @@ namespace IntegrationTesting {
                 Assert.Equal(expectedBooks[i].Book_Name, actualBooks[i].Book_Name);
                 Assert.Equal(expectedBooks[i].Times_Borrowed, actualBooks[i].Times_Borrowed);
             }
+        }
+
+        [Fact]
+        public void GetReviewCount_WithThreeReviews_ShouldReturnCorrectStatistics() {
+            // Arrange
+            int libraryId = 1;
+
+            var expectedReviewStatistics = new List<ReviewStatistics>
+            {
+                new ReviewStatistics { Grade = "5", Number_Count = 2 },
+                new ReviewStatistics { Grade = "2", Number_Count = 1 }
+    };
+
+            // Act
+            var actualReviewStatistics = statisticsService.GetReviewCount(libraryId);
+
+            // Assert
+            Assert.Equal(expectedReviewStatistics.Count, actualReviewStatistics.Count);
+
+            foreach (var expected in expectedReviewStatistics) {
+                var actual = actualReviewStatistics.FirstOrDefault(r => r.Grade == expected.Grade);
+                Assert.Equal(expected.Grade, actual.Grade);
+                Assert.Equal(expected.Number_Count, actual.Number_Count);
+            }
+        }
+
+        [Fact]
+        public void GetReviewCount_NoReviews_ShouldReturnEmptyList() {
+            // Arrange
+            int libraryId = 1;
+
+            string sqlDeleteReviews = "DELETE FROM [dbo].[Review]";
+            Helper.ExecuteCustomSql(sqlDeleteReviews);
+
+            var expectedReviewStatistics = new List<ReviewStatistics>();
+
+            // Act
+            var actualReviewStatistics = statisticsService.GetReviewCount(libraryId);
+
+            // Assert
+            Assert.Equal(expectedReviewStatistics.Count, actualReviewStatistics.Count);
+        }
+
+        [Fact]
+        public void GetMostPopularGenres_WithBooks_ShouldReturnCorrectStatistics() {
+            // Arrange
+            int libraryId = 1;
+
+            var expectedGenreStatistics = new List<MostPopularGenres>
+            {
+                new MostPopularGenres { Genre_name = "Tragedija", Times_Borrowed = 2 },
+                new MostPopularGenres { Genre_name = "Drama", Times_Borrowed = 1 }
+    };
+
+            // Act
+            var actualGenreStatistics = statisticsService.GetMostPopularGenres(libraryId);
+
+            // Assert
+            Assert.Equal(expectedGenreStatistics.Count, actualGenreStatistics.Count);
+
+            for (int i = 0; i < expectedGenreStatistics.Count; i++) {
+                Assert.Equal(expectedGenreStatistics[i].Genre_name, actualGenreStatistics[i].Genre_name);
+                Assert.Equal(expectedGenreStatistics[i].Times_Borrowed, actualGenreStatistics[i].Times_Borrowed);
+            }
+        }
+
+        [Fact]
+        public void GetMostPopularGenres_NoGenres_ShouldReturnEmptyList() {
+            // Arrange
+            int libraryId = 1;
+
+            string sqlDeleteGenres = "DELETE FROM [dbo].[Genre]";
+            Helper.ExecuteCustomSql(sqlDeleteGenres);
+
+            var expectedGenreStatistics = new List<MostPopularGenres>();
+
+            // Act
+            var actualGenreStatistics = statisticsService.GetMostPopularGenres(libraryId);
+
+            // Assert
+            Assert.Equal(expectedGenreStatistics.Count, actualGenreStatistics.Count);
         }
 
     }
