@@ -41,5 +41,20 @@ namespace UnitTesting.Nove_funkcionalnosti.F14
             // Assert
             Assert.Equal(5, daysUntilExpiration);
         }
+
+        [Fact]
+
+        public void MembershipExpieringSoon_GivenInvalidUsername_ReturnsNull()
+        {
+            // Arrange
+            string username = "nonexisting";
+            A.CallTo(() => membersRepository.GetMembershipDate(username)).Returns(null);
+
+            // Act
+            var daysUntilExpiration = memberService.MembershipExpieringSoon();
+
+            // Assert
+            Assert.Null(daysUntilExpiration);
+        }
     }
 }
