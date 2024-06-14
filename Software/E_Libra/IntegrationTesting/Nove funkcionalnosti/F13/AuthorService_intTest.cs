@@ -30,14 +30,14 @@ namespace IntegrationTesting.Nove_funkcionalnosti.F13
         {
             //Arrange
             string sql =
-                "INSERT [dbo].[Author] ([name], [surname], [birth_date]) VALUES (N'Author1', N'Surname1', '2021-06-01') " +
-                "INSERT [dbo].[Author] ([name], [surname], [birth_date]) VALUES (N'Author2', N'Surname2', '2021-06-01') " +
-                "INSERT [dbo].[Author] ([name], [surname], [birth_date]) VALUES (N'Drugaciji', N'Oddrugih', '2021-06-01') ";
+                "INSERT [dbo].[Author] ([idAuthor], [name], [surname], [birth_date]) VALUES (1, N'Author1', N'Surname1', '2021-06-01') " +
+                "INSERT [dbo].[Author] ([idAuthor], [name], [surname], [birth_date]) VALUES (2, N'Author2', N'Surname2', '2021-06-01') " +
+                "INSERT [dbo].[Author] ([idAuthor], [name], [surname], [birth_date]) VALUES (3, N'Drugaciji', N'Oddrugih', '2021-06-01') ";
             Helper.ExecuteCustomSql(sql);
 
             var authors = new List<Author>
             {
-                new Author { idAuthor = 1, name = "Drugaciji", surname = "Oddrugih", birth_date = DateTime.Parse("2021-06-01") }
+                new Author { idAuthor = 3, name = "Drugaciji", surname = "Oddrugih", birth_date = DateTime.Parse("2021-06-01") }
             };
 
             //Act
