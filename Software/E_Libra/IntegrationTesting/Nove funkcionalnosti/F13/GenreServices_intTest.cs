@@ -4,9 +4,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Xunit;
 
 namespace IntegrationTesting.Nove_funkcionalnosti.F13
 {
+    [Collection("Database collection")]
     public class GenreServices_intTest
     {
         readonly GenreServices services;
@@ -18,6 +20,7 @@ namespace IntegrationTesting.Nove_funkcionalnosti.F13
             this.fixture.ResetDatabase();
             services = new GenreServices();
         }
+
 
     }
 }
