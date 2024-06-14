@@ -5,6 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace UnitTesting.Nove_funkcionalnosti.F13 {
-    internal class Class1 {
+    public class Class1 {
     }
 }
