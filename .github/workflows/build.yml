@@ -1,0 +1,16 @@
+name: Echo Message on Push
+
+on:
+  push:
+    branches:
+      - push-test
+
+jobs:
+  echo:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Echo a message
+        run: echo "A push event has occurred on the 'push-test' branch!"
