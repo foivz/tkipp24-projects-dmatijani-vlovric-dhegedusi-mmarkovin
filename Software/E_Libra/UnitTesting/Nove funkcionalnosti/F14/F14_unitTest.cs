@@ -34,9 +34,11 @@ namespace UnitTesting.Nove_funkcionalnosti.F14
         public void MembershipExpieringSoon_GivenMembershipExpiresIn5days_ReturnDaysUntilexpiration()
         {
             // Arrange
-            string username = "username";
+            LoggedUser.Username = "username";
+            LoggedUser.LibraryId = 1;
             DateTime? expirationDate = DateTime.Today.AddDays(5);
-            A.CallTo(() => membersRepository.GetMembershipDate(username)).Returns(expirationDate);
+            A.CallTo(() => membersRepository.GetMembershipDate(LoggedUser.Username)).Returns(expirationDate);
+            A.CallTo(() => libraryRepository.GetLibraryMembershipDuration(LoggedUser.LibraryId)).Returns(DateTime.Today.AddDays(5));
 
             // Act
             var daysUntilExpiration = memberService.MembershipExpieringSoon();
@@ -44,6 +46,7 @@ namespace UnitTesting.Nove_funkcionalnosti.F14
             // Assert
             Assert.Equal(5, daysUntilExpiration);
         }
+
 
         [Fact]
 
