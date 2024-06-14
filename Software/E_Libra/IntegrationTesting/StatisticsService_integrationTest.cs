@@ -351,6 +351,15 @@ namespace IntegrationTesting {
             // Arrange
             int libraryId = 1;
 
+            string sqlDeleteReviews = "DELETE FROM [dbo].[Review]";
+            Helper.ExecuteCustomSql(sqlDeleteReviews);
+
+            string sqlDeleteBorrows = "DELETE FROM [dbo].[Borrow]";
+            Helper.ExecuteCustomSql(sqlDeleteBorrows);
+
+            string sqlDeleteBooks = "DELETE FROM [dbo].[Book]";
+            Helper.ExecuteCustomSql(sqlDeleteBooks);
+
             string sqlDeleteGenres = "DELETE FROM [dbo].[Genre]";
             Helper.ExecuteCustomSql(sqlDeleteGenres);
 
@@ -361,6 +370,74 @@ namespace IntegrationTesting {
 
             // Assert
             Assert.Equal(expectedGenreStatistics.Count, actualGenreStatistics.Count);
+        }
+
+        [Fact]
+        public void GetMemberCount_WithMembers_ShouldReturnCorrectCount() {
+            // Arrange
+            int libraryId = 1;
+
+            var expectedMemberCount = 2;
+
+            // Act
+            var actualMemberCount = statisticsService.GetMemberCount(libraryId);
+
+            // Assert
+            Assert.Equal(expectedMemberCount, actualMemberCount);
+        }
+
+        [Fact]
+        public void GetIncomeStatistics_WithMembers_ShouldReturnCorrectStatistics() {
+            // Arrange
+            int libraryId = 1;
+            int memberCount = 2; 
+            int incomePerMember = 12;
+            int expectedTotalIncome = memberCount * incomePerMember;
+
+            var expectedIncomeStatistics = new IncomeStatistics {
+                MemberCount = memberCount,
+                TotalIncome = expectedTotalIncome
+            };
+
+            // Act
+            var actualIncomeStatistics = statisticsService.GetIncomeStatistics(libraryId);
+
+            // Assert
+            Assert.Equal(expectedIncomeStatistics.MemberCount, actualIncomeStatistics.MemberCount);
+            Assert.Equal(expectedIncomeStatistics.TotalIncome, actualIncomeStatistics.TotalIncome);
+        }
+
+        [Fact]
+        public void GetIncomeStatistics_NoMembers_ShouldReturnZeroStatistics() {
+            // Arrange
+            int libraryId = 1;
+
+            string sqlDeleteBorrows = "DELETE FROM [dbo].[Borrow]";
+            Helper.ExecuteCustomSql(sqlDeleteBorrows);
+
+            string sqlDeleteReviews = "DELETE FROM [dbo].[Review]";
+            Helper.ExecuteCustomSql(sqlDeleteReviews);
+
+            string sqlDeleteReservations = "DELETE FROM [dbo].[Reservation]";
+            Helper.ExecuteCustomSql(sqlDeleteReservations);
+
+            string sqlDeleteNotificationReads = "DELETE FROM [dbo].[NotificationRead]";
+            Helper.ExecuteCustomSql(sqlDeleteNotificationReads);
+
+            string sqlDeleteMembers = "DELETE FROM [dbo].[Member]";
+            Helper.ExecuteCustomSql(sqlDeleteMembers);
+
+            var expectedIncomeStatistics = new IncomeStatistics {
+                MemberCount = 0,
+                TotalIncome = 0
+            };
+
+            // Act
+            var actualIncomeStatistics = statisticsService.GetIncomeStatistics(libraryId);
+
+            // Assert
+            Assert.Equal(expectedIncomeStatistics.MemberCount, actualIncomeStatistics.MemberCount);
+            Assert.Equal(expectedIncomeStatistics.TotalIncome, actualIncomeStatistics.TotalIncome);
         }
 
     }
