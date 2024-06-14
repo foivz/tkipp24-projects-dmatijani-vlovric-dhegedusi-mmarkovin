@@ -20,7 +20,7 @@ namespace IntegrationTesting.Nove_funkcionalnosti.F13
 
         readonly string createLibrary =
            "INSERT [dbo].[Library] ([id], [name], [OIB], [phone], [email], [price_day_late], [address], [membership_duration]) " +
-           "VALUES (1, N'LibraryB', 54321, 332, N'emailB', 2, N'addressB', '2024-01-30')";
+           "VALUES (1, N'LibraryB', 54321, 332, N'emailB', 2, N'addressB', '2024-06-18')";
 
         readonly string createMember =
             "INSERT [dbo].[Member] ([name], [surname], [OIB], [username], [password], [barcode_id], [membership_date], [Library_id]) " +
@@ -44,19 +44,34 @@ namespace IntegrationTesting.Nove_funkcionalnosti.F13
             Helper.ExecuteCustomSql(createMember);
         }
 
-        [Fact]
-        public void MembershipExpieringSoon_GivenMembershipExpiresInSomeDays_ReturnDaysUntilexpiration()
+        private void UpdateLibraryMembershipDuration(int daysUntilExpiration)
+        {
+            string newMembershipDurationDate = DateTime.Today.AddDays(daysUntilExpiration).ToString("yyyy-MM-dd");
+            string updateLibrary =
+               $"UPDATE [dbo].[Library] SET [membership_duration] = '{newMembershipDurationDate}' WHERE [id] = 1";
+            Helper.ExecuteCustomSql(updateLibrary);
+        }
+
+
+        [Theory]
+        [InlineData(5)]
+        [InlineData(4)]
+        [InlineData(3)]
+        [InlineData(2)]
+        [InlineData(1)]
+        public void MembershipExpieringSoon_GivenMembershipExpiresInSomeDays_ReturnDaysUntilexpiration(int daysUntilExpiration)
         {
             // Arrange
             LoggedUser.Username = "username";
             LoggedUser.LibraryId = 1;
-            DateTime? expirationDate = DateTime.Today.AddDays(5);
+            UpdateLibraryMembershipDuration(daysUntilExpiration);
 
-            // Act
-            var daysUntilExpiration = memberService.MembershipExpieringSoon();
+            // Act 
+            var result = memberService.MembershipExpieringSoon();
 
             // Assert
-            Assert.Equal(5, daysUntilExpiration);
+            Assert.Equal(daysUntilExpiration, result);
         }
+
     }
 }
