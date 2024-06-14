@@ -34,5 +34,6 @@ namespace DataAccessLayer.Interfaces
         IEnumerable<MostPopularBooks> GetMostPopularBooks(int Library_id);
         IQueryable<string> GetBookBarcode(int id);
         IQueryable<Book> GetBooksByLibrary(int libraryId);
+        IEnumerable<MostPopularBooks> GetTopBooks(int libraryId);
     }
 }

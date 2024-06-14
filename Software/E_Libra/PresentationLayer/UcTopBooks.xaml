@@ -1,0 +1,18 @@
+﻿<UserControl x:Class="PresentationLayer.UcTopBooks"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:PresentationLayer"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <DataGrid x:Name="dgTopBooks" AutoGenerateColumns="False" CanUserAddRows="False">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Naslov" Binding="{Binding Book_Name}" Width="*"/>
+                <DataGridTextColumn Header="Autor" Binding="{Binding Author_Name}" Width="*"/>
+                <DataGridTextColumn Header="Pročitano" Binding="{Binding Times_Borrowed}" Width="80"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</UserControl>

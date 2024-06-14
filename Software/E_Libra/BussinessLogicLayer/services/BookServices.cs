@@ -2,6 +2,7 @@
 using DataAccessLayer.Interfaces;
 using DataAccessLayer.Repositories;
 using EntitiesLayer;
+using EntitiesLayer.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -185,6 +186,10 @@ namespace BussinessLogicLayer.services
 
         public List<Book> GetBooksByLibrary(int libraryId) {
             return bookRepository.GetBooksByLibrary(libraryId).ToList();
+        }
+
+        public List<MostPopularBooks> GetTopBorrowedBooks(int libraryId) {
+            return bookRepository.GetTopBooks(libraryId).ToList();
         }
     }
 }

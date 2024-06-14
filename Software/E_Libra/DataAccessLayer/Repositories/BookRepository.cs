@@ -406,5 +406,19 @@ namespace DataAccessLayer.Repositories
 
             return query;
         }
+
+        public IEnumerable<MostPopularBooks> GetTopBooks(int Library_id) {
+            var query = from book in Entities
+                        where book.Library_id == Library_id
+                        let bookBorrows = book.Borrows
+                        select new MostPopularBooks {
+                            Book_Name = book.name,
+                            Author_Name = book.Authors.Select(author => author.name + " " + author.surname).FirstOrDefault(),
+                            Times_Borrowed = bookBorrows.Count()
+                        };
+
+            return query.OrderByDescending(book => book.Times_Borrowed).Take(10).AsEnumerable();
+        }
+
     }
 }

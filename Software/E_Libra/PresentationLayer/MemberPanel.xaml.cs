@@ -82,5 +82,10 @@ namespace PresentationLayer {
             var path = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "PDF", "User_documentation_member.pdf");
             Process.Start(path);
         }
+
+        private void btnTopBooks_Click(object sender, RoutedEventArgs e) {
+            contentPanel.Content = new UcTopBooks();
+
+        }
     }
 }
