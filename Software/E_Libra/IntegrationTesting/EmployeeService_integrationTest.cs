@@ -365,6 +365,9 @@ namespace IntegrationTesting
             //Arrange
             var username = "nonexisting";
             var password = "nonexisting";
+            LoggedUser.Username = null;
+            LoggedUser.UserType = Role.Member;
+            LoggedUser.LibraryId = 0;
 
             //Act 
             employeeService.CheckLoginCredentials(username, password);
