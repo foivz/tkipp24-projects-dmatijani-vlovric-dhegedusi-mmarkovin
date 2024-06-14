@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace UnitTesting.Nove_funkcionalnosti.F13 {
-    public class Class1 {
+    public class Class1
+    {
+        //test
     }
 }
