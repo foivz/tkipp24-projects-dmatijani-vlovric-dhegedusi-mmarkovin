@@ -1,4 +1,5 @@
-﻿using BussinessLogicLayer.services;
+﻿using BussinessLogicLayer.Exceptions;
+using BussinessLogicLayer.services;
 using EntitiesLayer;
 using FluentAssertions;
 using System;
@@ -15,26 +16,59 @@ namespace IntegrationTesting
     {
         readonly DatabaseFixture fixture;
         readonly MemberService memberService;
+        readonly EmployeeService employeeService;
 
         readonly string createLibrary =
         "INSERT [dbo].[Library] ([id], [name], [OIB], [phone], [email], [price_day_late], [address], [membership_duration]) " +
-        "VALUES (1, N'LibraryB', 54321, 332, N'emailB', 2, N'addressB', GETDATE())";
+        "VALUES (1, N'LibraryB', 54321, 332, N'emailB', 2, N'addressB', '2024-01-30')";
 
-        readonly string createMember = "INSERT [dbo].[Member] ([name], [surname], [OIB], [username], [password], [barcode_id], [membership_date], [Library_id]) " + "VALUES (N'name', N'surname', 12345123452, N'username', N'password', N'ea98ujjf', GETDATE(), 1);";
+        readonly string createEmployee = "INSERT[dbo].[Employee] ([name], [surname], [OIB], [username], [password],[Library_id]) " +
+        "VALUES (N'employee', N'employee', 23453456555, N'employee', N'employee', 1)";
+
+        readonly string createMember =
+        "INSERT [dbo].[Member] ([name], [surname], [OIB], [username], [password], [barcode_id], [membership_date], [Library_id]) " +
+        "VALUES (N'name', N'surname', 12345123452, N'username', N'password', N'ea98ujjf', GETDATE(), 1);" +
+        "INSERT [dbo].[Member] ([name], [surname], [OIB], [username], [password], [barcode_id], [membership_date], [Library_id]) " +
+        "VALUES (N'anotherName', N'anotherSurname', 98765432109, N'anotherUsername', N'anotherPassword', N'bc92klmn', GETDATE(), 1);";
+
+        readonly string createGenre =
+            "INSERT [dbo].[Genre] ([name]) VALUES (N'zanr')";
+
+        string createBook = "INSERT INTO [dbo].[Book] " +
+        "([name], [description], [publish_date], [pages_num], [digital], [url_digital], [url_photo], [barcode_id], [total_copies], [current_copies], [Genre_id], [Library_id]) " +
+        "VALUES " +
+        "('NewBookName', 'New Description', '2023-04-01', 300, 0, NULL, NULL,'jdk89sjz', 20, 20, 1, 1);";
 
 
         public MemberService_integrationTest(DatabaseFixture fixture)
         {
             memberService = new MemberService();
+            employeeService = new EmployeeService();
             this.fixture = fixture;
             this.fixture.ResetDatabase();
 
             InitializeDatabase();
+
+            LoggedUser.Username = null;
+            LoggedUser.LibraryId = 0;
         }
         private void InitializeDatabase()
         {
             Helper.ExecuteCustomSql(createLibrary);
+            Helper.ExecuteCustomSql(createEmployee);
             Helper.ExecuteCustomSql(createMember);
+            Helper.ExecuteCustomSql(createGenre);
+            Helper.ExecuteCustomSql(createBook);
+        }
+
+        private Member CreateMemberWithExpiredMembership()
+        {
+            string expiredMembershipDate = "2023-01-01";
+            string createMemberWithExpiredDate =
+                "INSERT [dbo].[Member] ([name], [surname], [OIB], [username], [password], [barcode_id], [membership_date], [Library_id]) " +
+                $"VALUES (N'name', N'surname', 44444123452, N'expiredUser', N'password123', N'ssde45f5', '{expiredMembershipDate}', 1);";
+            Helper.ExecuteCustomSql(createMemberWithExpiredDate);
+            return memberService.GetMemberByUsername("expiredUser");
         }
 
         // Magdalena Markovinović
@@ -89,11 +123,7 @@ namespace IntegrationTesting
         public void CheckMembershipDateLogin_WithExpiredMembership_ReturnsTrue()
         {
             // Arrange
-            string expiredMembershipDate = "2023-01-01";
-            string createMemberWithExpiredDate =
-                "INSERT [dbo].[Member] ([name], [surname], [OIB], [username], [password], [barcode_id], [membership_date], [Library_id]) " +
-                $"VALUES (N'name', N'surname', 44444123452, N'expiredUser', N'password123', N'sd98ujjf', '{expiredMembershipDate}', 1);";
-            Helper.ExecuteCustomSql(createMemberWithExpiredDate);
+            CreateMemberWithExpiredMembership();
 
             string username = "expiredUser";
             string password = "password123";
@@ -247,7 +277,7 @@ namespace IntegrationTesting
 
         // Magdalena Markovinović
         [Fact]
-        public void DeleteMember_GivenFunctionIsCalled_ReturnsTrue()
+        public void DeleteMember_GivenMemberHasNoReservationsAndBorrows_ReturnsTrue()
         {
             // Arrange
             Member memberToDelete = memberService.GetMemberByUsername("username");
@@ -257,6 +287,37 @@ namespace IntegrationTesting
 
             // Assert
             Assert.True(result);
+        }
+
+        [Fact]
+        public void DeleteMember_GivenMemberHasBorrows_ReturnsFalse()
+        {
+            // Arrange
+            string sqlInsertBorrow = $"INSERT [dbo].[Borrow] ([Book_id], [Member_id], [borrow_status], [borrow_date], [return_date], [Employee_borrow_id], [Employee_return_id]) VALUES (1, 2, 2, '2023-04-01', GETDATE(), 1, 1);";
+
+            Helper.ExecuteCustomSql(sqlInsertBorrow);
+            Member memberToDelete = memberService.GetMemberByUsername("anotherUsername");
+
+            // Act
+            bool result = memberService.DeleteMember(memberToDelete);
+
+            // Assert
+            Assert.False(result);
+        }
+
+        [Fact]
+        public void DeleteMember_GivenMemberHasReservations_ReturnsFalse()
+        {
+            // Arrange
+            string sqlInsertReservation = "INSERT INTO [dbo].[Reservation] ([reservation_date], [Member_id], [Book_id]) VALUES ('2024-06-11', 2, 1);";
+            Helper.ExecuteCustomSql(sqlInsertReservation);
+            Member memberToDelete = memberService.GetMemberByUsername("anotherUsername");
+
+            // Act
+            bool result = memberService.DeleteMember(memberToDelete);
+
+            // Assert
+            Assert.False(result);
         }
 
         // Magdalena Markovinović
@@ -305,6 +366,19 @@ namespace IntegrationTesting
             // Assert
             result.Should().Be(1);
         }
+        // Magdalena markovinović
+        [Fact]
+        public void GetMemberLibraryId_MemberExists_ReturnsLibraryId()
+        {
+            // Arrange
+            string username = "username";
+
+            // Act
+            var result = memberService.GetMemberLibraryId(username);
+
+            // Assert
+            result.Should().Be(1);
+        }
 
         // Magdalena Markovinović
         [Fact]
@@ -318,6 +392,205 @@ namespace IntegrationTesting
 
             // Assert
             result.username.Should().BeEquivalentTo(username);
+        }
+
+        // Magdalena Markovinović
+        [Fact]
+        public void GetAllMembersByLybrary_MembersExist_ReturnsListOfMembers()
+        {
+            // Arrange
+            var libraryMembers = new List<Member>
+            {
+                new Member { id = 1, name = "name", surname = "surname", OIB = "12345123452", username = "username", password = "password", barcode_id = "ea98ujjf", membership_date = DateTime.Now, Library_id = 1 },
+                new Member { id = 2, name = "anotherName", surname = "anotherSurname", OIB = "98765432109", username = "anotherUsername", password = "anotherPassword", barcode_id = "bc92klmn", membership_date = DateTime.Now, Library_id = 1 }
+            };
+            Employee loggedEmployee = employeeService.GetEmployeeByUsername("employee");
+            LoggedUser.Username = loggedEmployee.name;
+            LoggedUser.LibraryId = loggedEmployee.Library_id;
+
+            // Act
+            var result = memberService.GetAllMembersByLybrary();
+
+            // Assert
+            result[0].Should().BeEquivalentTo(libraryMembers[0], options => options
+            .Excluding(n => n.Library)
+            .Excluding(n => n.membership_date));
+            result[1].Should().BeEquivalentTo(libraryMembers[1], options => options
+            .Excluding(n => n.Library)
+            .Excluding(n => n.membership_date));
+        }
+
+        // Magdalena Markovinović
+        [Fact]
+        public void GetAllMembersByLybrary_MembersDoNotExist_ReturnsEmptyList()
+        {
+            // Arrange
+            var sqlDeleteMember = "DELETE FROM [dbo].[Member];";
+            Helper.ExecuteCustomSql(sqlDeleteMember);
+            Employee loggedEmployee = employeeService.GetEmployeeByUsername("employee");
+            LoggedUser.Username = loggedEmployee.name;
+            LoggedUser.LibraryId = loggedEmployee.Library_id;
+
+            // Act
+            var result = memberService.GetAllMembersByLybrary();
+
+            // Assert
+            result.Should().BeEmpty();
+        }
+
+        // Magdalena markovinović
+        [Fact]
+        public void RestoreMembership_GivenMembershipExpired_ReturnsTrue()
+        {
+            // Arrange
+            Member member = CreateMemberWithExpiredMembership();
+
+            // Act
+            bool result = memberService.RestoreMembership(member);
+
+            // Assert
+            Assert.True(result);
+        }
+
+        // Magdalena markovinović
+        [Fact]
+        public void RestoreMembership_GivenMembershipDidNotExpire_ReturnsFalse()
+        {
+            // Arrange
+            Member member = memberService.GetMemberByUsername("username");
+
+            // Act
+            bool result = memberService.RestoreMembership(member);
+
+            // Assert
+            Assert.False(result);
+        }
+
+        // Magdalena Markovinović
+        [Fact]
+        public void RandomCodeGenerator_GivenFunctionIsCalled_ReturnsRandomCode()
+        {
+            // Arrange
+            string code = memberService.RandomCodeGenerator();
+
+            // Act
+            bool result = code.Length == 8;
+
+            // Assert
+            Assert.True(result);
+        }
+
+        //Magdalena markovinović
+        [Fact]
+        public void GetMemberByBarcodeId_MemberExists_ReturnsMember()
+        {
+            // Arrange
+            int libraryId = 1;
+            string barcodeId = "ea98ujjf";
+
+            // Act
+            var result = memberService.GetMemberByBarcodeId(libraryId, barcodeId);
+
+            // Assert
+            result.barcode_id.Should().BeEquivalentTo(barcodeId);
+        }
+
+        //Magdalena markovinović
+        [Fact]
+        public void GetMemberByBarcodeId_MemberDoesNotExist_ThrowsException()
+        {
+            // Arrange
+            int libraryId = 1;
+            string barcodeId = "invalidBarcode";
+
+            // Act
+            Action act = () => memberService.GetMemberByBarcodeId(libraryId, barcodeId);
+
+            // Assert
+            act.Should().Throw<MemberNotFoundException>();
+        }
+
+        //Magdalena markovinović
+        [Fact]
+        public void GetMemberByBarcodeId_MemberFromDifferentLibrary_ThrowsException()
+        {
+            // Arrange
+            int libraryId = 2;
+            string barcodeId = "ea98ujjf";
+
+            // Act
+            Action act = () => memberService.GetMemberByBarcodeId(libraryId, barcodeId);
+
+            // Assert
+            act.Should().Throw<WrongLibraryException>();
+        }
+
+        //Magdalena markovinović
+
+        [Fact]
+        public void GetMemberBarcode_MemberExists_ReturnsBarcode()
+        {
+            // Arrange
+            int id = 1;
+            string barcodeId = "ea98ujjf";
+
+            // Act
+            var result = memberService.GetMemberBarcode(id);
+
+            // Assert
+            result.Should().BeEquivalentTo(barcodeId);
+        }
+
+        // Magdalena Markovinović
+        [Fact]
+        public void GetMembersByLibrary_MembersExist_ReturnsListOfMembers()
+        {
+            // Arrange
+            int libraryId = 1;
+            var libraryMembers = new List<Member>
+            {
+                new Member { id = 1, name = "name", surname = "surname", OIB = "12345123452", username = "username", password = "password", barcode_id = "ea98ujjf", membership_date = DateTime.Now, Library_id = 1 },
+                new Member { id = 2, name = "anotherName", surname = "anotherSurname", OIB = "98765432109", username = "anotherUsername", password = "anotherPassword", barcode_id = "bc92klmn", membership_date = DateTime.Now, Library_id = 1 }
+            };
+
+            // Act
+            var result = memberService.GetMembersByLibrary(libraryId);
+
+            // Assert
+            result[0].Should().BeEquivalentTo(libraryMembers[0], options => options
+            .Excluding(n => n.Library)
+            .Excluding(n => n.membership_date));
+            result[1].Should().BeEquivalentTo(libraryMembers[1], options => options
+            .Excluding(n => n.Library)
+            .Excluding(n => n.membership_date));
+        }
+
+        // Magdalena Markovinović
+        [Fact]
+        public void GetMembersByLibrary_MembersDoNotExist_ReturnsEmptyList()
+        {
+            // Arrange
+            int libraryId = 2;
+
+            // Act
+            var result = memberService.GetMembersByLibrary(libraryId);
+
+            // Assert
+            result.Should().BeEmpty();
+        }
+
+        // Magdalena Markovinović
+        [Fact]
+        public void GetLibraryMembershipDuration_MembershipDurationExists_ReturnsDuration()
+        {
+            // Arrange
+            int libraryId = 1;
+
+            // Act
+            var result = memberService.GetLibraryMembershipDuration(libraryId);
+
+            // Assert
+            result.Should().Be(30);
         }
     }
 }
