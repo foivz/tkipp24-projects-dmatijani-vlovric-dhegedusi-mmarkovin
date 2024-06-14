@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace BussinessLogicLayer.services {
     // David Matijanić: GetEmployeesByLibrary, AddEmployee, UpdateEmployee, DeleteEmployee, GetEmployeeByUsername
+    // Magdalena Markvovinović: CheckLoginCredentials, GetEmployeeLibraryId, GetEmployeeId
     public class EmployeeService :  IDisposable{
 
         private IEmpoloyeeRepositroy employeeRepository;

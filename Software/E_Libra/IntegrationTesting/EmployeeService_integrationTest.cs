@@ -340,6 +340,98 @@ namespace IntegrationTesting
             Assert.Null(retrievedEmployee);
         }
 
+        // Magdalena Markovinović
+        [Fact]
+        public void CheckLoginCredentials_EmployeeWithGivenUsernameAndPasswordExists_EmployeeIsLoggedIn()
+        {
+            //Arrange
+            InsertEmployeesIntoDatabase(employees);
+            string username = employees[0].username;
+            string password = employees[0].password;
+
+            //Act
+            employeeService.CheckLoginCredentials(username, password);
+
+            //Assert
+            Assert.Equal(username, LoggedUser.Username);
+            Assert.Equal(Role.Employee, LoggedUser.UserType);
+            Assert.Equal(employees[0].Library_id, LoggedUser.LibraryId);
+        }
+
+        // Magdalena Markovinović
+        [Fact]
+        public void CheckLoginCredentials_GivenInvalidUsernameAndPassword_EmployeeIsNotLoggedIn()
+        {
+            //Arrange
+            var username = "nonexisting";
+            var password = "nonexisting";
+
+            //Act 
+            employeeService.CheckLoginCredentials(username, password);
+
+            // Assert
+            Assert.NotEqual(username, LoggedUser.Username);
+            Assert.NotEqual(Role.Employee, LoggedUser.UserType);
+            Assert.NotEqual(1, LoggedUser.LibraryId);
+        }
+
+        // Magdalena Markvovinović
+        [Fact]
+        public void GetEmployeeLibraryId_GivenEmployeeWithUsernameExists_ReturnsLibraryId()
+        {
+            // Arrange
+            InsertEmployeesIntoDatabase(employees);
+
+            // Act 
+            employeeService.GetEmployeeLibraryId(employees[0].username);
+
+            // Arrange
+            Assert.Equal(employees[0].Library_id, library.id);
+        }
+
+        // Magdalena Markvovinović
+        [Fact]
+        public void GetEmployeeLibraryId_GivenEmployeeWithUsernameDoNotExists_ReturnsNotEqual()
+        {
+            // Arrange
+            var username = "nonexisting";
+
+            // Act 
+            var result = employeeService.GetEmployeeLibraryId(username);
+
+            // Arrange
+            Assert.NotEqual(result, library.id);
+        }
+
+        // Magdalena Markvovinović
+        [Fact]
+        public void GetEmployeeId_GivenEmployeeWithUsernameExists_ReturnsEmployeeId()
+        {
+            // Arrange
+            InsertEmployeesIntoDatabase(employees);
+            employees[0].id = 1;
+
+            // Act 
+            var result = employeeService.GetEmployeeId(employees[0].username);
+
+            // Arrange
+            Assert.Equal(employees[0].id, result);
+        }
+
+        // Magdalena Markvovinović
+        [Fact]
+        public void GetEmployeeId_GivenEmployeeWithUsernameDoNotExists_ReturnsNull()
+        {
+            // Arrange
+            var username = "nonexisting";
+
+            // Act 
+            var result = employeeService.GetEmployeeId(username);
+
+            // Arrange
+            Assert.Equal(result, 0);
+        }
+
         private DateTime GetDateFromMembershipDuration(decimal duration)
         {
             DateTime startDate = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Unspecified);
