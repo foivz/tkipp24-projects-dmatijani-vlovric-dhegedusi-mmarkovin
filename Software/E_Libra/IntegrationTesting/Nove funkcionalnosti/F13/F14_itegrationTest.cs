@@ -88,6 +88,22 @@ namespace IntegrationTesting.Nove_funkcionalnosti.F13
             Assert.Equal(result, 0);
         }
 
+        [Fact]
+        public void MembershipExpieringSoon_GivenUnexistingUser_ReturnsNull()
+        {
+            // Arrange
+            string unexistingUsername = "unexistingUser";
+            LoggedUser.Username = unexistingUsername;
+            LoggedUser.LibraryId = 1;
+
+            // Act 
+            var result = memberService.MembershipExpieringSoon();
+
+            // Assert
+            Assert.Equal(result, 0);
+        }
+
+
 
     }
 }
