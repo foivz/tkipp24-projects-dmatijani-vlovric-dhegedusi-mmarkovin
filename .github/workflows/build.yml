@@ -37,6 +37,5 @@ jobs:
       - name: List Visual Studio directories
         run: tree C:\Program Files\Microsoft Visual Studio\2022\Enterprise
 
-        - name: Run unit tests
-        run: |
-          & "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\Extensions\TestPlatform\vstest.console.exe" Software\E_Libra\UnitTesting\bin\Release\net4.8\UnitTesting.dll
+      - name: Run tests
+        run: dotnet test Software\E_Libra\E_Libra.sln --no-build --verbosity normal
