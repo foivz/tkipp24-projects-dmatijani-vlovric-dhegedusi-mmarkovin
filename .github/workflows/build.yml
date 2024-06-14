@@ -27,3 +27,6 @@ jobs:
 
       - name: Build solution
         run: msbuild.exe Software\E_Libra\E_Libra.sln /p:platform="Any CPU" /p:configuration="Release"
+
+      - name: Run unit tests
+        run: dotnet test Software\E_Libra\UnitTesting\UnitTesting.csproj --no-build --verbosity normal
