@@ -1,4 +1,4 @@
-name: Echo Message on Push
+name: Test push direktno na push-test
 
 on:
   push:
