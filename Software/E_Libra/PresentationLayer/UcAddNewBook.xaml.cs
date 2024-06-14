@@ -216,5 +216,15 @@ namespace PresentationLayer
         {
             LoadGenres();
         }
+
+        private void txtSearchGenre_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
+        }
+
+        private void txtSearchAuthor_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
+        }
     }
 }
