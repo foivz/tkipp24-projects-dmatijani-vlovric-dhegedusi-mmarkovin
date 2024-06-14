@@ -20,7 +20,7 @@ jobs:
         uses: microsoft/setup-msbuild@v2
 
       - name: Install NuGet
-        uses: NuGet/setup-nuget@2.0.0
+        uses: nuget/setup-nuget@v2
 
       - name: Restore dependencies
         run: nuget restore
