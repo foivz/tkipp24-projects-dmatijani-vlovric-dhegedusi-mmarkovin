@@ -219,7 +219,18 @@ namespace PresentationLayer
 
         private void txtSearchGenre_TextChanged(object sender, TextChangedEventArgs e)
         {
-            
+            string search = txtSearchGenre.Text;
+            if (string.IsNullOrEmpty(search))
+            {
+                LoadGenres();
+            }
+            else
+            {
+                using(GenreServices genreServices = new GenreServices())
+                {
+                    cmbGenre.ItemsSource = genreServices.SearchGenres(search);
+                }
+            }
         }
 
         private void txtSearchAuthor_TextChanged(object sender, TextChangedEventArgs e)

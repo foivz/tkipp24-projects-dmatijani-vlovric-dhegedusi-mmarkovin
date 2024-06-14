@@ -51,5 +51,10 @@ namespace BussinessLogicLayer.services
 
             return isSuccesful;
         }
+
+        public List<Genre> SearchGenres(string search)
+        {
+            return genreRepository.SearchGenre(search);
+        }
     }
 }
