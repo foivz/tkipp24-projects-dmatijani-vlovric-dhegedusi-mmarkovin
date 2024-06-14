@@ -26,10 +26,10 @@ jobs:
         run: nuget restore Software\E_Libra\E_Libra.sln
 
       - name: Build solution
-        run: msbuild.exe Software\E_Libra\E_Libra.sln /p:platform="Any CPU" /p:configuration="Release"
+        run: msbuild.exe Software\E_Libra\E_Libra.sln /p:platform="Any CPU" /p:configuration="Debug"
 
       - name: Build Unit Test project
-        run: dotnet build Software\E_Libra\UnitTesting\UnitTesting.csproj --configuration Release
+        run: dotnet build Software\E_Libra\UnitTesting\UnitTesting.csproj --configuration Debug
 
       - name: List test directories
         run: tree Software\E_Libra\UnitTesting
