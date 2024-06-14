@@ -191,47 +191,48 @@ namespace PresentationLayer
         }
         private void btnReserve_Click(object sender, RoutedEventArgs e)
         {
-            //TODO: koristiti using za reservationService kada budu realizirali sučelje IDisposable (@mmarkoovin21)
-            MemberService memberService = new MemberService();
-            int memberId = memberService.GetMemberId(LoggedUser.Username);
-            int position;
-            using (ReservationService reservationService = new ReservationService())
+            using (MemberService memberService = new MemberService())
             {
-                if (reservationService.CountExistingReservations(memberId) == 3)
-                {
-                    MessageBox.Show("Već imate maksimalan broj rezervacija koji je 3!");
-                    return;
-                }
-                position = reservationService.CheckNumberOfReservations(book.id) + 1;
-            } 
-            
-            string text = "Biti ćete " + position + ". na redu čekanja. Potvrdite ili odbijte rezervaciju.";
-
-            WinAcceptDecline winAcceptDecline = new WinAcceptDecline(text);
-            winAcceptDecline.ShowDialog();
-
-            if (winAcceptDecline.UserClickedAccept)
-            {
-
-                var reservation = new Reservation
-                {
-                    reservation_date = DateTime.Now,
-                    Member_id = memberId,
-                    Book_id = book.id,
-                };
-                bookServices.RemoveOneCopy(book);
-                int res;
+                int memberId = memberService.GetMemberId(LoggedUser.Username);
+                int position;
                 using (ReservationService reservationService = new ReservationService())
                 {
-                    res = reservationService.AddReservation(reservation);
-                }
-                bool result = false;
-                if (res == 1)
+                    if (reservationService.CountExistingReservations(memberId) == 3)
+                    {
+                        MessageBox.Show("Već imate maksimalan broj rezervacija koji je 3!");
+                        return;
+                    }
+                    position = reservationService.CheckNumberOfReservations(book.id) + 1;
+                } 
+                string text = "Biti ćete " + position + ". na redu čekanja. Potvrdite ili odbijte rezervaciju.";
+
+                WinAcceptDecline winAcceptDecline = new WinAcceptDecline(text);
+                winAcceptDecline.ShowDialog();
+
+                if (winAcceptDecline.UserClickedAccept)
                 {
-                    result = true;
+
+                    var reservation = new Reservation
+                    {
+                        reservation_date = DateTime.Now,
+                        Member_id = memberId,
+                        Book_id = book.id,
+                    };
+                    bookServices.RemoveOneCopy(book);
+                    int res;
+                    using (ReservationService reservationService = new ReservationService())
+                    {
+                        res = reservationService.AddReservation(reservation);
+                    }
+                    bool result = false;
+                    if (res == 1)
+                    {
+                        result = true;
+                    }
+                    MessageBox.Show(result ? "Uspješna rezervacija!" : "Neuspješna rezervacija!");
+                    HideReserve();
                 }
-                MessageBox.Show(result ? "Uspješna rezervacija!" : "Neuspješna rezervacija!");
-                HideReserve();
+            
             }
         }
         private void CheckBookBorrowStatus()

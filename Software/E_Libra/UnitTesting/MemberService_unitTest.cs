@@ -880,8 +880,6 @@ namespace UnitTesting
             // Assert
             Assert.Equal(expectedDuration, result);
         }
-
-        //TODO: Implementirati DISPOSE kad EmployeeService bude imao IDisposable implementiran! (@dmatijani21)
         //Magdalena Markovinović
         [Fact]
         public void RestoreMembership_MembershipExpired_RestoresMembership()
@@ -951,6 +949,7 @@ namespace UnitTesting
             A.CallTo(() => membersRepository.UpdateMembershipDate(member, A<DateTime>.Ignored, true)).MustNotHaveHappened();
         }
 
+        //Magdalena Markovinović
         [Fact]
         public void Dispose_GivenFunctionIsCalled_DisposeAll()
         {

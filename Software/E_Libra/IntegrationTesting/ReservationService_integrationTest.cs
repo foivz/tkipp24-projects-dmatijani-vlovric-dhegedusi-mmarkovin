@@ -337,5 +337,54 @@ namespace IntegrationTesting
             result.Should().Be(1);
         }
 
+        // Magdalena Markovinovič
+        [Fact]
+        private void GetReservationsForMemberNormal_GivenMemberIDIsPassed_ReturnsReservationsForMember()
+        {
+            //Arrange
+            CreateTwoReservationsForMemberOne();
+
+            List<Reservation> reservations = new List<Reservation>
+            {
+                new Reservation
+                {
+                    idReservation = 1,
+                    reservation_date = null,
+                    Member_id = 1,
+                    Book_id = 1
+                },
+                new Reservation
+                {
+                    idReservation = 2,
+                    reservation_date = null,
+                    Member_id = 1,
+                    Book_id = 2
+                }
+            };
+
+            //Act
+            var result = reservationService.GetReservationsForMemberNormal(1);
+
+            //Assert
+            result.Should().BeEquivalentTo(reservations, options => options
+            .Excluding(e => e.Book)
+            .Excluding(e => e.Member)
+            );
+        }
+
+        // Magdalena Markovinovič
+        [Fact]
+        private void GetReservationsForMemberNormal_GivenInvalidId_ReturnsEmptyList()
+        {
+            //Arrange
+            CreateTwoReservationsForMemberOne();
+
+            //Act
+            var result = reservationService.GetReservationsForMemberNormal(2);
+
+            //Assert
+            result.Should().BeEmpty();
+        }
+
     }
 }
