@@ -101,7 +101,7 @@ namespace PresentationLayer {
                 if (daysUntilExpiration > 0)
                 {
                     MessageBox.Show($"Vaše članstvo ističe za {daysUntilExpiration} dana." + Environment.NewLine +
-                "Molimo produčjite vaše članstvo!", "Upozorenje", MessageBoxButton.OK, MessageBoxImage.Warning);
+                "Molimo produljite vaše članstvo!", "Upozorenje", MessageBoxButton.OK, MessageBoxImage.Warning);
 
                 }
             }
