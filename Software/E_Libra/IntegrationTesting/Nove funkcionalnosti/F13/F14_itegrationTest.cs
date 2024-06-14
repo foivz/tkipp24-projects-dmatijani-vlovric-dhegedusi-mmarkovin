@@ -73,5 +73,21 @@ namespace IntegrationTesting.Nove_funkcionalnosti.F13
             Assert.Equal(daysUntilExpiration, result);
         }
 
+        [Fact]
+        public void MembershipExpieringSoon_GivenMembershipExpiresIn6days_EqualsZero()
+        {
+            // Arrange
+            LoggedUser.Username = "username";
+            LoggedUser.LibraryId = 1;
+            UpdateLibraryMembershipDuration(6);
+
+            // Act 
+            var result = memberService.MembershipExpieringSoon();
+
+            // Assert
+            Assert.Equal(result, 0);
+        }
+
+
     }
 }
