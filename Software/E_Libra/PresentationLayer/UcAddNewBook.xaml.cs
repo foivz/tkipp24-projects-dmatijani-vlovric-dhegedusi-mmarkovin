@@ -219,12 +219,23 @@ namespace PresentationLayer
 
         private void txtSearchGenre_TextChanged(object sender, TextChangedEventArgs e)
         {
-
+            
         }
 
         private void txtSearchAuthor_TextChanged(object sender, TextChangedEventArgs e)
         {
-
+            string search = txtSearchAuthor.Text;
+            if (string.IsNullOrEmpty(search))
+            {
+                LoadAuthors();
+            }
+            else
+            {
+                using (AuthorService authorService = new AuthorService())
+                {
+                    cmbAuthor.ItemsSource = authorService.SearchAuthors(search);
+                }
+            }
         }
     }
 }

@@ -11,5 +11,6 @@ namespace DataAccessLayer.Interfaces
     {
         IQueryable<Author> GetAll();
         int Add(Author entity, bool saveChanges = true);
+        List<Author> SearchAuthor(string search);
     }
 }
