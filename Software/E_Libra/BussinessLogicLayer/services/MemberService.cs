@@ -226,8 +226,6 @@ namespace BussinessLogicLayer.services {
             return 0;
         }
 
-
-
         ~MemberService()
         {
             Dispose(false);
