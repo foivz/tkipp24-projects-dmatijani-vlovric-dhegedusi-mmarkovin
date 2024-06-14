@@ -83,5 +83,25 @@ namespace UnitTesting.Nove_funkcionalnosti.F14
             // Assert
             Assert.Equal(daysUntilExpiration, result);
         }
+
+        [Fact]
+        public void MembershipExpieringSoon_GivenMembershipExpiresIn6days_ReturnsIncorrectDaysUntilExpiration()
+        {
+            // Arrange
+            string username = "username";
+            LoggedUser.Username = username;
+            LoggedUser.LibraryId = 1;
+            DateTime? expirationDate = DateTime.Today.AddDays(6);
+            A.CallTo(() => membersRepository.GetMembershipDate(username)).Returns(expirationDate);
+            A.CallTo(() => libraryRepository.GetLibraryMembershipDuration(LoggedUser.LibraryId)).Returns(DateTime.Today.AddDays(6));
+
+            // Act
+            var daysUntilExpiration = memberService.MembershipExpieringSoon();
+
+            // Assert
+            // This assertion is expected to fail because the actual days until expiration is 6, not 5.
+            Assert.Equal(5, daysUntilExpiration);
+        }
+
     }
 }
