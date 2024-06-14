@@ -8,6 +8,7 @@ using FluentAssertions;
 using BussinessLogicLayer.services;
 using EntitiesLayer;
 using static DataAccessLayer.Repositories.BookRepository;
+using BussinessLogicLayer.Exceptions;
 
 namespace IntegrationTesting
 {
@@ -68,7 +69,7 @@ namespace IntegrationTesting
             return book;
         }
 
-        private List<Book> CreateTwoBooks()
+        private List<Book> CreateTwoBooks(int libraryId = 1)
         {
             List<Book> books = new List<Book>
             {
@@ -86,7 +87,7 @@ namespace IntegrationTesting
                     total_copies = 10,
                     current_copies = 10,
                     Genre = genre,
-                    Library_id = 1,
+                    Library_id = libraryId,
                     Genre_id = genre.id
                 },
                 new Book
@@ -103,7 +104,7 @@ namespace IntegrationTesting
                     total_copies = 10,
                     current_copies = 10,
                     Genre = genre,
-                    Library_id = 1,
+                    Library_id = libraryId,
                     Genre_id = genre.id
                 }
             };
@@ -119,13 +120,13 @@ namespace IntegrationTesting
             return books;
         }
 
-        private List<Book> CreateThreeBooks()
+        private List<Book> CreateThreeBooks(int libraryId = 1, int startFrom = 1)
         {
             List<Book> books = new List<Book>
             {
                 new Book
                 {
-                    id = 1,
+                    id = 0 + startFrom,
                     name = "BookName1",
                     description = null,
                     publish_date = null,
@@ -137,12 +138,12 @@ namespace IntegrationTesting
                     total_copies = 10,
                     current_copies = 10,
                     Genre = genre,
-                    Library_id = 1,
+                    Library_id = libraryId,
                     Genre_id = genre.id
                 },
                 new Book
                 {
-                    id = 2,
+                    id = 1 + startFrom,
                     name = "BookName2",
                     description = null,
                     publish_date = null,
@@ -154,24 +155,24 @@ namespace IntegrationTesting
                     total_copies = 10,
                     current_copies = 10,
                     Genre = genre,
-                    Library_id = 1,
+                    Library_id = libraryId,
                     Genre_id = genre.id
                 },
                 new Book
                 {
-                    id = 3,
+                    id = 2 + startFrom,
                     name = "BookName3",
                     description = null,
                     publish_date = null,
                     pages_num = 10,
                     digital = 0,
                     url_digital = null,
-                    barcode_id = "12346",
+                    barcode_id = "12347",
                     url_photo = null,
                     total_copies = 10,
                     current_copies = 10,
                     Genre = genre,
-                    Library_id = 1,
+                    Library_id = libraryId,
                     Genre_id = genre.id
                 }
             };
@@ -496,7 +497,7 @@ namespace IntegrationTesting
                     pages_num = 10,
                     digital = 0,
                     url_digital = null,
-                    barcode_id = "12346",
+                    barcode_id = "12347",
                     url_photo = null,
                     total_copies = 10,
                     current_copies = 10,
@@ -797,6 +798,152 @@ namespace IntegrationTesting
 
             //Assert
             result.Should().BeTrue();
+        }
+
+        //David Matijanić
+        [Fact]
+        public void GetBookByBarcodeId_BarcodeDoesntExist_BookNotFoundExceptionThrown()
+        {
+            //Arrange
+            string barcode = "sdf32sad";
+
+            //Act
+            Action act = () => bookServices.GetBookByBarcodeId(1, barcode);
+
+            //Assert
+            act.Should().Throw<BookNotFoundException>();
+        }
+
+        //David Matijanić
+        [Fact]
+        public void GetBookByBarcodeId_WrongBookLibrary_WrongLibraryException()
+        {
+            //Arrange
+            Book book = CreateSingleBook();
+            string barcode = book.barcode_id;
+            int libraryId = book.Library_id + 1;
+
+            //Act
+            Action act = () => bookServices.GetBookByBarcodeId(libraryId, barcode);
+
+            //Assert
+            act.Should().Throw<WrongLibraryException>();
+        }
+
+        //David Matijanić
+        [Theory]
+        [InlineData(0)]
+        [InlineData(1)]
+        [InlineData(2)]
+        public void GetBookByBarcodeId_CorrectBarcodeAndLibraryEntered_CorrectBookIsRetrieved(int index)
+        {
+            //Arrange
+            Book book = CreateThreeBooks()[index];
+            string barcode = book.barcode_id;
+            int libraryId = book.Library_id;
+
+            //Act
+            Book result = bookServices.GetBookByBarcodeId(libraryId, barcode);
+
+            //Assert
+            result.Should().BeEquivalentTo(book, options => options
+            .Excluding(e => e.Library)
+            .Excluding(e => e.Genre.Books)
+            );
+        }
+
+        //David Matijanić
+        [Fact]
+        public void UpdateBook_NoChangesMade_ReturnsZero()
+        {
+            //Arrange
+            Book book = CreateSingleBook();
+            Book retrievedBook = bookServices.GetBooksByLibrary(book.Library_id).First();
+
+            //Act
+            int result = bookServices.UpdateBook(retrievedBook);
+
+            //Assert
+            result.Should().Be(0);
+        }
+
+        //David Matijanić
+        [Fact]
+        public void UpdateBook_BookIsEntered_BookDataIsUpdated()
+        {
+            //Arrange
+            Book book = CreateSingleBook();
+            Book retrievedBook = bookServices.GetBooksByLibrary(book.Library_id).First();
+            retrievedBook.name = "Izmijenjena";
+
+            //Act
+            int result = bookServices.UpdateBook(retrievedBook);
+
+            //Assert
+            result.Should().Be(1);
+        }
+
+        //David Matijanić
+        [Theory]
+        [InlineData(0)]
+        [InlineData(1)]
+        [InlineData(2)]
+        public void GetBookBarcode_BookIdExists_ReturnsTheCorrectBookBarcode(int index)
+        {
+            //Arrange
+            Book book = CreateThreeBooks()[index];
+            string expectedBarcode = book.barcode_id;
+            int bookId = book.id;
+
+            //Act
+            string result = bookServices.GetBookBarcode(bookId);
+
+            //Assert
+            result.Should().Be(expectedBarcode);
+        }
+
+        //David Matijanić
+        [Theory]
+        [InlineData(123)]
+        [InlineData(456)]
+        [InlineData(789)]
+        public void GetBookBarcode_BookIdDoesntExist_ReturnsNull(int bookId)
+        {
+            //Arrange
+            CreateThreeBooks();
+
+            //Act
+            string result = bookServices.GetBookBarcode(bookId);
+
+            //Assert
+            result.Should().BeNull();
+        }
+
+        //David Matijanić
+        [Theory]
+        [InlineData(1)]
+        [InlineData(2)]
+        public void GetBooksByLibrary_LibraryIdEntered_CorrectBooksRetrieved(int libraryId)
+        {
+            //Arrange
+            string createSecondLibrary =
+             "INSERT [dbo].[Library] ([id], [name], [OIB], [phone], [email], [price_day_late], [address], [membership_duration]) " +
+             "VALUES (2, N'Knjiznica 2', 123455, 3312, N'email', 3, N'adresa', GETDATE())";
+            Helper.ExecuteCustomSql(createSecondLibrary);
+
+            var books = CreateTwoBooks(1);
+            var books2 = CreateThreeBooks(2, 3);
+
+            books.AddRange(books2);
+
+            //Act
+            var result = bookServices.GetBooksByLibrary(libraryId);
+
+            //Assert
+            result.Should().BeEquivalentTo(books.Where(b => b.Library_id == libraryId), option => option
+                .Excluding(e => e.Library)
+                .Excluding(e => e.Genre.Books)
+            );
         }
     }
 }
