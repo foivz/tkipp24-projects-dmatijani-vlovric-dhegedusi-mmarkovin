@@ -23,7 +23,7 @@ jobs:
         uses: nuget/setup-nuget@v2
 
       - name: Restore dependencies
-        run: nuget restore
+        run: nuget restore Software\E_Libra\E_Libra.sln
 
       - name: Build solution
         run: msbuild.exe Software\E_Libra\E_Libra.sln /p:platform="Any CPU" /p:configuration="Release"
