@@ -1,6 +1,7 @@
 ﻿using BussinessLogicLayer.services;
 using EntitiesLayer;
 using EntitiesLayer.Entities;
+using FluentAssertions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -288,7 +289,7 @@ namespace IntegrationTesting {
             // Assert
             var deletedReview = reviewService.GetReviewsForBook(bookId).FirstOrDefault(r => r.Comment == "Odlicna knjiga!");
             Assert.Null(deletedReview);
-            Assert.Equal(0, result);
+            result.Should().Be(1);
         }
 
         [Fact]
@@ -309,6 +310,9 @@ namespace IntegrationTesting {
             // Arrange
             int memberId = 1;
             int bookId = 1;
+
+            string sqlDeleteReviews = "DELETE FROM [dbo].[Review]";
+            Helper.ExecuteCustomSql(sqlDeleteReviews);
 
             // Act
             var hasReviewed = reviewService.HasUserReviewedBook(memberId, bookId);
