@@ -1,5 +1,6 @@
 ﻿using BussinessLogicLayer.services;
 using DataAccessLayer.Interfaces;
+using DataAccessLayer.Repositories;
 using EntitiesLayer;
 using FakeItEasy;
 using System;
@@ -16,11 +17,13 @@ namespace UnitTesting.Nove_funkcionalnosti.F14
     {
         private MemberService memberService;
         private IMembersRepository membersRepository;
+        private ILibraryRepository libraryRepository;
 
         public F14_unitTest()
         {
             membersRepository = A.Fake<IMembersRepository>();
-            memberService = new MemberService(membersRepository, null, null, null, null);
+            libraryRepository = A.Fake<ILibraryRepository>();
+            memberService = new MemberService(membersRepository, libraryRepository, null, null, null);
 
             LoggedUser.Username = null;
             LoggedUser.UserType = null;
@@ -65,9 +68,11 @@ namespace UnitTesting.Nove_funkcionalnosti.F14
         public void MembershipExpieringSoon_GivenMembershipExpiresInLessThan5days_ReturnDaysUntilexpiration(int daysUntilExpiration)
         {
             // Arrange
-            string username = "username";
+            LoggedUser.Username = "username";
+            LoggedUser.LibraryId = 1;
             DateTime? expirationDate = DateTime.Today.AddDays(daysUntilExpiration);
-            A.CallTo(() => membersRepository.GetMembershipDate(username)).Returns(expirationDate);
+            A.CallTo(() => libraryRepository.GetLibraryMembershipDuration(1)).Returns(DateTime.Today.AddDays(daysUntilExpiration));
+            A.CallTo(() => membersRepository.GetMembershipDate(LoggedUser.Username)).Returns(expirationDate);
 
             // Act
             var result = memberService.MembershipExpieringSoon();
@@ -75,6 +80,5 @@ namespace UnitTesting.Nove_funkcionalnosti.F14
             // Assert
             Assert.Equal(daysUntilExpiration, result);
         }
-
     }
 }
