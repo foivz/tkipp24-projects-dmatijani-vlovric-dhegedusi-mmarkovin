@@ -29,6 +29,7 @@ namespace BussinessLogicLayer.F16
             var gptRequest = new GPTRequest();
             GPTMessage gptMessage = new GPTMessage
             {
+                role = "system",
                 content = message
             };
             gptRequest.messages = new List<GPTMessage> { gptMessage };
