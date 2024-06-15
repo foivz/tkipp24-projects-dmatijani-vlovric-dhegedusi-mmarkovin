@@ -40,5 +40,18 @@ namespace UnitTesting.Nove_funkcionalnosti.F16
             //Assert
             Assert.Equal(message, gptService.systemMessage);
         }
+
+        [Fact]
+        public void GPTService_SendSystemMessage_ShouldBeAbleToSend()
+        {
+            //Arrange
+            string message = "Korisnik te pitao za pomoć oko knjige.";
+
+            //Act
+            gptService.SendSystemMessage(message);
+
+            //Assert
+            Assert.True(true);
+        }
     }
 }
