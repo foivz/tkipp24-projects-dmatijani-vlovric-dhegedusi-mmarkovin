@@ -34,7 +34,7 @@ namespace PresentationLayer {
         }
 
         private void ShowData() {
-            var libraryId = _memberService.GetMemberLibraryId(LoggedUser.Username);
+            var libraryId = LoggedUser.LibraryId;
 
             List<MostPopularBooks> topBorrowedBooks = _bookService.GetTopBorrowedBooks(libraryId);
             dgTopBooks.ItemsSource = topBorrowedBooks;
