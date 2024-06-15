@@ -414,10 +414,18 @@ namespace DataAccessLayer.Repositories
                         select new MostPopularBooks {
                             Book_Name = book.name,
                             Author_Name = book.Authors.Select(author => author.name + " " + author.surname).FirstOrDefault(),
-                            Times_Borrowed = bookBorrows.Count()
+                            Times_Borrowed = bookBorrows.Count(),
+                            Url_Photo = book.url_photo
                         };
 
-            return query.OrderByDescending(book => book.Times_Borrowed).Take(10).AsEnumerable();
+            var books = query.OrderByDescending(book => book.Times_Borrowed).Take(10).ToList();
+
+            for (int i = 0; i < books.Count; i++) {
+                books[i].Order_Number = i + 1;
+            }
+
+            return books;
+
         }
 
     }

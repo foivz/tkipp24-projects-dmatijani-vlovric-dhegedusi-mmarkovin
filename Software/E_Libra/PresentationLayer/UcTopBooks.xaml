@@ -8,7 +8,7 @@
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
         <Style TargetType="DataGrid">
-            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="FontSize" Value="24"/>
             <Setter Property="FontFamily" Value="Segoe UI"/>
             <Setter Property="RowBackground" Value="#F2F2F2"/>
             <Setter Property="AlternatingRowBackground" Value="#E6E6E6"/>
@@ -16,9 +16,11 @@
             <Setter Property="Margin" Value="10"/>
             <Setter Property="Padding" Value="5"/>
             <Setter Property="ColumnHeaderHeight" Value="40"/>
-            <Setter Property="RowHeight" Value="35"/>
+            <Setter Property="RowHeight" Value="160"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="BorderBrush" Value="#CCCCCC"/>
+            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
+
         </Style>
 
         <Style TargetType="DataGridColumnHeader">
@@ -28,17 +30,19 @@
             <Setter Property="FontSize" Value="18"/>
             <Setter Property="FontFamily" Value="Segoe UI"/>
             <Setter Property="Height" Value="50"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
         </Style>
 
         <Style TargetType="DataGridRow">
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="HorizontalAlignment" Value="Stretch"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
-            <Setter Property="MinHeight" Value="40"/>
+            <Setter Property="MinHeight" Value="160"/>
             <Setter Property="Height" Value="Auto"/>
             <Setter Property="BorderBrush" Value="Transparent"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="Padding" Value="5"/>
+            <Setter Property="BorderThickness" Value="3"/>
+            <Setter Property="Padding" Value="6"/>
             <Style.Triggers>
                 <Trigger Property="IsSelected" Value="True">
                     <Setter Property="Background" Value="#D0E7FF"/>
@@ -49,13 +53,35 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
+
+        <Style x:Key="CenteredTextColumnStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="24"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="TextAlignment" Value="Center"/>
+        </Style>
     </UserControl.Resources>
+    
+    
     <Grid>
         <DataGrid x:Name="dgTopBooks" AutoGenerateColumns="False" CanUserAddRows="False">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Naslov" Binding="{Binding Book_Name}" Width="*" />
-                <DataGridTextColumn Header="Autor" Binding="{Binding Author_Name}" Width="*" />
-                <DataGridTextColumn Header="Pročitano" Binding="{Binding Times_Borrowed}" Width="100" />
+                <DataGridTextColumn Header="#" Binding="{Binding Order_Number}" Width="50" ElementStyle="{StaticResource CenteredTextColumnStyle}" />
+
+                <DataGridTemplateColumn Header="" Width="100">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Image Source="{Binding Url_Photo}" Height="160" Stretch="Uniform"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <DataGridTextColumn Header="Naslov" Binding="{Binding Book_Name}" Width="*" ElementStyle="{StaticResource CenteredTextColumnStyle}" />
+                
+                <DataGridTextColumn Header="Autor" Binding="{Binding Author_Name}" Width="*" ElementStyle="{StaticResource CenteredTextColumnStyle}"/>
+                
+                <DataGridTextColumn Header="Pročitano" Binding="{Binding Times_Borrowed}" Width="130" ElementStyle="{StaticResource CenteredTextColumnStyle}"/>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>
