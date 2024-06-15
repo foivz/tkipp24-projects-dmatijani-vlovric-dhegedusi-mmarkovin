@@ -24,21 +24,24 @@ namespace DataAccessLayer.F16
         {
             var requestPayload = CreatePayloadFromRequest(request);
 
-            using (var client = new HttpClient())
+            using (var client = CreateConfiguredHttpClient())
             {
-                var endpoint = new Uri(uri);
-                client.DefaultRequestHeaders.Add("Authorization", $"Bearer {apiKey}");
-                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-                var response = await client.PostAsync(endpoint, requestPayload);
+                var response = await client.PostAsync(new Uri(uri), requestPayload);
                 if (!response.IsSuccessStatusCode)
                 {
                     return "Dogodila se greška kod dohvata odgovora.";
                 }
 
-                //var responseContent = await response.Content.ReadAsStringAsync();
-                return await GetAnswerFromResponseContent(response.Content);
+                return await ExtractContentFromResponse(response.Content);
             }
+        }
+
+        private HttpClient CreateConfiguredHttpClient()
+        {
+            var client = new HttpClient();
+            client.DefaultRequestHeaders.Add("Authorization", $"Bearer {apiKey}");
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            return client;
         }
 
         private StringContent CreatePayloadFromRequest(GPTRequest request)
@@ -47,29 +50,18 @@ namespace DataAccessLayer.F16
             return new StringContent(requestJson, Encoding.UTF8, "application/json");
         }
 
-        private async Task<string> GetAnswerFromResponseContent(HttpContent content)
+        private async Task<string> ExtractContentFromResponse(HttpContent content)
         {
             var contentString = await content.ReadAsStringAsync();
-            GPTResponse responseObject = JsonConvert.DeserializeObject<GPTResponse>(contentString);
-            if (responseObject.choices == null)
-            {
-                return "Dogodila se greška kod čitanja odgovora.";
-            }
+            var responseObject = JsonConvert.DeserializeObject<GPTResponse>(contentString);
 
-            var choices = responseObject.choices;
-            if (choices.Count == 0)
+            if (responseObject?.choices == null || responseObject.choices.Count == 0)
             {
                 return "Nisu dobiveni nikakvi odgovori.";
             }
 
-            var firstChoice = choices[0];
-            var choiceMessage = firstChoice.message;
-            if (choiceMessage == null)
-            {
-                return "Dogodila se greška.";
-            }
-
-            return choiceMessage.content;
+            var firstChoiceMessage = responseObject.choices.FirstOrDefault()?.message;
+            return firstChoiceMessage?.content ?? "Dogodila se greška.";
         }
     }
 }
