@@ -14,10 +14,12 @@ namespace UnitTesting.Nove_funkcionalnosti.F16
     public class GPTService_unitTest
     {
         private GPTService gptService { get; set; }
+        private IGPTRequestSender gptRequestSender { get; set; }
 
         public GPTService_unitTest()
         {
-            gptService = new GPTService(null);
+            gptRequestSender = A.Fake<IGPTRequestSender>();
+            gptService = new GPTService(gptRequestSender);
         }
 
         [Fact]
@@ -59,9 +61,6 @@ namespace UnitTesting.Nove_funkcionalnosti.F16
         [Fact]
         public void GPTService_PassGPTRequestSender_ShouldWork()
         {
-            //Arrange
-            IGPTRequestSender gptRequestSender = A.Fake<IGPTRequestSender>();
-
             //Act
             gptService = new GPTService(gptRequestSender);
 
