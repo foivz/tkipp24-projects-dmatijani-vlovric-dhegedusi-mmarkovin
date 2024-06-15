@@ -35,7 +35,7 @@ namespace UnitTesting.Nove_funkcionalnosti.F16
             gptService.SetSystemMessage(message);
 
             //Assert
-            Assert.Equal(message, gptService.systemMessage)
+            Assert.Equal(message, gptService.systemMessage);
         }
     }
 }

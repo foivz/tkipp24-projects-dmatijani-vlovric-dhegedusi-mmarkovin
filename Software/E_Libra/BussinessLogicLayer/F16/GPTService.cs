@@ -8,8 +8,11 @@ namespace BussinessLogicLayer.F16
 {
     public class GPTService
     {
+        public string systemMessage { get; set; }
+
         public bool SetSystemMessage(string message)
         {
+            systemMessage = message;
             return true;
         }
     }
