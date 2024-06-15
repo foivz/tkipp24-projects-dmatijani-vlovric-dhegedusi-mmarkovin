@@ -203,28 +203,32 @@ namespace BussinessLogicLayer.services {
             return (date - new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Unspecified)).Days + 1;
         }
 
-        public decimal MembershipExpieringSoon()
+        private bool IsMembershipAboutToExpire()
         {
             DateTime? membershipStartDate = membersRepository.GetMembershipDate(LoggedUser.Username);
             if (membershipStartDate == null)
             {
-                return 0;
+                return false;
             }
             DateTime membershipEndDate = libraryRepository.GetLibraryMembershipDuration(LoggedUser.LibraryId);
             decimal daysUntilExpiration = (decimal)(membershipEndDate - DateTime.Today).TotalDays;
 
-            if (daysUntilExpiration < 0)
+            return daysUntilExpiration >= 0 && (daysUntilExpiration <= 5 || daysUntilExpiration == 1);
+        }
+
+        public decimal CalculateDaysUntilExpiration()
+        {
+            if (!IsMembershipAboutToExpire())
             {
                 return 0;
             }
 
-            if (daysUntilExpiration <= 5 || daysUntilExpiration <= 1)
-            {
-                return daysUntilExpiration;
-            }
+            DateTime membershipEndDate = libraryRepository.GetLibraryMembershipDuration(LoggedUser.LibraryId);
+            decimal daysUntilExpiration = (decimal)(membershipEndDate - DateTime.Today).TotalDays;
 
-            return 0;
+            return daysUntilExpiration;
         }
+
 
         ~MemberService()
         {

@@ -70,7 +70,7 @@ namespace PresentationLayer {
                     MessageBox.Show(res);
                 }
             }
-            MembershipExpieringSoon();
+            CheckIsMembershipExpiringSoon();
         }
 
         private void btnNotifications_Click(object sender, RoutedEventArgs e)
@@ -93,11 +93,11 @@ namespace PresentationLayer {
             Process.Start(path);
         }
 
-        private void MembershipExpieringSoon()
+        private void CheckIsMembershipExpiringSoon()
         {
             using (MemberService memberService = new MemberService())
             {
-                var daysUntilExpiration = memberService.MembershipExpieringSoon();
+                var daysUntilExpiration = memberService.CalculateDaysUntilExpiration();
                 if (daysUntilExpiration > 0)
                 {
                     MessageBox.Show($"Vaše članstvo ističe za {daysUntilExpiration} dana." + Environment.NewLine +

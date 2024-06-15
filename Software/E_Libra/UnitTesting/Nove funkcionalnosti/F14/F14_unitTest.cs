@@ -31,7 +31,7 @@ namespace UnitTesting.Nove_funkcionalnosti.F14
         }
 
         [Fact]
-        public void MembershipExpieringSoon_GivenMembershipExpiresIn5days_ReturnDaysUntilexpiration()
+        public void CalculateDaysUntilExpiration_GivenMembershipExpiresIn5days_ReturnDaysUntilexpiration()
         {
             // Arrange
             LoggedUser.Username = "username";
@@ -41,7 +41,7 @@ namespace UnitTesting.Nove_funkcionalnosti.F14
             A.CallTo(() => libraryRepository.GetLibraryMembershipDuration(LoggedUser.LibraryId)).Returns(DateTime.Today.AddDays(5));
 
             // Act
-            var daysUntilExpiration = memberService.MembershipExpieringSoon();
+            var daysUntilExpiration = memberService.CalculateDaysUntilExpiration();
 
             // Assert
             Assert.Equal(5, daysUntilExpiration);
@@ -50,14 +50,14 @@ namespace UnitTesting.Nove_funkcionalnosti.F14
 
         [Fact]
 
-        public void MembershipExpieringSoon_GivenInvalidUsername_EqualsNull()
+        public void CalculateDaysUntilExpiration_GivenInvalidUsername_EqualsNull()
         {
             // Arrange
             string username = "nonexisting";
             A.CallTo(() => membersRepository.GetMembershipDate(username)).Returns((DateTime?)null);
 
             // Act
-            var daysUntilExpiration = memberService.MembershipExpieringSoon();
+            var daysUntilExpiration = memberService.CalculateDaysUntilExpiration();
 
             // Assert
             Assert.Equal(daysUntilExpiration, 0);
@@ -68,7 +68,7 @@ namespace UnitTesting.Nove_funkcionalnosti.F14
         [InlineData(3)]
         [InlineData(2)]
         [InlineData(1)]
-        public void MembershipExpieringSoon_GivenMembershipExpiresInLessThan5days_ReturnDaysUntilexpiration(int daysUntilExpiration)
+        public void CalculateDaysUntilExpiration_GivenMembershipExpiresInLessThan5days_ReturnDaysUntilexpiration(int daysUntilExpiration)
         {
             // Arrange
             LoggedUser.Username = "username";
@@ -78,14 +78,14 @@ namespace UnitTesting.Nove_funkcionalnosti.F14
             A.CallTo(() => membersRepository.GetMembershipDate(LoggedUser.Username)).Returns(expirationDate);
 
             // Act
-            var result = memberService.MembershipExpieringSoon();
+            var result = memberService.CalculateDaysUntilExpiration();
 
             // Assert
             Assert.Equal(daysUntilExpiration, result);
         }
 
         [Fact]
-        public void MembershipExpieringSoon_GivenMembershipExpiresIn6days_ReturnsIncorrectDaysUntilExpiration()
+        public void CalculateDaysUntilExpiration_GivenMembershipExpiresIn6days_ReturnsIncorrectDaysUntilExpiration()
         {
             // Arrange
             string username = "username";
@@ -96,7 +96,7 @@ namespace UnitTesting.Nove_funkcionalnosti.F14
             A.CallTo(() => libraryRepository.GetLibraryMembershipDuration(LoggedUser.LibraryId)).Returns(DateTime.Today.AddDays(6));
 
             // Act
-            var daysUntilExpiration = memberService.MembershipExpieringSoon();
+            var daysUntilExpiration = memberService.CalculateDaysUntilExpiration();
 
             // Assert
             Assert.Equal(daysUntilExpiration, 0);

@@ -59,7 +59,7 @@ namespace IntegrationTesting.Nove_funkcionalnosti.F13
         [InlineData(3)]
         [InlineData(2)]
         [InlineData(1)]
-        public void MembershipExpieringSoon_GivenMembershipExpiresInSomeDays_ReturnDaysUntilexpiration(int daysUntilExpiration)
+        public void CalculateDaysUntilExpiration_GivenMembershipExpiresInSomeDays_ReturnDaysUntilexpiration(int daysUntilExpiration)
         {
             // Arrange
             LoggedUser.Username = "username";
@@ -67,14 +67,14 @@ namespace IntegrationTesting.Nove_funkcionalnosti.F13
             UpdateLibraryMembershipDuration(daysUntilExpiration);
 
             // Act 
-            var result = memberService.MembershipExpieringSoon();
+            var result = memberService.CalculateDaysUntilExpiration();
 
             // Assert
             Assert.Equal(daysUntilExpiration, result);
         }
 
         [Fact]
-        public void MembershipExpieringSoon_GivenMembershipExpiresIn6days_EqualsZero()
+        public void CalculateDaysUntilExpiration_GivenMembershipExpiresIn6days_EqualsZero()
         {
             // Arrange
             LoggedUser.Username = "username";
@@ -82,14 +82,14 @@ namespace IntegrationTesting.Nove_funkcionalnosti.F13
             UpdateLibraryMembershipDuration(6);
 
             // Act 
-            var result = memberService.MembershipExpieringSoon();
+            var result = memberService.CalculateDaysUntilExpiration();
 
             // Assert
             Assert.Equal(result, 0);
         }
 
         [Fact]
-        public void MembershipExpieringSoon_GivenUnexistingUser_ReturnsNull()
+        public void CalculateDaysUntilExpiration_GivenUnexistingUser_ReturnsNull()
         {
             // Arrange
             string unexistingUsername = "unexistingUser";
@@ -97,7 +97,7 @@ namespace IntegrationTesting.Nove_funkcionalnosti.F13
             LoggedUser.LibraryId = 1;
 
             // Act 
-            var result = memberService.MembershipExpieringSoon();
+            var result = memberService.CalculateDaysUntilExpiration();
 
             // Assert
             Assert.Equal(result, 0);
