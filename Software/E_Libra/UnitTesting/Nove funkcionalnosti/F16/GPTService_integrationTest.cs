@@ -23,5 +23,19 @@ namespace UnitTesting.Nove_funkcionalnosti.F16
             //Assert
             Assert.True(result);
         }
+
+        [Fact]
+        public void GPTService_SetSystemMessage_MessageShouldBeSet()
+        {
+            //Arrange
+            var gptService = new GPTService();
+            string message = "Ti si pomoćnik u knjižnici.";
+
+            //Act
+            gptService.SetSystemMessage(message);
+
+            //Assert
+            Assert.Equal(message, gptService.systemMessage)
+        }
     }
 }
