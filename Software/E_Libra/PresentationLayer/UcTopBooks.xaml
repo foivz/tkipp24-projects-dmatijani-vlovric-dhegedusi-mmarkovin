@@ -65,7 +65,7 @@
     
     
     <Grid>
-        <DataGrid x:Name="dgTopBooks" AutoGenerateColumns="False" CanUserAddRows="False">
+        <DataGrid x:Name="dgTopBooks" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="#" Binding="{Binding Order_Number}" Width="50" ElementStyle="{StaticResource CenteredTextColumnStyle}" />
 
