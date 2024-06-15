@@ -95,13 +95,18 @@ namespace PresentationLayer {
         {
             if (librAIPanel == null)
             {
-                librAIPanel = new LibrAI_Panel();
+                librAIPanel = new LibrAI_Panel(this);
                 librAIPanel.Owner = this;
                 librAIPanel.Show();
             } else
             {
                 librAIPanel.Activate();
             }
+        }
+
+        public void SetLibrAIPanelToNull()
+        {
+            librAIPanel = null;
         }
     }
 }

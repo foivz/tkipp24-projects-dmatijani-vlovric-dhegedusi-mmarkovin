@@ -1,5 +1,7 @@
 ﻿using BussinessLogicLayer.F16;
+using BussinessLogicLayer.services;
 using DataAccessLayer.F16;
+using EntitiesLayer;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,9 +28,12 @@ namespace PresentationLayer
         private GPTService gptService { get; set; }
         private bool WaitingForResponse = false;
 
-        public LibrAI_Panel()
+        private MemberPanel memberPanel { get; set; }
+
+        public LibrAI_Panel(MemberPanel memberPanel)
         {
             InitializeComponent();
+            this.memberPanel = memberPanel;
         }
 
         private void btnSaveApiKey_Click(object sender, RoutedEventArgs e)
@@ -47,13 +52,7 @@ namespace PresentationLayer
                 return;
             }
 
-            tbResponse.Text = "";
-            EnteredApiKey = true;
-            ChangeLaptopImage("responding");
-            btnSendRequest.IsEnabled = true;
-            tbEnterApiKey.Visibility = Visibility.Collapsed;
-            spApiKeyEnter.Visibility = Visibility.Collapsed;
-            spQuestionAnswer.Visibility = Visibility.Visible;
+            UnhideRequestGUI();
 
             CreateGPTService(apiKey);
         }
@@ -108,6 +107,21 @@ namespace PresentationLayer
         {
             gptRequestSender = new GPTRequestSender(apiKey);
             gptService = new GPTService(gptRequestSender);
+
+            string prompt = "Ti si AI asistent knjižnice, zoveš se LibrAI, a aplikacija u kojoj se nalaziš se zove MyLibra.";
+            prompt += " Služiš za pomaganje prijavljenom korisniku, koji je član knjižnice, tako što mu pomažeš oko nekih pitanja vezanih uz knjižnicu.";
+
+            var libraryService = new LibraryService();
+            decimal membershipDuration = libraryService.GetLibraryMembershipDuration(LoggedUser.LibraryId);
+            prompt += " Ako te korisnik pita, reci mu da je članstvo u knjižnici važeće " + membershipDuration + " dana.";
+
+            decimal pricePerDayLate = libraryService.GetLibraryPriceDayLate(LoggedUser.LibraryId);
+            prompt += " Ako te pita koliko košta jedan dan kašnjenja posudbi, reci mu da je to " + pricePerDayLate + " eura po danu.";
+
+            var library = libraryService.GetAllLibraries().First(l => l.id == LoggedUser.LibraryId);
+            prompt += " Knjižnica za koju odgovaraš zove se " + library.name + ".";
+
+            gptService.SetSystemMessage(prompt);
         }
 
         private void txtRequest_GotFocus(object sender, RoutedEventArgs e)
@@ -124,6 +138,22 @@ namespace PresentationLayer
             {
                 ChangeLaptopImage("responding");
             }
+        }
+
+        private void UnhideRequestGUI()
+        {
+            tbResponse.Text = "";
+            EnteredApiKey = true;
+            ChangeLaptopImage("responding");
+            btnSendRequest.IsEnabled = true;
+            tbEnterApiKey.Visibility = Visibility.Collapsed;
+            spApiKeyEnter.Visibility = Visibility.Collapsed;
+            spQuestionAnswer.Visibility = Visibility.Visible;
+        }
+
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            memberPanel.SetLibrAIPanelToNull();
         }
     }
 }
