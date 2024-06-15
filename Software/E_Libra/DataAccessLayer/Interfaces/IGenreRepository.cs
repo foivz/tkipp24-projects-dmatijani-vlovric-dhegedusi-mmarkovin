@@ -13,5 +13,6 @@ namespace DataAccessLayer.Interfaces
         IQueryable<Genre> GetAll();
         int Add(Genre entity, bool saveChanges = true);
         IQueryable<MostPopularGenres> GetMostPopularGenres(int Library_id);
+        List<Genre> SearchGenre(string search);
     }
 }
