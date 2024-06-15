@@ -15,6 +15,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace PresentationLayer
 {
@@ -22,9 +23,17 @@ namespace PresentationLayer
     public partial class UcAddNewBook : UserControl
     {
         string checkboxValue;
+        private DispatcherTimer genreSearchTimer = new DispatcherTimer();
+        private DispatcherTimer authorSearchTimer = new DispatcherTimer();
         public UcAddNewBook()
         {
             InitializeComponent();
+
+            genreSearchTimer.Interval = TimeSpan.FromMilliseconds(300);
+            genreSearchTimer.Tick += GenreSearchTimer_Tick;
+
+            authorSearchTimer.Interval = TimeSpan.FromMilliseconds(500);
+            authorSearchTimer.Tick += AuthorSearchTimer_Tick;
         }
 
         private void btnCancel_Click(object sender, RoutedEventArgs e)
@@ -219,6 +228,30 @@ namespace PresentationLayer
 
         private void txtSearchGenre_TextChanged(object sender, TextChangedEventArgs e)
         {
+            genreSearchTimer.Stop();
+            genreSearchTimer.Start();
+        }
+
+        private void txtSearchAuthor_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            authorSearchTimer.Stop();
+            authorSearchTimer.Start();
+        }
+
+        private void GenreSearchTimer_Tick(object sender, EventArgs e)
+        {
+            genreSearchTimer.Stop();
+            FilterGenres();
+        }
+
+        private void AuthorSearchTimer_Tick(object sender, EventArgs e)
+        {
+            authorSearchTimer.Stop();
+            FilterAuthors();
+        }
+
+        private void FilterGenres()
+        {
             string search = txtSearchGenre.Text;
             if (string.IsNullOrEmpty(search))
             {
@@ -231,7 +264,7 @@ namespace PresentationLayer
             }
         }
 
-        private void txtSearchAuthor_TextChanged(object sender, TextChangedEventArgs e)
+        private void FilterAuthors()
         {
             string search = txtSearchAuthor.Text;
             if (string.IsNullOrEmpty(search))
@@ -244,5 +277,6 @@ namespace PresentationLayer
                 cmbAuthor.ItemsSource = authorService.SearchAuthors(search);
             }
         }
+
     }
 }
