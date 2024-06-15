@@ -70,6 +70,7 @@
     <Compile Include="Entities\MostPopularGenres.cs" />
     <Compile Include="F16\GPTMessage.cs" />
     <Compile Include="F16\GPTRequest.cs" />
+    <Compile Include="F16\GPTResponse.cs" />
     <Compile Include="Member.code.cs" />
     <Compile Include="Entities\Notification.cs" />
     <Compile Include="Entities\Reservation.cs" />

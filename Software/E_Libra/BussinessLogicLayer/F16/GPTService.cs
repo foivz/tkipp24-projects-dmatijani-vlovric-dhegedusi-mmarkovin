@@ -15,6 +15,7 @@ namespace BussinessLogicLayer.F16
 
         public GPTService(IGPTRequestSender requestSender)
         {
+            systemMessage = null;
             this.requestSender = requestSender;
         }
 
@@ -24,16 +25,35 @@ namespace BussinessLogicLayer.F16
             return true;
         }
 
-        public void SendSystemMessage(string message)
+        public async Task<string> SendSystemMessage(string message)
+        {
+            return await SendMessage(message, "system");
+        }
+
+        public async Task<string> SendUserMessage(string message)
+        {
+            return await SendMessage(message, "user");
+        }
+
+        private async Task<string> SendMessage(string message, string role)
         {
             var gptRequest = new GPTRequest();
             GPTMessage gptMessage = new GPTMessage
             {
-                role = "system",
+                role = role,
                 content = message
             };
             gptRequest.messages = new List<GPTMessage> { gptMessage };
-            requestSender.SendRequest(gptRequest);
+            if (systemMessage != null)
+            {
+                gptRequest.messages.Insert(0, new GPTMessage
+                {
+                    role = "system",
+                    content = systemMessage
+                });
+            }
+            GPTResponse response = await requestSender.SendRequest(gptRequest);
+            return response.ToString();
         }
     }
 }
