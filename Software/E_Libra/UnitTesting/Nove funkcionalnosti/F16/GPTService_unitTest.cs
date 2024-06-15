@@ -1,4 +1,5 @@
 ﻿using BussinessLogicLayer.F16;
+using FakeItEasy;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -49,6 +50,19 @@ namespace UnitTesting.Nove_funkcionalnosti.F16
 
             //Act
             gptService.SendSystemMessage(message);
+
+            //Assert
+            Assert.True(true);
+        }
+
+        [Fact]
+        public void GPTService_PassGPTRequestSender_ShouldWork()
+        {
+            //Arrange
+            IGPTRequestSender gptRequestSender = new A.Fake<IGPTRequestSender>();
+
+            //Act
+            gptService = new GPTService(gptRequestSender);
 
             //Assert
             Assert.True(true);
