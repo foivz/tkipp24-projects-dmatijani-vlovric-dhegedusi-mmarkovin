@@ -7,7 +7,30 @@
         mc:Ignorable="d"
         Title="LibrAI_Panel" Height="500" Width="300"
         MinWidth="300" MaxWidth="300">
-    <Grid>
+    <StackPanel Orientation="Vertical" Background="#FFEFE8">
+        <Image Source="Images/LibrAI_Images/introduction.png" Width="100" x:Name="imgLaptop" Margin="10"/>
+        <TextBlock HorizontalAlignment="Center" FontSize="15" TextWrapping="Wrap">
+            Bok! Ja sam LibrAI, vaš virtualni asistent.
+        </TextBlock>
+        <TextBlock x:Name="tbEnterApiKey" HorizontalAlignment="Center" Width="300" TextWrapping="Wrap" TextAlignment="Center">
+            Prije korištenja, unesite vaš API ključ u sljedeće polje:
+        </TextBlock>
+        <StackPanel x:Name="spApiKeyEnter" Margin="10" Orientation="Horizontal">
+            <PasswordBox x:Name="pbApiKey" Width="200"/>
+            <Button Height="20" Width="50" HorizontalAlignment="Right" Margin="10,0,0,0"
+                    x:Name="btnSaveApiKey" Click="btnSaveApiKey_Click">
+                Spremi
+            </Button>
+        </StackPanel>
+        <StackPanel x:Name="spQuestionAnswer" Orientation="Vertical" Height="1000" Visibility="Hidden">
+            <TextBlock HorizontalAlignment="Center" FontSize="15" TextWrapping="Wrap">
+                Unesi pitanje:
+            </TextBlock>
+            <TextBox x:Name="txtRequest" Margin="10" Height="50" TextWrapping="Wrap"
+         GotFocus="txtRequest_GotFocus" LostFocus="txtRequest_LostFocus"/>
+            <Button x:Name="btnSendRequest" Width="80" Height="20" IsEnabled="False" Click="btnSendRequest_Click">Pitaj!</Button>
+            <TextBlock x:Name="tbResponse" Margin="10" Height="Auto" TextWrapping="Wrap"></TextBlock>
+        </StackPanel>
         
-    </Grid>
+    </StackPanel>
 </Window>

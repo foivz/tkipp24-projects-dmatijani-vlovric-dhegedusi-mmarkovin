@@ -426,6 +426,7 @@
     <Resource Include="Images\LibrAI_Images\listening.png" />
     <Resource Include="Images\LibrAI_Images\responding.png" />
     <Resource Include="Images\LibrAI_Images\thinking.png" />
+    <Resource Include="Images\LibrAI_Images\angry.png" />
     <Content Include="UserDocumentation\User_documentation_admin.pdf" />
     <Content Include="UserDocumentation\User_documentation_employee.pdf" />
     <Content Include="UserDocumentation\User_documentation_login.pdf" />
