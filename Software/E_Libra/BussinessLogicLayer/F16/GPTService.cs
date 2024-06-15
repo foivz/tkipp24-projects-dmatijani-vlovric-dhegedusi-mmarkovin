@@ -26,7 +26,8 @@ namespace BussinessLogicLayer.F16
 
         public void SendSystemMessage(string message)
         {
-            requestSender.SendRequest(new GPTRequest());
+            var gptRequest = new GPTRequest();
+            requestSender.SendRequest(gptRequest);
         }
     }
 }
