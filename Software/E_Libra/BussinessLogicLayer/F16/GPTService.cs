@@ -12,11 +12,13 @@ namespace BussinessLogicLayer.F16
     {
         public string systemMessage { get; set; }
         private IGPTRequestSender requestSender { get; set; }
+        private string GPTModel { get; set; }
 
-        public GPTService(IGPTRequestSender requestSender)
+        public GPTService(IGPTRequestSender requestSender, string gptModel = "gpt-3.5-turbo")
         {
             systemMessage = null;
             this.requestSender = requestSender;
+            this.GPTModel = gptModel;
         }
 
         public bool SetSystemMessage(string message)
@@ -25,25 +27,31 @@ namespace BussinessLogicLayer.F16
             return true;
         }
 
-        public async Task<string> SendSystemMessage(string message)
+        public async Task<string> SendSystemMessage(string message, double temperature = 1)
         {
-            return await SendMessage(message, "system");
+            return await SendMessage(message, "system", temperature);
         }
 
-        public async Task<string> SendUserMessage(string message)
+        public async Task<string> SendUserMessage(string message, double temperature = 1)
         {
-            return await SendMessage(message, "user");
+            return await SendMessage(message, "user", temperature);
         }
 
-        private async Task<string> SendMessage(string message, string role)
+        private async Task<string> SendMessage(string message, string role, double temperature = 1)
         {
-            var gptRequest = new GPTRequest();
+            
             GPTMessage gptMessage = new GPTMessage
             {
                 role = role,
                 content = message
             };
-            gptRequest.messages = new List<GPTMessage> { gptMessage };
+            List<GPTMessage> messagesToSend = new List<GPTMessage> { gptMessage };
+            var gptRequest = new GPTRequest
+            {
+                messages = messagesToSend,
+                model = GPTModel,
+                temperature = temperature
+            };
             AppendSystemMessage(gptRequest);
 
             return await requestSender.SendRequest(gptRequest);

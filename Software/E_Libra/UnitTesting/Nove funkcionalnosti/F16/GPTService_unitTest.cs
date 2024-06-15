@@ -24,7 +24,7 @@ namespace UnitTesting.Nove_funkcionalnosti.F16
         }
 
         [Fact]
-        public void GPTService_SetEmptySystemMessage_Runs()
+        public void SetSystemMessage_MessageIsEmpty_Runs()
         {
             //Act
             var result = gptService.SetSystemMessage("");
@@ -204,7 +204,6 @@ namespace UnitTesting.Nove_funkcionalnosti.F16
         [Fact]
         public void SendUserMessage_SystemMessageSet_FirstMessageShouldBeSystemAndSecondShouldBeTheSentMessage()
         {
-
             //Arrange
             string gottenSystemMessage = "";
             string gottenSentMessage = "";
@@ -230,7 +229,6 @@ namespace UnitTesting.Nove_funkcionalnosti.F16
         [Fact]
         public void SendUserMessage_SystemMessageSet_FirstRoleShouldBeSystemAndSecondRoleShouldBeUser()
         {
-
             //Arrange
             string gottenSystemRole = "";
             string gottenSentRole = "";
@@ -255,7 +253,6 @@ namespace UnitTesting.Nove_funkcionalnosti.F16
         [Fact]
         public void SendSystemMessage_SystemMessageSet_BothRolesShouldBeSystem()
         {
-
             //Arrange
             string gottenSystemRole = "";
             string gottenSentRole = "";
@@ -275,6 +272,162 @@ namespace UnitTesting.Nove_funkcionalnosti.F16
             //Assert
             Assert.Equal("system", gottenSystemRole);
             Assert.Equal("system", gottenSentRole);
+        }
+
+        [Fact]
+        public void SendUserMessage_UserMessageSent_GPTRequestShouldHaveModelSet()
+        {
+           //Arrange
+            string gottenModel = "";
+            string message = "Korisnik te pitao za pomoć oko knjige.";
+            A.CallTo(() => gptRequestSender.SendRequest(A<GPTRequest>.Ignored)).Invokes(call =>
+            {
+                GPTRequest request = call.GetArgument<GPTRequest>(0);
+                gottenModel = request.model;
+            });
+
+            //Act
+            gptService.SendUserMessage(message);
+
+            //Assert
+            Assert.Equal("gpt-3.5-turbo", gottenModel);
+        }
+
+        [Fact]
+        public void SendUserMessage_UserMessageSentWithoutTemperature_GPTRequestShouldHaveTemperatureSetTo1()
+        {
+            //Arrange
+            double gottenTemperature = 0;
+            string message = "Korisnik te pitao za pomoć oko knjige.";
+            A.CallTo(() => gptRequestSender.SendRequest(A<GPTRequest>.Ignored)).Invokes(call =>
+            {
+                GPTRequest request = call.GetArgument<GPTRequest>(0);
+                gottenTemperature = request.temperature;
+            });
+
+            //Act
+            gptService.SendUserMessage(message);
+
+            //Assert
+            Assert.Equal(1, gottenTemperature);
+        }
+
+        [Fact]
+        public void SendUserMessage_UserMessageSentWithTemperature_GPTRequestShouldHaveThatTemperatureSet()
+        {
+            //Arrange
+            double temperatureToSet = 1.3;
+            double gottenTemperature = 0;
+            string message = "Korisnik te pitao za pomoć oko knjige.";
+            A.CallTo(() => gptRequestSender.SendRequest(A<GPTRequest>.Ignored)).Invokes(call =>
+            {
+                GPTRequest request = call.GetArgument<GPTRequest>(0);
+                gottenTemperature = request.temperature;
+            });
+
+            //Act
+            gptService.SendUserMessage(message, temperatureToSet);
+
+            //Assert
+            Assert.Equal(temperatureToSet, gottenTemperature);
+        }
+
+        [Fact]
+        public void SendSystemMessage_SystemMessageSent_GPTRequestShouldHaveModelSet()
+        {
+            //Arrange
+            string gottenModel = "";
+            string message = "Korisnik te pitao za pomoć oko knjige.";
+            A.CallTo(() => gptRequestSender.SendRequest(A<GPTRequest>.Ignored)).Invokes(call =>
+            {
+                GPTRequest request = call.GetArgument<GPTRequest>(0);
+                gottenModel = request.model;
+            });
+
+            //Act
+            gptService.SendSystemMessage(message);
+
+            //Assert
+            Assert.Equal("gpt-3.5-turbo", gottenModel);
+        }
+
+        [Fact]
+        public void SendSystemMessage_SystemMessageSentWithoutTemperature_GPTRequestShouldHaveTemperatureSetTo1()
+        {
+            //Arrange
+            double gottenTemperature = 0;
+            string message = "Korisnik te pitao za pomoć oko knjige.";
+            A.CallTo(() => gptRequestSender.SendRequest(A<GPTRequest>.Ignored)).Invokes(call =>
+            {
+                GPTRequest request = call.GetArgument<GPTRequest>(0);
+                gottenTemperature = request.temperature;
+            });
+
+            //Act
+            gptService.SendSystemMessage(message);
+
+            //Assert
+            Assert.Equal(1, gottenTemperature);
+        }
+
+        [Fact]
+        public void SendSystemMessage_SystemMessageSentWithTemperature_GPTRequestShouldHaveThatTemperatureSet()
+        {
+            //Arrange
+            double temperatureToSet = 1.3;
+            double gottenTemperature = 0;
+            string message = "Korisnik te pitao za pomoć oko knjige.";
+            A.CallTo(() => gptRequestSender.SendRequest(A<GPTRequest>.Ignored)).Invokes(call =>
+            {
+                GPTRequest request = call.GetArgument<GPTRequest>(0);
+                gottenTemperature = request.temperature;
+            });
+
+            //Act
+            gptService.SendSystemMessage(message, temperatureToSet);
+
+            //Assert
+            Assert.Equal(temperatureToSet, gottenTemperature);
+        }
+
+        [Fact]
+        public void SendUserMessage_UserMessageSentAndModelSet_GPTRequestShouldHaveModelSet()
+        {
+            //Arrange
+            gptService = new GPTService(gptRequestSender, "gpt-4o");
+            string gottenModel = "";
+            string message = "Korisnik te pitao za pomoć oko knjige.";
+            A.CallTo(() => gptRequestSender.SendRequest(A<GPTRequest>.Ignored)).Invokes(call =>
+            {
+                GPTRequest request = call.GetArgument<GPTRequest>(0);
+                gottenModel = request.model;
+            });
+
+            //Act
+            gptService.SendUserMessage(message);
+
+            //Assert
+            Assert.Equal("gpt-4o", gottenModel);
+        }
+
+        [Fact]
+        public void SendSystemMessage_SystemMessageSentAndModelSet_GPTRequestShouldHaveModelSet()
+        {
+            //Arrange
+            gptService = new GPTService(gptRequestSender, "gpt-4o");
+            string gottenModel = "";
+            string message = "Korisnik te pitao za pomoć oko knjige.";
+            A.CallTo(() => gptRequestSender.SendRequest(A<GPTRequest>.Ignored)).Invokes(call =>
+            {
+                GPTRequest request = call.GetArgument<GPTRequest>(0);
+                gottenModel = request.model;
+            });
+
+            //Act
+            gptService.SendSystemMessage(message);
+
+            //Assert
+            Assert.Equal("gpt-4o", gottenModel);
         }
     }
 }
