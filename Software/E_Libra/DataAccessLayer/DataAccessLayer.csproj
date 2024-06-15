@@ -52,6 +52,8 @@
   <ItemGroup>
     <Compile Include="DatabaseModel.cs" />
     <Compile Include="Exceptions\BorrowException.cs" />
+    <Compile Include="F16\GPTRequestSender.cs" />
+    <Compile Include="F16\IGPTRequestSender.cs" />
     <Compile Include="Interfaces\IEmpoloyeeRepositroy.cs" />
     <Compile Include="Interfaces\IGenreRepository.cs" />
     <Compile Include="Interfaces\IMembersRepository.cs" />
@@ -91,8 +93,6 @@
       <Name>EntitiesLayer</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="F16\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
