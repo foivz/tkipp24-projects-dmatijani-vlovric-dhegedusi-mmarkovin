@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EntitiesLayer.F16;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,9 @@ namespace DataAccessLayer.F16
 {
     public class GPTRequestSender : IGPTRequestSender
     {
+        public void SendRequest(GPTRequest request)
+        {
 
+        }
     }
 }
