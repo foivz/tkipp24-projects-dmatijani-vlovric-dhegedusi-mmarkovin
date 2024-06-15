@@ -13,7 +13,7 @@ namespace DataAccessLayer.Repositories
     /*Viktor Lovrić, metode: Add, GenerateBarcodeId, BarcodeExists, GetAll, GetNonArchivedBooks, InsertNewCopies, ArhiveBook, GetNonArchivedBooksByName,
      * SearchBooks, TransformDigital, GetBooksByGenre, GetBooksByAuthor, GetBooksByYear, GetWishlistBooksForMember, AddBookToWishlist, RemoveBookFromWishlist
      */
-    // Domagoj Hegedušić, metode: GetMostPopularBookss
+    // Domagoj Hegedušić, metode: GetMostPopularBooks, GetTopBooks
     // David Matijanić: GetBookByBarcodeId, Update, GetBookBarcode, GetBooksByLibrary
 
     public class BookRepository : Repository<Book>, IBookRepository

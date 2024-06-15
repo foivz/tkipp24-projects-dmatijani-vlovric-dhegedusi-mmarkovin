@@ -22,23 +22,22 @@ namespace PresentationLayer {
     /// Interaction logic for UcTopBooks.xaml
     /// </summary>
     public partial class UcTopBooks : UserControl {
-        private readonly EmployeeService _employeeService;
+        private readonly MemberService _memberService;
+        private readonly BookServices _bookService;
 
         public UcTopBooks() {
             InitializeComponent();
-            var _bookService = new BookServices();
-            _employeeService = new EmployeeService();
+            _bookService = new BookServices();
+            _memberService = new MemberService();
 
+            ShowData();
+        }
 
-            var libraryId = _employeeService.GetEmployeeLibraryId(LoggedUser.Username);
+        private void ShowData() {
+            var libraryId = _memberService.GetMemberLibraryId(LoggedUser.Username);
 
-            Task.Run(() => {
-                List<MostPopularBooks> topBorrowedBooks = _bookService.GetTopBorrowedBooks(libraryId);
-
-                Application.Current.Dispatcher.Invoke(() => {
-                    dgTopBooks.ItemsSource = topBorrowedBooks;
-                });
-            });
+            List<MostPopularBooks> topBorrowedBooks = _bookService.GetTopBorrowedBooks(libraryId);
+            dgTopBooks.ItemsSource = topBorrowedBooks;
         }
     }
 }

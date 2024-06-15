@@ -6,12 +6,56 @@
              xmlns:local="clr-namespace:PresentationLayer"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <Style TargetType="DataGrid">
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="RowBackground" Value="#F2F2F2"/>
+            <Setter Property="AlternatingRowBackground" Value="#E6E6E6"/>
+            <Setter Property="GridLinesVisibility" Value="None"/>
+            <Setter Property="Margin" Value="10"/>
+            <Setter Property="Padding" Value="5"/>
+            <Setter Property="ColumnHeaderHeight" Value="40"/>
+            <Setter Property="RowHeight" Value="35"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="#CCCCCC"/>
+        </Style>
+
+        <Style TargetType="DataGridColumnHeader">
+            <Setter Property="Background" Value="#007ACC"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="Height" Value="50"/>
+        </Style>
+
+        <Style TargetType="DataGridRow">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="MinHeight" Value="40"/>
+            <Setter Property="Height" Value="Auto"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="5"/>
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="#D0E7FF"/>
+                    <Setter Property="Foreground" Value="Black"/>
+                </Trigger>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#E0F2FF"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
     <Grid>
         <DataGrid x:Name="dgTopBooks" AutoGenerateColumns="False" CanUserAddRows="False">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Naslov" Binding="{Binding Book_Name}" Width="*"/>
-                <DataGridTextColumn Header="Autor" Binding="{Binding Author_Name}" Width="*"/>
-                <DataGridTextColumn Header="Pročitano" Binding="{Binding Times_Borrowed}" Width="80"/>
+                <DataGridTextColumn Header="Naslov" Binding="{Binding Book_Name}" Width="*" />
+                <DataGridTextColumn Header="Autor" Binding="{Binding Author_Name}" Width="*" />
+                <DataGridTextColumn Header="Pročitano" Binding="{Binding Times_Borrowed}" Width="100" />
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

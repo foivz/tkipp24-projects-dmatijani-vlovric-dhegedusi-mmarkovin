@@ -14,6 +14,7 @@ namespace BussinessLogicLayer.services
 {
     //Viktor Lovrić
     // David Matijanić: GetBookByBarcodeId
+    // Domagoj Hegedušić: GetTopBorrowedBooks
     public class BookServices : IDisposable
     {
         public IBookRepository bookRepository { get; set; }
