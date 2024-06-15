@@ -23,6 +23,20 @@ namespace UnitTesting.Nove_funkcionalnosti.F16
             gptService = new GPTService(gptRequestSender);
         }
 
+        private void ArrangeSendRequest(Action<GPTRequest> callback)
+        {
+            A.CallTo(() => gptRequestSender.SendRequest(A<GPTRequest>.Ignored)).Invokes(call =>
+            {
+                GPTRequest request = call.GetArgument<GPTRequest>(0);
+                callback(request);
+            });
+        }
+
+        private void AssertRequestSent()
+        {
+            A.CallTo(() => gptRequestSender.SendRequest(A<GPTRequest>.Ignored)).MustHaveHappened();
+        }
+
         [Fact]
         public void SetSystemMessage_MessageIsEmpty_Runs()
         {
@@ -93,7 +107,7 @@ namespace UnitTesting.Nove_funkcionalnosti.F16
             gptService.SendSystemMessage(message);
 
             //Assert
-            A.CallTo(() => gptRequestSender.SendRequest(A<GPTRequest>.Ignored)).MustHaveHappened();
+            AssertRequestSent();
         }
 
         [Fact]
@@ -102,11 +116,7 @@ namespace UnitTesting.Nove_funkcionalnosti.F16
             //Arrange
             string gottenMessage = "";
             string message = "Korisnik te pitao za pomoć oko knjige.";
-            A.CallTo(() => gptRequestSender.SendRequest(A<GPTRequest>.Ignored)).Invokes(call =>
-            {
-                GPTRequest request = call.GetArgument<GPTRequest>(0);
-                gottenMessage = request.messages.First().content;
-            });
+            ArrangeSendRequest(request => gottenMessage = request.messages.First().content);
 
             //Act
             gptService.SendSystemMessage(message);
@@ -118,14 +128,10 @@ namespace UnitTesting.Nove_funkcionalnosti.F16
         [Fact]
         public void SendSystemMessage_MessageSent_RequestSenderGPTServiceShouldHaveRoleSetToSystem()
         {
-           //Arrange
+            //Arrange
             string gottenRole = "";
             string message = "Korisnik te pitao za pomoć oko knjige.";
-            A.CallTo(() => gptRequestSender.SendRequest(A<GPTRequest>.Ignored)).Invokes(call =>
-            {
-                GPTRequest request = call.GetArgument<GPTRequest>(0);
-                gottenRole = request.messages.First().role;
-            });
+            ArrangeSendRequest(request => gottenRole = request.messages.First().role);
 
             //Act
             gptService.SendSystemMessage(message);
@@ -145,7 +151,7 @@ namespace UnitTesting.Nove_funkcionalnosti.F16
             gptService.SendUserMessage(message);
 
             //Assert
-            A.CallTo(() => gptRequestSender.SendRequest(A<GPTRequest>.Ignored)).MustHaveHappened();
+            AssertRequestSent();
         }
 
         [Fact]
@@ -154,11 +160,7 @@ namespace UnitTesting.Nove_funkcionalnosti.F16
             //Arrange
             string gottenMessage = "";
             string message = "Korisnik te pitao za pomoć oko knjige.";
-            A.CallTo(() => gptRequestSender.SendRequest(A<GPTRequest>.Ignored)).Invokes(call =>
-            {
-                GPTRequest request = call.GetArgument<GPTRequest>(0);
-                gottenMessage = request.messages.First().content;
-            });
+            ArrangeSendRequest(request => gottenMessage = request.messages.First().content);
 
             //Act
             gptService.SendUserMessage(message);
@@ -170,15 +172,10 @@ namespace UnitTesting.Nove_funkcionalnosti.F16
         [Fact]
         public void SendUserMessage_MessageSent_RequestSenderGPTServiceShouldHaveRoleSetToUser()
         {
-
             //Arrange
             string gottenRole = "";
             string message = "Korisnik te pitao za pomoć oko knjige.";
-            A.CallTo(() => gptRequestSender.SendRequest(A<GPTRequest>.Ignored)).Invokes(call =>
-            {
-                GPTRequest request = call.GetArgument<GPTRequest>(0);
-                gottenRole = request.messages.First().role;
-            });
+            ArrangeSendRequest(request => gottenRole = request.messages.First().role);
 
             //Act
             gptService.SendUserMessage(message);
@@ -210,9 +207,8 @@ namespace UnitTesting.Nove_funkcionalnosti.F16
             string systemMessage = "Ti si pomoćnik u knjižnici.";
             string message = "Korisnik te pitao za pomoć oko knjige.";
             gptService.SetSystemMessage(systemMessage);
-            A.CallTo(() => gptRequestSender.SendRequest(A<GPTRequest>.Ignored)).Invokes(call =>
+            ArrangeSendRequest(request =>
             {
-                GPTRequest request = call.GetArgument<GPTRequest>(0);
                 gottenSystemMessage = request.messages[0].content;
                 gottenSentMessage = request.messages[1].content;
             });
@@ -225,7 +221,6 @@ namespace UnitTesting.Nove_funkcionalnosti.F16
             Assert.Equal(message, gottenSentMessage);
         }
 
-
         [Fact]
         public void SendUserMessage_SystemMessageSet_FirstRoleShouldBeSystemAndSecondRoleShouldBeUser()
         {
@@ -235,9 +230,8 @@ namespace UnitTesting.Nove_funkcionalnosti.F16
             string systemMessage = "Ti si pomoćnik u knjižnici.";
             string message = "Korisnik te pitao za pomoć oko knjige.";
             gptService.SetSystemMessage(systemMessage);
-            A.CallTo(() => gptRequestSender.SendRequest(A<GPTRequest>.Ignored)).Invokes(call =>
+            ArrangeSendRequest(request =>
             {
-                GPTRequest request = call.GetArgument<GPTRequest>(0);
                 gottenSystemRole = request.messages[0].role;
                 gottenSentRole = request.messages[1].role;
             });
@@ -259,9 +253,8 @@ namespace UnitTesting.Nove_funkcionalnosti.F16
             string systemMessage = "Ti si pomoćnik u knjižnici.";
             string message = "Korisnik te pitao za pomoć oko knjige.";
             gptService.SetSystemMessage(systemMessage);
-            A.CallTo(() => gptRequestSender.SendRequest(A<GPTRequest>.Ignored)).Invokes(call =>
+            ArrangeSendRequest(request =>
             {
-                GPTRequest request = call.GetArgument<GPTRequest>(0);
                 gottenSystemRole = request.messages[0].role;
                 gottenSentRole = request.messages[1].role;
             });
@@ -277,14 +270,10 @@ namespace UnitTesting.Nove_funkcionalnosti.F16
         [Fact]
         public void SendUserMessage_UserMessageSent_GPTRequestShouldHaveModelSet()
         {
-           //Arrange
+            //Arrange
             string gottenModel = "";
             string message = "Korisnik te pitao za pomoć oko knjige.";
-            A.CallTo(() => gptRequestSender.SendRequest(A<GPTRequest>.Ignored)).Invokes(call =>
-            {
-                GPTRequest request = call.GetArgument<GPTRequest>(0);
-                gottenModel = request.model;
-            });
+            ArrangeSendRequest(request => gottenModel = request.model);
 
             //Act
             gptService.SendUserMessage(message);
@@ -299,11 +288,7 @@ namespace UnitTesting.Nove_funkcionalnosti.F16
             //Arrange
             double gottenTemperature = 0;
             string message = "Korisnik te pitao za pomoć oko knjige.";
-            A.CallTo(() => gptRequestSender.SendRequest(A<GPTRequest>.Ignored)).Invokes(call =>
-            {
-                GPTRequest request = call.GetArgument<GPTRequest>(0);
-                gottenTemperature = request.temperature;
-            });
+            ArrangeSendRequest(request => gottenTemperature = request.temperature);
 
             //Act
             gptService.SendUserMessage(message);
@@ -319,11 +304,7 @@ namespace UnitTesting.Nove_funkcionalnosti.F16
             double temperatureToSet = 1.3;
             double gottenTemperature = 0;
             string message = "Korisnik te pitao za pomoć oko knjige.";
-            A.CallTo(() => gptRequestSender.SendRequest(A<GPTRequest>.Ignored)).Invokes(call =>
-            {
-                GPTRequest request = call.GetArgument<GPTRequest>(0);
-                gottenTemperature = request.temperature;
-            });
+            ArrangeSendRequest(request => gottenTemperature = request.temperature);
 
             //Act
             gptService.SendUserMessage(message, temperatureToSet);
@@ -338,11 +319,7 @@ namespace UnitTesting.Nove_funkcionalnosti.F16
             //Arrange
             string gottenModel = "";
             string message = "Korisnik te pitao za pomoć oko knjige.";
-            A.CallTo(() => gptRequestSender.SendRequest(A<GPTRequest>.Ignored)).Invokes(call =>
-            {
-                GPTRequest request = call.GetArgument<GPTRequest>(0);
-                gottenModel = request.model;
-            });
+            ArrangeSendRequest(request => gottenModel = request.model);
 
             //Act
             gptService.SendSystemMessage(message);
@@ -351,17 +328,12 @@ namespace UnitTesting.Nove_funkcionalnosti.F16
             Assert.Equal("gpt-3.5-turbo", gottenModel);
         }
 
-        [Fact]
         public void SendSystemMessage_SystemMessageSentWithoutTemperature_GPTRequestShouldHaveTemperatureSetTo1()
         {
             //Arrange
             double gottenTemperature = 0;
             string message = "Korisnik te pitao za pomoć oko knjige.";
-            A.CallTo(() => gptRequestSender.SendRequest(A<GPTRequest>.Ignored)).Invokes(call =>
-            {
-                GPTRequest request = call.GetArgument<GPTRequest>(0);
-                gottenTemperature = request.temperature;
-            });
+            ArrangeSendRequest(request => gottenTemperature = request.temperature);
 
             //Act
             gptService.SendSystemMessage(message);
@@ -377,11 +349,7 @@ namespace UnitTesting.Nove_funkcionalnosti.F16
             double temperatureToSet = 1.3;
             double gottenTemperature = 0;
             string message = "Korisnik te pitao za pomoć oko knjige.";
-            A.CallTo(() => gptRequestSender.SendRequest(A<GPTRequest>.Ignored)).Invokes(call =>
-            {
-                GPTRequest request = call.GetArgument<GPTRequest>(0);
-                gottenTemperature = request.temperature;
-            });
+            ArrangeSendRequest(request => gottenTemperature = request.temperature);
 
             //Act
             gptService.SendSystemMessage(message, temperatureToSet);
@@ -397,11 +365,7 @@ namespace UnitTesting.Nove_funkcionalnosti.F16
             gptService = new GPTService(gptRequestSender, "gpt-4o");
             string gottenModel = "";
             string message = "Korisnik te pitao za pomoć oko knjige.";
-            A.CallTo(() => gptRequestSender.SendRequest(A<GPTRequest>.Ignored)).Invokes(call =>
-            {
-                GPTRequest request = call.GetArgument<GPTRequest>(0);
-                gottenModel = request.model;
-            });
+            ArrangeSendRequest(request => gottenModel = request.model);
 
             //Act
             gptService.SendUserMessage(message);
@@ -417,11 +381,7 @@ namespace UnitTesting.Nove_funkcionalnosti.F16
             gptService = new GPTService(gptRequestSender, "gpt-4o");
             string gottenModel = "";
             string message = "Korisnik te pitao za pomoć oko knjige.";
-            A.CallTo(() => gptRequestSender.SendRequest(A<GPTRequest>.Ignored)).Invokes(call =>
-            {
-                GPTRequest request = call.GetArgument<GPTRequest>(0);
-                gottenModel = request.model;
-            });
+            ArrangeSendRequest(request => gottenModel = request.model);
 
             //Act
             gptService.SendSystemMessage(message);
