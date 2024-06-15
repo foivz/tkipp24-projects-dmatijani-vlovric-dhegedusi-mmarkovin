@@ -67,5 +67,19 @@ namespace UnitTesting.Nove_funkcionalnosti.F16
             //Assert
             Assert.True(true);
         }
+
+        [Fact]
+        public void GPTService_SendSystemMessage_RequestSenderShouldReceiveGPTRequestInstance()
+        {
+            //Arrange
+            string message = "Korisnik te pitao za pomoć oko knjige.";
+            A.CallTo(() => gptRequestSender.SendRequest(A<GPTRequest>.Ignored)).DoesNothing();
+
+            //Act
+            gptService.SendSystemMessage(message);
+
+            //Assert
+            A.CallTo(() => gptRequestSender.SendRequest(A<GPTRequest>.Ignored)).MustHaveHappened();
+        }
     }
 }
