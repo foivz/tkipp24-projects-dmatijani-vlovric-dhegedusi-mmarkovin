@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BussinessLogicLayer.F16;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,7 +21,7 @@ namespace UnitTesting.Nove_funkcionalnosti.F16
             var result = gptService.SetSystemMessage("");
 
             //Assert
-            result.Should().Be(true);
+            Assert.True(result);
         }
     }
 }
