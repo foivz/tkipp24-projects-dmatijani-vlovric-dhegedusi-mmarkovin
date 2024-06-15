@@ -10,17 +10,33 @@ namespace IntegrationTesting.Nove_funkcionalnosti.F15 {
     [Collection("Database collection")]
     public class BookService_integrationTest {
         readonly BookServices _bookService;
-        readonly DatabaseFixture fixture;
+        readonly DatabaseFixture _fixture;
 
         public BookService_integrationTest(DatabaseFixture fixture) {
             _bookService = new BookServices();
-            this.fixture = fixture;
-            this.fixture.ResetDatabase();
+            this._fixture = fixture;
+            this._fixture.ResetDatabase();
         }
 
         [Fact]
         public void GetTopBorrowedBooks_ReturnsCorrectBooks() {
             // Arrange
+            InsertData();
+
+            var expectedBooks = new List<MostPopularBooks>
+            {
+                new MostPopularBooks { Book_Name = "Hamlet", Author_Name = "William Shakespare", Times_Borrowed = 2, Url_Photo = "slika1", Order_Number = 1 },
+                new MostPopularBooks { Book_Name = "Ilijada", Author_Name = "Homer Borovski", Times_Borrowed = 1, Url_Photo = "slika2", Order_Number = 2 }
+            };
+
+            // Act
+            var result = _bookService.GetTopBorrowedBooks(1);
+
+            // Assert
+            result.Should().BeEquivalentTo(expectedBooks);
+        }
+
+        private void InsertData() {
             string sql =
                 "INSERT [dbo].[Library] ([id], [name], [OIB], [phone], [email], [price_day_late], [address], [membership_duration]) VALUES (1, N'Knjiznica', 123, 331, N'email', 3, N'adresa', GETDATE());" +
                 "INSERT [dbo].[Member] ([name], [surname], [username], [password], [OIB], [membership_date], [barcode_id], [Library_id]) VALUES (N'Ivo', N'Ivic', N'iivic', N'ivo123', '57647557445', GETDATE(), N'B001', 1);" +
@@ -39,18 +55,6 @@ namespace IntegrationTesting.Nove_funkcionalnosti.F15 {
                 "INSERT [dbo].[Borrow] ([Book_id], [Member_id], [borrow_status], [borrow_date], [return_date], [Employee_borrow_id], [Employee_return_id]) VALUES (2, 1, 0, GETDATE(), GETDATE(), 1, 1);" +
                 "INSERT [dbo].[Borrow] ([Book_id], [Member_id], [borrow_status], [borrow_date], [return_date], [Employee_borrow_id], [Employee_return_id]) VALUES (1, 2, 0, GETDATE(), GETDATE(), 1, 1);";
             Helper.ExecuteCustomSql(sql);
-
-            var expectedBooks = new List<MostPopularBooks>
-            {
-                new MostPopularBooks { Book_Name = "Hamlet", Author_Name = "William Shakespare", Times_Borrowed = 2, Url_Photo = "slika1", Order_Number = 1 },
-                new MostPopularBooks { Book_Name = "Ilijada", Author_Name = "Homer Borovski", Times_Borrowed = 1, Url_Photo = "slika2", Order_Number = 2 }
-            };
-
-            // Act
-            var result = _bookService.GetTopBorrowedBooks(1);
-
-            // Assert
-            result.Should().BeEquivalentTo(expectedBooks);
         }
     }
 }
