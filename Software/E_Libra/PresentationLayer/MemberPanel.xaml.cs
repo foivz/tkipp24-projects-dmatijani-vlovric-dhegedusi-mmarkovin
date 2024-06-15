@@ -20,7 +20,10 @@ using System.Windows.Shapes;
 namespace PresentationLayer {
     //Viktor Lovrić, metode: Window_Loaded
     //Magdalena Markovinocić, metode: btnLogout_Click, btnNotifications_Click
+    //David Matijanić, metode: btnClickableImage_Click, OpenLibrAIPanel
     public partial class MemberPanel : Window {
+        private LibrAI_Panel librAIPanel;
+
         public MemberPanel() {
             InitializeComponent();
 
@@ -81,6 +84,24 @@ namespace PresentationLayer {
         private void ShowHelp() {
             var path = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "PDF", "User_documentation_member.pdf");
             Process.Start(path);
+        }
+
+        private void btnClickableImage_Click(object sender, RoutedEventArgs e)
+        {
+            OpenLibrAIPanel();
+        }
+
+        private void OpenLibrAIPanel()
+        {
+            if (librAIPanel == null)
+            {
+                librAIPanel = new LibrAI_Panel();
+                librAIPanel.Owner = this;
+                librAIPanel.Show();
+            } else
+            {
+                librAIPanel.Activate();
+            }
         }
     }
 }
