@@ -44,6 +44,13 @@ namespace BussinessLogicLayer.F16
                 content = message
             };
             gptRequest.messages = new List<GPTMessage> { gptMessage };
+            AppendSystemMessage(gptRequest);
+
+            return await requestSender.SendRequest(gptRequest);
+        }
+
+        private void AppendSystemMessage(GPTRequest gptRequest)
+        {
             if (systemMessage != null)
             {
                 gptRequest.messages.Insert(0, new GPTMessage
@@ -52,8 +59,6 @@ namespace BussinessLogicLayer.F16
                     content = systemMessage
                 });
             }
-            GPTResponse response = await requestSender.SendRequest(gptRequest);
-            return response.ToString();
         }
     }
 }

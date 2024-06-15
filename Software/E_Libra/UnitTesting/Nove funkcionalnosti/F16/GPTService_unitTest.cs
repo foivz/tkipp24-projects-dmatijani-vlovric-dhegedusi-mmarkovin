@@ -34,7 +34,7 @@ namespace UnitTesting.Nove_funkcionalnosti.F16
         }
 
         [Fact]
-        public void GPTService_SetSystemMessage_MessageShouldBeSet()
+        public void SetSystemMessage_Set_MessageShouldBeSet()
         {
             //Arrange
             string message = "Ti si pomoćnik u knjižnici.";
@@ -47,13 +47,26 @@ namespace UnitTesting.Nove_funkcionalnosti.F16
         }
 
         [Fact]
-        public void GPTService_SendSystemMessage_ShouldBeAbleToSend()
+        public void SendSystemMessage_MessageSent_ShouldBeAbleToSend()
         {
             //Arrange
             string message = "Korisnik te pitao za pomoć oko knjige.";
 
             //Act
             gptService.SendSystemMessage(message);
+
+            //Assert
+            Assert.True(true);
+        }
+
+        [Fact]
+        public void SendUserMessage_MessageSent_ShouldBeAbleToSend()
+        {
+            //Arrange
+            string message = "Korisnik te pitao za pomoć oko knjige.";
+
+            //Act
+            gptService.SendUserMessage(message);
 
             //Assert
             Assert.True(true);
@@ -70,11 +83,11 @@ namespace UnitTesting.Nove_funkcionalnosti.F16
         }
 
         [Fact]
-        public void GPTService_SendSystemMessage_RequestSenderShouldReceiveGPTRequestInstance()
+        public void SendSystemMessage_MessageSent_RequestSenderShouldReceiveGPTRequestInstance()
         {
             //Arrange
             string message = "Korisnik te pitao za pomoć oko knjige.";
-            A.CallTo(() => gptRequestSender.SendRequest(A<GPTRequest>.Ignored)).Returns(new GPTResponse());
+            A.CallTo(() => gptRequestSender.SendRequest(A<GPTRequest>.Ignored)).Returns("");
 
             //Act
             gptService.SendSystemMessage(message);
@@ -84,7 +97,7 @@ namespace UnitTesting.Nove_funkcionalnosti.F16
         }
 
         [Fact]
-        public void GPTService_SendSystemMessage_RequestSenderGPTServiceShouldHaveMessageSet()
+        public void SendSystemMessage_MessageSent_RequestSenderGPTServiceShouldHaveMessageSet()
         {
             //Arrange
             string gottenMessage = "";
@@ -103,9 +116,8 @@ namespace UnitTesting.Nove_funkcionalnosti.F16
         }
 
         [Fact]
-        public void GPTService_SendSystemMessage_RequestSenderGPTServiceShouldHaveRoleSetToSystem()
+        public void SendSystemMessage_MessageSent_RequestSenderGPTServiceShouldHaveRoleSetToSystem()
         {
-
            //Arrange
             string gottenRole = "";
             string message = "Korisnik te pitao za pomoć oko knjige.";
@@ -123,11 +135,11 @@ namespace UnitTesting.Nove_funkcionalnosti.F16
         }
 
         [Fact]
-        public void GPTService_SendUserMessage_RequestSenderShouldReceiveGPTRequestInstance()
+        public void SendUserMessage_MessageSent_RequestSenderShouldReceiveGPTRequestInstance()
         {
             //Arrange
             string message = "Korisnik te pitao za pomoć oko knjige.";
-            A.CallTo(() => gptRequestSender.SendRequest(A<GPTRequest>.Ignored)).Returns(new GPTResponse());
+            A.CallTo(() => gptRequestSender.SendRequest(A<GPTRequest>.Ignored)).Returns("");
 
             //Act
             gptService.SendUserMessage(message);
@@ -137,7 +149,7 @@ namespace UnitTesting.Nove_funkcionalnosti.F16
         }
 
         [Fact]
-        public void GPTService_SendUserMessage_RequestSenderGPTServiceShouldHaveMessageSet()
+        public void SendUserMessage_MessageSent_RequestSenderGPTServiceShouldHaveMessageSet()
         {
             //Arrange
             string gottenMessage = "";
@@ -156,7 +168,7 @@ namespace UnitTesting.Nove_funkcionalnosti.F16
         }
 
         [Fact]
-        public void GPTService_SendUserMessage_RequestSenderGPTServiceShouldHaveRoleSetToUser()
+        public void SendUserMessage_MessageSent_RequestSenderGPTServiceShouldHaveRoleSetToUser()
         {
 
             //Arrange
@@ -176,11 +188,11 @@ namespace UnitTesting.Nove_funkcionalnosti.F16
         }
 
         [Fact]
-        public async Task GPTService_SendSystemMessage_ShouldReturnString()
+        public async Task SendSystemMessage_MessageSent_ShouldReturnString()
         {
             //Arrange
             string message = "Korisnik te pitao za pomoć oko knjige.";
-            A.CallTo(() => gptRequestSender.SendRequest(A<GPTRequest>.Ignored)).Returns(new GPTResponse());
+            A.CallTo(() => gptRequestSender.SendRequest(A<GPTRequest>.Ignored)).Returns("");
 
             //Act
             var result = await gptService.SendSystemMessage(message);
@@ -190,7 +202,7 @@ namespace UnitTesting.Nove_funkcionalnosti.F16
         }
 
         [Fact]
-        public void GPTService_SystemMessageSet_FirstMessageShouldBeSystemAndSecondShouldBeTheSentMessage()
+        public void SendUserMessage_SystemMessageSet_FirstMessageShouldBeSystemAndSecondShouldBeTheSentMessage()
         {
 
             //Arrange
@@ -212,6 +224,57 @@ namespace UnitTesting.Nove_funkcionalnosti.F16
             //Assert
             Assert.Equal(systemMessage, gottenSystemMessage);
             Assert.Equal(message, gottenSentMessage);
+        }
+
+
+        [Fact]
+        public void SendUserMessage_SystemMessageSet_FirstRoleShouldBeSystemAndSecondRoleShouldBeUser()
+        {
+
+            //Arrange
+            string gottenSystemRole = "";
+            string gottenSentRole = "";
+            string systemMessage = "Ti si pomoćnik u knjižnici.";
+            string message = "Korisnik te pitao za pomoć oko knjige.";
+            gptService.SetSystemMessage(systemMessage);
+            A.CallTo(() => gptRequestSender.SendRequest(A<GPTRequest>.Ignored)).Invokes(call =>
+            {
+                GPTRequest request = call.GetArgument<GPTRequest>(0);
+                gottenSystemRole = request.messages[0].role;
+                gottenSentRole = request.messages[1].role;
+            });
+
+            //Act
+            gptService.SendUserMessage(message);
+
+            //Assert
+            Assert.Equal("system", gottenSystemRole);
+            Assert.Equal("user", gottenSentRole);
+        }
+
+        [Fact]
+        public void SendSystemMessage_SystemMessageSet_BothRolesShouldBeSystem()
+        {
+
+            //Arrange
+            string gottenSystemRole = "";
+            string gottenSentRole = "";
+            string systemMessage = "Ti si pomoćnik u knjižnici.";
+            string message = "Korisnik te pitao za pomoć oko knjige.";
+            gptService.SetSystemMessage(systemMessage);
+            A.CallTo(() => gptRequestSender.SendRequest(A<GPTRequest>.Ignored)).Invokes(call =>
+            {
+                GPTRequest request = call.GetArgument<GPTRequest>(0);
+                gottenSystemRole = request.messages[0].role;
+                gottenSentRole = request.messages[1].role;
+            });
+
+            //Act
+            gptService.SendSystemMessage(message);
+
+            //Assert
+            Assert.Equal("system", gottenSystemRole);
+            Assert.Equal("system", gottenSentRole);
         }
     }
 }

@@ -9,11 +9,11 @@ namespace DataAccessLayer.F16
 {
     public class GPTRequestSender : IGPTRequestSender
     {
-        public async Task<GPTResponse> SendRequest(GPTRequest request)
+        public async Task<string> SendRequest(GPTRequest request)
         {
             await Task.Delay(100);
 
-            return new GPTResponse();
+            return new GPTResponse().ToString();
         }
     }
 }

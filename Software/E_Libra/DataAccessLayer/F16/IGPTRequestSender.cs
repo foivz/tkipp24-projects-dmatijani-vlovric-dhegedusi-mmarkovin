@@ -9,6 +9,6 @@ namespace DataAccessLayer.F16
 {
     public interface IGPTRequestSender
     {
-        Task<GPTResponse> SendRequest(GPTRequest request);
+        Task<string> SendRequest(GPTRequest request);
     }
 }
