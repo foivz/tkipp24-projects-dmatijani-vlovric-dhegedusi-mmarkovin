@@ -15,5 +15,10 @@ namespace BussinessLogicLayer.F16
             systemMessage = message;
             return true;
         }
+
+        public void SendSystemMessage(string message)
+        {
+
+        }
     }
 }
