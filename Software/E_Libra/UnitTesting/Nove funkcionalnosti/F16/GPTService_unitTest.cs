@@ -11,12 +11,16 @@ namespace UnitTesting.Nove_funkcionalnosti.F16
     //David Matijanić
     public class GPTService_unitTest
     {
+        private GPTService gptService { get; set; }
+
+        public GPTService_unitTest()
+        {
+            gptService = new GPTService();
+        }
+
         [Fact]
         public void GPTService_SetEmptySystemMessage_Runs()
         {
-            //Arrange
-            var gptService = new GPTService();
-
             //Act
             var result = gptService.SetSystemMessage("");
 
@@ -28,7 +32,6 @@ namespace UnitTesting.Nove_funkcionalnosti.F16
         public void GPTService_SetSystemMessage_MessageShouldBeSet()
         {
             //Arrange
-            var gptService = new GPTService();
             string message = "Ti si pomoćnik u knjižnici.";
 
             //Act
