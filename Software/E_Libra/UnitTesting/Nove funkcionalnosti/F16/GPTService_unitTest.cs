@@ -9,7 +9,7 @@ using Xunit;
 namespace UnitTesting.Nove_funkcionalnosti.F16
 {
     //David Matijanić
-    public class GPTService_integrationTest
+    public class GPTService_unitTest
     {
         [Fact]
         public void GPTService_SetEmptySystemMessage_Runs()
