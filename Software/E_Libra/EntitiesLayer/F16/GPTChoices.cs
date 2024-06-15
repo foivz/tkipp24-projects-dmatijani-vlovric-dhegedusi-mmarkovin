@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IntegrationTesting.Nove_funkcionalnosti.F16
+namespace EntitiesLayer.F16
 {
-    internal class Class1
+    public class GPTChoices
     {
+        public GPTMessage message { get; set; }
     }
 }

@@ -68,6 +68,7 @@
     <Compile Include="Entities\Member.cs" />
     <Compile Include="Entities\MostPopularBooks.cs" />
     <Compile Include="Entities\MostPopularGenres.cs" />
+    <Compile Include="F16\GPTChoices.cs" />
     <Compile Include="F16\GPTMessage.cs" />
     <Compile Include="F16\GPTRequest.cs" />
     <Compile Include="F16\GPTResponse.cs" />

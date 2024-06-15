@@ -8,5 +8,6 @@ namespace EntitiesLayer.F16
 {
     public class GPTResponse
     {
+        public List<GPTChoices> choices { get; set; }
     }
 }
