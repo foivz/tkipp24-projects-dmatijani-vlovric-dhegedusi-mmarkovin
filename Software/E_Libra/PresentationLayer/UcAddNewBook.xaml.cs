@@ -223,13 +223,11 @@ namespace PresentationLayer
             if (string.IsNullOrEmpty(search))
             {
                 LoadGenres();
+                return;
             }
-            else
+            using (GenreServices genreServices = new GenreServices())
             {
-                using(GenreServices genreServices = new GenreServices())
-                {
-                    cmbGenre.ItemsSource = genreServices.SearchGenres(search);
-                }
+                cmbGenre.ItemsSource = genreServices.SearchGenres(search);
             }
         }
 
@@ -239,13 +237,11 @@ namespace PresentationLayer
             if (string.IsNullOrEmpty(search))
             {
                 LoadAuthors();
+                return;
             }
-            else
+            using (AuthorService authorService = new AuthorService())
             {
-                using (AuthorService authorService = new AuthorService())
-                {
-                    cmbAuthor.ItemsSource = authorService.SearchAuthors(search);
-                }
+                cmbAuthor.ItemsSource = authorService.SearchAuthors(search);
             }
         }
     }
