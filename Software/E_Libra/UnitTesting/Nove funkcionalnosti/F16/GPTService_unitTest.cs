@@ -101,5 +101,25 @@ namespace UnitTesting.Nove_funkcionalnosti.F16
             //Assert
             Assert.Equal(message, gottenMessage);
         }
+
+        [Fact]
+        public void GPTService_SendSystemMessage_RequestSenderGPTServiceShouldHaveRoleSetToSystem()
+        {
+
+           //Arrange
+            string gottenRole = "";
+            string message = "Korisnik te pitao za pomoć oko knjige.";
+            A.CallTo(() => gptRequestSender.SendRequest(A<GPTRequest>.Ignored)).Invokes(call =>
+            {
+                GPTRequest request = call.GetArgument<GPTRequest>(0);
+                gottenRole = request.messages.First().role;
+            });
+
+            //Act
+            gptService.SendSystemMessage(message);
+
+            //Assert
+            Assert.Equal("system", gottenRole);
+        }
     }
 }
