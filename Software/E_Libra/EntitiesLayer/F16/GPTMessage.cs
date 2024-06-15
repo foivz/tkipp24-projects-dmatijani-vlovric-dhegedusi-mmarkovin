@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Mime;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace EntitiesLayer.F16
 {
-    public class GPTRequest
+    public class GPTMessage
     {
-        public List<GPTMessage> messages { get; set; }
+        public string content { get; set; }
     }
 }
