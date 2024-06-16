@@ -33,12 +33,12 @@ jobs:
         with:
           type: 'zip'
           filename: 'setup.zip'
-          path: Publish
+          path: CD
       
       - name: Create a release
         uses: marvinpinto/action-automatic-releases@v1.2.1
         with:
           repo_token: ${{secrets.GITHUB_TOKEN}}
           prerelease: false
-          files: setup.zip
+          files: CD/setup.zip
       
