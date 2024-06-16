@@ -31,8 +31,9 @@ namespace DataAccessLayer.Interfaces
         IQueryable<BookViewModel> GetWishlistBooksForMember(string username);
         bool AddBookToWishlist(int memberId, int bookId);
         bool RemoveBookFromWishlist(int memberId, int bookId);
-        IEnumerable<MostPopularBooks> GetMostPopularBooks(int Library_id);
+        IEnumerable<MostPopularBooksViewModel> GetMostPopularBooks(int Library_id);
         IQueryable<string> GetBookBarcode(int id);
         IQueryable<Book> GetBooksByLibrary(int libraryId);
+        IEnumerable<MostPopularBooksViewModel> GetTopBooks(int libraryId);
     }
 }

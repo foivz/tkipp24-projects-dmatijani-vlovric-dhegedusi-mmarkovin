@@ -2,6 +2,7 @@
 using DataAccessLayer.Interfaces;
 using DataAccessLayer.Repositories;
 using EntitiesLayer;
+using EntitiesLayer.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,7 @@ namespace BussinessLogicLayer.services
 {
     //Viktor Lovrić
     // David Matijanić: GetBookByBarcodeId
+    // Domagoj Hegedušić: GetTopBorrowedBooks
     public class BookServices : IDisposable
     {
         public IBookRepository bookRepository { get; set; }
@@ -185,6 +187,17 @@ namespace BussinessLogicLayer.services
 
         public List<Book> GetBooksByLibrary(int libraryId) {
             return bookRepository.GetBooksByLibrary(libraryId).ToList();
+        }
+
+
+        public List<MostPopularBooksViewModel> GetTopBorrowedBooks(int libraryId) {
+            var books = bookRepository.GetTopBooks(libraryId).ToList();
+
+            for (int i = 0; i < books.Count; i++) {
+                books[i].Order_Number = i + 1;
+            }
+
+            return books;
         }
     }
 }

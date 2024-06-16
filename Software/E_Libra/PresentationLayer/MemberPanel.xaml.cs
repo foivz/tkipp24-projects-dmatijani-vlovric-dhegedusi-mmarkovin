@@ -21,24 +21,20 @@ namespace PresentationLayer {
     //Viktor Lovrić, metode: Window_Loaded
     //Magdalena Markovinocić, metode: btnLogout_Click, btnNotifications_Click
     //David Matijanić, metode: btnClickableImage_Click, OpenLibrAIPanel
-    public partial class MemberPanel : Window
-    {
+    public partial class MemberPanel : Window {
         private LibrAI_Panel librAIPanel { get; set; }
 
-        public MemberPanel()
-        {
+        public MemberPanel() {
             InitializeComponent();
 
             KeyDown += MainWindow_KeyDown;
         }
 
-        private void btnBorrow_Click(object sender, RoutedEventArgs e)
-        {
+        private void btnBorrow_Click(object sender, RoutedEventArgs e) {
             contentPanel.Content = new UcMemberBorrows();
         }
 
-        private void btnLogout_Click(object sender, RoutedEventArgs e)
-        {
+        private void btnLogout_Click(object sender, RoutedEventArgs e) {
             LoggedUser.Username = null;
             LoggedUser.UserType = null;
             Hide();
@@ -47,90 +43,77 @@ namespace PresentationLayer {
             Close();
         }
 
-        private void btnSearch_Click(object sender, RoutedEventArgs e)
-        {
+        private void btnSearch_Click(object sender, RoutedEventArgs e) {
             contentPanel.Content = new UcBookSearchFilter();
         }
 
-        private void btnWishlist_Click(object sender, RoutedEventArgs e)
-        {
+        private void btnWishlist_Click(object sender, RoutedEventArgs e) {
             contentPanel.Content = new UcWishlist();
         }
 
-        private void btnReservations_Click(object sender, RoutedEventArgs e)
-        {
+        private void btnReservations_Click(object sender, RoutedEventArgs e) {
             contentPanel.Content = new UcReservations();
         }
 
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-            using (ReservationService reservationService = new ReservationService())
-            {
+        private void Window_Loaded(object sender, RoutedEventArgs e) {
+            using (ReservationService reservationService = new ReservationService()) {
                 reservationService.CheckReservationDates();
                 var res = reservationService.ShowExistingReservations();
-                if (!string.IsNullOrEmpty(res))
-                {
+                if (!string.IsNullOrEmpty(res)) {
                     MessageBox.Show(res);
                 }
             }
             CheckIsMembershipExpiringSoon();
         }
 
-        private void btnNotifications_Click(object sender, RoutedEventArgs e)
-        {
+        private void btnNotifications_Click(object sender, RoutedEventArgs e) {
             UcAllNotificationsMember memberNotifications = new UcAllNotificationsMember();
             contentPanel.Content = memberNotifications;
         }
 
-        private void MainWindow_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.F1)
-            {
+        private void MainWindow_KeyDown(object sender, KeyEventArgs e) {
+            if (e.Key == Key.F1) {
                 ShowHelp();
             }
         }
 
-        private void ShowHelp()
-        {
+        private void ShowHelp() {
             var path = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "PDF", "User_documentation_member.pdf");
             Process.Start(path);
         }
-        
-        private void btnClickableImage_Click(object sender, RoutedEventArgs e)
-        {
+
+        private void btnClickableImage_Click(object sender, RoutedEventArgs e) {
             OpenLibrAIPanel();
         }
 
-        private void OpenLibrAIPanel()
-        {
-            if (librAIPanel == null)
-            {
+        private void OpenLibrAIPanel() {
+            if (librAIPanel == null) {
                 librAIPanel = new LibrAI_Panel(this);
                 librAIPanel.Owner = this;
                 librAIPanel.Show();
-            } else
-            {
+            } else {
                 librAIPanel.Activate();
             }
         }
 
-        public void SetLibrAIPanelToNull()
-        {
+        public void SetLibrAIPanelToNull() {
             librAIPanel = null;
         }
 
-        private void CheckIsMembershipExpiringSoon()
-        {
-            using (MemberService memberService = new MemberService())
-            {
+        private void CheckIsMembershipExpiringSoon() {
+            using (MemberService memberService = new MemberService()) {
                 var daysUntilExpiration = memberService.CalculateDaysUntilExpiration();
-                if (daysUntilExpiration > 0)
-                {
+                if (daysUntilExpiration > 0) {
                     MessageBox.Show($"Vaše članstvo ističe za {daysUntilExpiration} dana." + Environment.NewLine +
                 "Molimo produljite vaše članstvo!", "Upozorenje", MessageBoxButton.OK, MessageBoxImage.Warning);
 
                 }
             }
+        }
+
+        private void btnTopBooks_Click(object sender, RoutedEventArgs e) {
+            contentPanel.Content = new UcTopBooks();
+
         }
     }
 }

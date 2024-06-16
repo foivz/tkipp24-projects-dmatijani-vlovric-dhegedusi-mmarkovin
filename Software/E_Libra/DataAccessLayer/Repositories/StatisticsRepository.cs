@@ -14,7 +14,7 @@ namespace DataAccessLayer.Repositories {
         public StatisticsRepository() {
             Context = new DatabaseModel();
         }
-        public List<MostPopularBooks> GetMostPopularBooks(int Library_id) {
+        public List<MostPopularBooksViewModel> GetMostPopularBooks(int Library_id) {
             using (var repo = new BookRepository()) {
                 return repo.GetMostPopularBooks(Library_id).ToList();
             }

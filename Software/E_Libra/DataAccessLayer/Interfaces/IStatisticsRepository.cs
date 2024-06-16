@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace DataAccessLayer.Interfaces {
     public interface IStatisticsRepository : IDisposable {
-        List<MostPopularBooks> GetMostPopularBooks(int Library_id);
+        List<MostPopularBooksViewModel> GetMostPopularBooks(int Library_id);
         List<MostPopularGenres> GetMostPopularGenres(int Library_id);
         List<ReviewStatistics> GetReviewCount(int Library_id);
         int GetMemberCount(int Library_id);

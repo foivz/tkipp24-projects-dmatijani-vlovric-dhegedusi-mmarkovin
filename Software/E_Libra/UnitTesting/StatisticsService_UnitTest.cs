@@ -122,11 +122,11 @@ namespace UnitTesting {
         public void GetMostPopularBooks_GivenLibraryId_ReturnsMostPopularBooks() {
             // Arrange
             int libraryId = 1;
-            var expectedBooks = new List<MostPopularBooks>
+            var expectedBooks = new List<MostPopularBooksViewModel>
             {
-                new MostPopularBooks { Book_Name = "Hamlet", Author_Name = "William Shakespeare", Times_Borrowed = 10 },
-                new MostPopularBooks { Book_Name = "Romeo i Julija", Author_Name = "William Shakespeare", Times_Borrowed = 8 },
-                new MostPopularBooks { Book_Name = "Srce Ratnika", Author_Name = "Alexander Stone", Times_Borrowed = 0 }
+                new MostPopularBooksViewModel { Book_Name = "Hamlet", Author_Name = "William Shakespeare", Times_Borrowed = 10 },
+                new MostPopularBooksViewModel { Book_Name = "Romeo i Julija", Author_Name = "William Shakespeare", Times_Borrowed = 8 },
+                new MostPopularBooksViewModel { Book_Name = "Srce Ratnika", Author_Name = "Alexander Stone", Times_Borrowed = 0 }
             };
 
             A.CallTo(() => repo.GetMostPopularBooks(libraryId)).Returns(expectedBooks);

@@ -25,7 +25,7 @@ namespace BussinessLogicLayer.services {
                     return result;
         }
 
-        public List<MostPopularBooks> GetMostPopularBooks(int Library_id) {
+        public List<MostPopularBooksViewModel> GetMostPopularBooks(int Library_id) {
                 var result = statisticsRepository.GetMostPopularBooks(Library_id);
                 return result;
         }

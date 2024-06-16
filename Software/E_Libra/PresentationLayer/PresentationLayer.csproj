@@ -149,6 +149,9 @@
     <Compile Include="UcReturnBook.xaml.cs">
       <DependentUpon>UcReturnBook.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UcTopBooks.xaml.cs">
+      <DependentUpon>UcTopBooks.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UcWishlist.xaml.cs">
       <DependentUpon>UcWishlist.xaml</DependentUpon>
     </Compile>
@@ -367,6 +370,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UcReturnBook.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UcTopBooks.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
