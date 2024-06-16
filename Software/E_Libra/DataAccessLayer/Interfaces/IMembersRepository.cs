@@ -24,5 +24,6 @@ namespace DataAccessLayer.Interfaces
         IQueryable<string> GetMemberBarcode(int id);
         IQueryable<Member> GetAll();
         int Add(Member member);
+        DateTime? GetMembershipDate(string username);
     }
 }
