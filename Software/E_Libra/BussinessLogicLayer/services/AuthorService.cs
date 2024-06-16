@@ -50,5 +50,10 @@ namespace BussinessLogicLayer.services
 
             return isSuccesful;
         }
+
+        public List<Author> SearchAuthors(string search)
+        {
+            return authorRepository.SearchAuthor(search);
+        }
     }
 }

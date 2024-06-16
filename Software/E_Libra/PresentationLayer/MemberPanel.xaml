@@ -6,28 +6,34 @@
         xmlns:local="clr-namespace:PresentationLayer"
         mc:Ignorable="d" WindowStartupLocation="CenterScreen" Background="#FFEFE8"
         Title="MyLibra" Height="500" Width="900" Loaded="Window_Loaded">
-    <DockPanel>
-        <Grid x:Name="navPanel" DockPanel.Dock="Left" Width="200" Background="#637E60">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
-            <StackPanel Grid.Row="0">
-                <TextBlock x:Name="menu" Text="Izbornik" Style="{StaticResource titleText}" FontSize="30" Foreground="#F8DFD4" Margin="0 20"/>
-                <Button x:Name="btnSearch" Content="Pretraži knjige" Style="{StaticResource navButton}" Click="btnSearch_Click"/>
-                <Button x:Name="btnReservations" Content="Rezervacije" Style="{StaticResource navButton}" Click="btnReservations_Click"/>
-                <Button x:Name="btnNotifications" Content="Obavijesti" Style="{StaticResource navButton}" Click="btnNotifications_Click"/>
-                <Button x:Name="btnBorrow" Content="Posudbe" Style="{StaticResource navButton}" Click="btnBorrow_Click"/>
-                <Button x:Name="btnWishlist" Content="Želim pročitati" Style="{StaticResource navButton}" Click="btnWishlist_Click"/>
-                <Button x:Name="btnTopBooks" Content="Najčitanija djela" Style="{StaticResource navButton}" Click="btnTopBooks_Click"/>
+    <Grid>
+        <DockPanel>
+            <Grid x:Name="navPanel" DockPanel.Dock="Left" Width="200" Background="#637E60">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <StackPanel Grid.Row="0">
+                    <TextBlock x:Name="menu" Text="Izbornik" Style="{StaticResource titleText}" FontSize="30" Foreground="#F8DFD4" Margin="0 20"/>
+                    <Button x:Name="btnSearch" Content="Pretraži knjige" Style="{StaticResource navButton}" Click="btnSearch_Click"/>
+                    <Button x:Name="btnReservations" Content="Rezervacije" Style="{StaticResource navButton}" Click="btnReservations_Click"/>
+                    <Button x:Name="btnNotifications" Content="Obavijesti" Style="{StaticResource navButton}" Click="btnNotifications_Click"/>
+                    <Button x:Name="btnBorrow" Content="Posudbe" Style="{StaticResource navButton}" Click="btnBorrow_Click"/>
+                    <Button x:Name="btnWishlist" Content="Želim pročitati" Style="{StaticResource navButton}" Click="btnWishlist_Click"/>
+                    <Button x:Name="btnTopBooks" Content="Najčitanija djela" Style="{StaticResource navButton}" Click="btnTopBooks_Click"/>
 
-            </StackPanel>
-            <StackPanel Grid.Row="1"/>
-            <Button x:Name="btnLogout" Grid.Row="2" Content="Odjava" Style="{StaticResource navButton}"  Click="btnLogout_Click" />
-        </Grid>
-
-        <ContentControl x:Name="contentPanel" DockPanel.Dock="Right">
-        </ContentControl>
-    </DockPanel>
+                </StackPanel>
+                <StackPanel Grid.Row="1"/>
+                <Button x:Name="btnLogout" Grid.Row="2" Content="Odjava" Style="{StaticResource navButton}"  Click="btnLogout_Click" />
+            </Grid>
+            <ContentControl x:Name="contentPanel" DockPanel.Dock="Right">
+            </ContentControl>
+        </DockPanel>
+        <Button x:Name="btnClickableImage" Click="btnClickableImage_Click" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10,0,0,50" Background="Transparent"
+                BorderBrush="Transparent">
+            <Image Source="Images/LibrAI_Images/responding.png" Width="40"/>
+        </Button>
+    </Grid>
+    
 </Window>

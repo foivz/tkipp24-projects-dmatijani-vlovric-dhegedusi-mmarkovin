@@ -53,5 +53,13 @@ namespace DataAccessLayer.Repositories
             return lastId + 1;
 
         }
+
+        public List<Author> SearchAuthor(string search)
+        {
+            var sql = from a in Entities
+                      where a.name.Contains(search) || a.surname.Contains(search)
+                      select a;
+            return sql.ToList();
+        }
     }
 }

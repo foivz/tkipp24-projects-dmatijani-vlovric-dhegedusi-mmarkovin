@@ -4,7 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace UnitTesting.Nove_funkcionalnosti.F16 {
-    internal class Class1 {
+namespace EntitiesLayer.F16
+{
+    public class GPTResponse
+    {
+        public List<GPTChoices> choices { get; set; }
     }
 }

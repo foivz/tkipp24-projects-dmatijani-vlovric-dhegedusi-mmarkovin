@@ -60,6 +60,14 @@ namespace DataAccessLayer.Repositories
             return query;
         }
 
+        public List<Genre> SearchGenre(string search)
+        {
+            var sql = from g in Entities
+                      where g.name.Contains(search)
+                      select g;
+            return sql.ToList();
+        }
+
 
     }
 }
