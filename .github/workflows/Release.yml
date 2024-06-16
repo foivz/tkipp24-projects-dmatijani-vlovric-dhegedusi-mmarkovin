@@ -1,0 +1,45 @@
+name: CD Pipeline
+
+on:
+  push:
+    branches:
+      - master
+      
+jobs:
+  release:
+    runs-on: windows-latest
+    
+    steps:
+      - name: Code Checkout
+        uses: actions/checkout@v3.5.2
+        
+      - name: Setup NuGet
+        uses: NuGet/setup-nuget@v1.2.0
+        
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v1.3.1
+        
+      - name: Restore NuGet Package
+        run: nuget restore Software\E_Libra\E_Libra.sln
+        
+      - name: Build a solution
+        run: msbuild Software\E_Libra\E_Libra.sln /p:platform="Any CPU" /p:configuration="Debug"
+        
+      - name: Create a setup
+        run: msbuild Software\E_Libra\E_Libra.sln /t:Publish /p:Configuration=Debug /p:PublishDir=Publish/
+      
+      - name: Create zip archive
+        uses: TheDoctor0/zip-release@0.7.1
+        with:
+          type: 'zip'
+          filename: 'setup.zip'
+          path: Software\E_Libra\PresentationLayer\Publish\
+      
+      - name: Create a release
+        uses: marvinpinto/action-automatic-releases@v1.2.1
+        with:
+          repo_token: ${{secrets.GITHUB_TOKEN}}
+          prerelease: false
+          files: setup.zip
+          automatic_release_tag: "release-${{ github.run_number }}"
+      
