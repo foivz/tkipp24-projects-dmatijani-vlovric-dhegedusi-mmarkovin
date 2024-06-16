@@ -27,18 +27,22 @@ jobs:
         
       - name: Create a setup
         run: msbuild Software\E_Libra\E_Libra.sln /t:Publish /p:Configuration=Debug /p:PublishDir=Publish/
-        
+      
+      - name: Print current working directory
+        run: echo %CD%
+      
       - name: Create zip archive
         uses: TheDoctor0/zip-release@0.7.1
         with:
           type: 'zip'
           filename: 'setup.zip'
-          path: CD
+          path: Publish
       
       - name: Create a release
         uses: marvinpinto/action-automatic-releases@v1.2.1
         with:
           repo_token: ${{secrets.GITHUB_TOKEN}}
           prerelease: false
-          files: CD/setup.zip
+          files: setup.zip
+          automatic_release_tag: "release-${{ github.run_number }}"
       
