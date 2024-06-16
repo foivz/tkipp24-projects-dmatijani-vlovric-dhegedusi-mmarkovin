@@ -21,16 +21,17 @@ namespace PresentationLayer {
     //Viktor Lovrić, metode: Window_Loaded
     //Magdalena Markovinocić, metode: btnLogout_Click, btnNotifications_Click
     //David Matijanić, metode: btnClickableImage_Click, OpenLibrAIPanel
-    public partial class MemberPanel : Window {
-        private LibrAI_Panel librAIPanel;
-
-        public MemberPanel() {
+    public partial class MemberPanel : Window
+    {
+        public MemberPanel()
+        {
             InitializeComponent();
 
             KeyDown += MainWindow_KeyDown;
         }
 
-        private void btnBorrow_Click(object sender, RoutedEventArgs e) {
+        private void btnBorrow_Click(object sender, RoutedEventArgs e)
+        {
             contentPanel.Content = new UcMemberBorrows();
         }
 
@@ -44,11 +45,13 @@ namespace PresentationLayer {
             Close();
         }
 
-        private void btnSearch_Click(object sender, RoutedEventArgs e) {
+        private void btnSearch_Click(object sender, RoutedEventArgs e)
+        {
             contentPanel.Content = new UcBookSearchFilter();
         }
 
-        private void btnWishlist_Click(object sender, RoutedEventArgs e) {
+        private void btnWishlist_Click(object sender, RoutedEventArgs e)
+        {
             contentPanel.Content = new UcWishlist();
         }
 
@@ -68,24 +71,29 @@ namespace PresentationLayer {
                     MessageBox.Show(res);
                 }
             }
+            CheckIsMembershipExpiringSoon();
         }
 
-        private void btnNotifications_Click(object sender, RoutedEventArgs e) {
+        private void btnNotifications_Click(object sender, RoutedEventArgs e)
+        {
             UcAllNotificationsMember memberNotifications = new UcAllNotificationsMember();
             contentPanel.Content = memberNotifications;
         }
 
-        private void MainWindow_KeyDown(object sender, KeyEventArgs e) {
-            if (e.Key == Key.F1) {
+        private void MainWindow_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.F1)
+            {
                 ShowHelp();
             }
         }
 
-        private void ShowHelp() {
+        private void ShowHelp()
+        {
             var path = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "PDF", "User_documentation_member.pdf");
             Process.Start(path);
         }
-
+        
         private void btnClickableImage_Click(object sender, RoutedEventArgs e)
         {
             OpenLibrAIPanel();
@@ -107,6 +115,20 @@ namespace PresentationLayer {
         public void SetLibrAIPanelToNull()
         {
             librAIPanel = null;
+        }
+
+        private void CheckIsMembershipExpiringSoon()
+        {
+            using (MemberService memberService = new MemberService())
+            {
+                var daysUntilExpiration = memberService.CalculateDaysUntilExpiration();
+                if (daysUntilExpiration > 0)
+                {
+                    MessageBox.Show($"Vaše članstvo ističe za {daysUntilExpiration} dana." + Environment.NewLine +
+                "Molimo produljite vaše članstvo!", "Upozorenje", MessageBoxButton.OK, MessageBoxImage.Warning);
+
+                }
+            }
         }
     }
 }

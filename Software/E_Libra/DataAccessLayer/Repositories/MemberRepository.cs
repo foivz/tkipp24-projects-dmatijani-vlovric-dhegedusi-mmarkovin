@@ -138,6 +138,16 @@ namespace DataAccessLayer.Repositories
 
             return query;
         }
+        public DateTime? GetMembershipDate(string username)
+        {
+            var membershipDate = Member
+                .Where(m => m.username == username)
+                .Select(m => m.membership_date)
+                .FirstOrDefault();
+
+            return membershipDate;
+        }
+
 
         IQueryable<Member> IMembersRepository.GetAll()
         {
