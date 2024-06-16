@@ -122,6 +122,9 @@
     <Compile Include="EmployeePanels\UcRegisterMember.xaml.cs">
       <DependentUpon>UcRegisterMember.xaml</DependentUpon>
     </Compile>
+    <Compile Include="LibrAI_Panel.xaml.cs">
+      <DependentUpon>LibrAI_Panel.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MemberPanels\UcAllNotificationsMember.xaml.cs">
       <DependentUpon>UcAllNotificationsMember.xaml</DependentUpon>
     </Compile>
@@ -145,6 +148,9 @@
     </Compile>
     <Compile Include="UcReturnBook.xaml.cs">
       <DependentUpon>UcReturnBook.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UcTopBooks.xaml.cs">
+      <DependentUpon>UcTopBooks.xaml</DependentUpon>
     </Compile>
     <Compile Include="UcWishlist.xaml.cs">
       <DependentUpon>UcWishlist.xaml</DependentUpon>
@@ -248,6 +254,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="EmployeePanels\UcRegisterMember.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="LibrAI_Panel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -363,6 +373,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="UcTopBooks.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UcWishlist.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -414,6 +428,12 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <Resource Include="Resources\loader.gif" />
+    <Resource Include="Images\LibrAI_Images\introduction.png" />
+    <Resource Include="Images\LibrAI_Images\listening.png" />
+    <Resource Include="Images\LibrAI_Images\responding.png" />
+    <Resource Include="Images\LibrAI_Images\thinking.png" />
+    <Resource Include="Images\LibrAI_Images\angry.png" />
     <Content Include="UserDocumentation\User_documentation_admin.pdf" />
     <Content Include="UserDocumentation\User_documentation_employee.pdf" />
     <Content Include="UserDocumentation\User_documentation_login.pdf" />
@@ -428,7 +448,7 @@
       <Name>BussinessLogicLayer</Name>
     </ProjectReference>
     <ProjectReference Include="..\DataAccessLayer\DataAccessLayer.csproj">
-      <Project>{35d148d2-ed6d-4188-95bd-e67d6c7b8fe2}</Project>
+      <Project>{35D148D2-ED6D-4188-95BD-E67D6C7B8FE2}</Project>
       <Name>DataAccessLayer</Name>
     </ProjectReference>
     <ProjectReference Include="..\EntitiesLayer\EntitiesLayer.csproj">

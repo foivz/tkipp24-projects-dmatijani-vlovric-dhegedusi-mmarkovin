@@ -1,6 +1,7 @@
 ﻿using DataAccessLayer.Repositories;
 using EntitiesLayer;
 using EntitiesLayer.Entities;
+using DataAccessLayer.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,40 +10,39 @@ using System.Threading.Tasks;
 
 namespace BussinessLogicLayer.services {
     // Domagoj Hegedušić
-    public class StatisticsService {
-        public int GetMemberCount(int Library_id) {
-            using (var repo = new StatisticsRepository()) {
-                var result = repo.GetMemberCount(Library_id);
-                    return result;
-            }
+    public class StatisticsService : IDisposable {
+        public IStatisticsRepository statisticsRepository { get; set; }
+
+        public StatisticsService(IStatisticsRepository statisticsRepository) {
+            this.statisticsRepository = statisticsRepository;
+        }
+        public StatisticsService() : this(new StatisticsRepository()) {
         }
 
-        public List<MostPopularBooks> GetMostPopularBooks(int Library_id) {
-            using (var repo = new StatisticsRepository()) {
-                var result = repo.GetMostPopularBooks(Library_id);
+
+        public int GetMemberCount(int Library_id) {
+                var result = statisticsRepository.GetMemberCount(Library_id);
+                    return result;
+        }
+
+        public List<MostPopularBooksViewModel> GetMostPopularBooks(int Library_id) {
+                var result = statisticsRepository.GetMostPopularBooks(Library_id);
                 return result;
-            }
         }
 
         public List<MostPopularGenres> GetMostPopularGenres(int Library_id) {
-            using (var repo = new StatisticsRepository()) {
-                var result = repo.GetMostPopularGenres(Library_id);
+                var result = statisticsRepository.GetMostPopularGenres(Library_id);
                 return result;
-            }
         }
 
         public List<ReviewStatistics> GetReviewCount(int Library_id) {
-            using (var repo = new StatisticsRepository()) {
-                var result = repo.GetReviewCount(Library_id);
+                var result = statisticsRepository.GetReviewCount(Library_id);
                 return result;
-            }
         }
 
         public int CalculateTotalIncome(int Library_id) {
-            using (var repo = new StatisticsRepository()) {
-                var result = repo.GetMemberCount(Library_id);
+                var result = statisticsRepository.GetMemberCount(Library_id);
                 return result*12;
-            }
         }
 
         public IncomeStatistics GetIncomeStatistics(int Library_id) {
@@ -55,6 +55,21 @@ namespace BussinessLogicLayer.services {
             };
 
             return statistics;
+        }
+
+        ~StatisticsService() {
+            Dispose(false);
+        }
+
+        private void Dispose(bool disposing) {
+            if (disposing) {
+                statisticsRepository?.Dispose();
+            }
+        }
+
+        public void Dispose() {
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
     }
 }

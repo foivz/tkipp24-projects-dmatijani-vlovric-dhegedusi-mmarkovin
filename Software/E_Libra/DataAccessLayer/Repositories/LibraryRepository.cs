@@ -1,6 +1,8 @@
-﻿using EntitiesLayer;
+﻿using DataAccessLayer.Interfaces;
+using EntitiesLayer;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Net;
 using System.Security.Policy;
@@ -9,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace DataAccessLayer.Repositories {
     // David Matijanić
-    public class LibraryRepository : Repository<Library> {
+    public class LibraryRepository : Repository<Library>, ILibraryRepository {
         public LibraryRepository() : base(new DatabaseModel()) {
 
         }
@@ -19,6 +21,14 @@ namespace DataAccessLayer.Repositories {
                         select e;
 
             return query;
+        }
+
+        public async Task<List<Library>> GetAllLibrariesAsync() {
+            var query = from e in Entities
+                        select e;
+
+            var libraries = await query.ToListAsync();
+            return libraries;
         }
 
         public IQueryable<Library> GetLibrariesById(int libraryId) {
@@ -80,6 +90,14 @@ namespace DataAccessLayer.Repositories {
                         select l.membership_duration;
 
             return query.FirstOrDefault();
+        }
+
+        public int Add(Library newLibrary) {
+            return base.Add(newLibrary);
+        }
+
+        public int Remove(Library library) {
+            return base.Remove(library);
         }
     }
 }

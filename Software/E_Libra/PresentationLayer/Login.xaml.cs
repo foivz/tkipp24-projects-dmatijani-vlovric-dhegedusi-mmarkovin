@@ -125,5 +125,11 @@ namespace PresentationLayer {
             var path = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "PDF", "User_documentation_login.pdf");
             Process.Start(path);
         }
+
+        private void Window_Unloaded(object sender, RoutedEventArgs e) {
+            adminService.Dispose();
+            //memberService.Dispose();
+            employeeService.Dispose();
+        }
     }
 }

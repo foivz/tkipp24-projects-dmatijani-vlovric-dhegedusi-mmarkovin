@@ -1,4 +1,5 @@
-﻿ using EntitiesLayer;
+﻿using DataAccessLayer.Interfaces;
+using EntitiesLayer;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 namespace DataAccessLayer.Repositories
 {
     //Magdalena Markovinocić
-    public class NotificationsRepository : Repository<Notification>
+    public class NotificationsRepository : Repository<Notification>, INotificationsRepository
     {
         public NotificationsRepository(): base(new DatabaseModel())
         {
@@ -36,7 +37,6 @@ namespace DataAccessLayer.Repositories
         }
         public IQueryable<Notification> GetReadNotificationsForMember(Member member)
         {
-            Context.Members.Attach(member);
             var query = from n in Entities
                         where n.Members.Any(m => m.id == member.id)
                         select n;

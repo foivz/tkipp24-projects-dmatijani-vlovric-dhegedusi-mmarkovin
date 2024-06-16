@@ -15,6 +15,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace PresentationLayer
 {
@@ -22,9 +23,17 @@ namespace PresentationLayer
     public partial class UcAddNewBook : UserControl
     {
         string checkboxValue;
+        private DispatcherTimer genreSearchTimer = new DispatcherTimer();
+        private DispatcherTimer authorSearchTimer = new DispatcherTimer();
         public UcAddNewBook()
         {
             InitializeComponent();
+
+            genreSearchTimer.Interval = TimeSpan.FromMilliseconds(300);
+            genreSearchTimer.Tick += GenreSearchTimer_Tick;
+
+            authorSearchTimer.Interval = TimeSpan.FromMilliseconds(500);
+            authorSearchTimer.Tick += AuthorSearchTimer_Tick;
         }
 
         private void btnCancel_Click(object sender, RoutedEventArgs e)
@@ -40,64 +49,59 @@ namespace PresentationLayer
 
         private void LoadAuthors()
         {
-            AuthorService authorService = new AuthorService();
-            cmbAuthor.ItemsSource = authorService.GetAllAuthors();
+            using (AuthorService authorService = new AuthorService())
+            {
+                cmbAuthor.ItemsSource = authorService.GetAllAuthors();
+            } 
         }
 
         private void LoadGenres()
         {
-            GenreServices genreServices = new GenreServices();
-            var genres = genreServices.GetGenres();
-            cmbGenre.ItemsSource = genres;
+            using (GenreServices genreServices = new GenreServices())
+            {
+                var genres = genreServices.GetGenres();
+                cmbGenre.ItemsSource = genres;
+            }  
+        }
+
+        private string ValidateInputs()
+        {
+            if (txtName.Text == "")
+            {
+                return "Morate unijeti ime knjige!";
+            }
+            if (txtNumberCopies.Text == "")
+            {
+                return "Morate unijeti broj primjeraka knjige! Ako je knjiga digitalna unesite 0";
+            }
+            if (cmbGenre.Text == "")
+            {
+                return "Morate odabrati žanr!";
+            }
+            if (GetCheckBoxValue() == 3)
+            {
+                return "Morate odabrati je li knjiga digitalna!";
+            }
+            if (cmbAuthor.Text == "")
+            {
+                return "Morate odabrati autora!";
+            }
+            return null;
         }
 
         private void btnSave_Click(object sender, RoutedEventArgs e)
         {
-            if(txtName.Text == "")
+            string validationError = ValidateInputs();
+            if (validationError != null)
             {
-                MessageBox.Show("Morate unijeti ime knjige!");
+                MessageBox.Show(validationError);
                 return;
             }
-            if (txtNumberCopies.Text == "")
-            {
-                MessageBox.Show("Morate unijeti broj primjeraka knjige! Ako je knjiga digitalna unesite 0");
-                return;
-            }
-            if (cmbGenre.Text == "")
-            {
-                MessageBox.Show("Morate odabrati žanr!");
-                return;
-            }
-            if(GetCheckBoxValue() == 3)
-            {
-                MessageBox.Show("Morate odabrati je li knjiga digitalna!");
-                return;
-            }
-            if(cmbAuthor.Text == "")
-            {
-                MessageBox.Show("Morate odabrati autora!");
-                return;
-            }
-            EmployeeService service = new EmployeeService();
-            
+
             try
             {
                 ConvertIntoDateTime(txtDate);
-            }catch (Exception)
-            {
-                MessageBox.Show("Neispravan format datuma! Primjer formata je 05-09-2002");
-                return;
-            }
-            try
-            {
                 TryParseInt(txtNumberPages.Text);
-            }catch(BookException ex)
-            {
-                MessageBox.Show(ex.Poruka);
-                return;
-            }
-            try
-            {
                 TryParseInt(txtNumberCopies.Text);
             }
             catch (BookException ex)
@@ -106,35 +110,76 @@ namespace PresentationLayer
                 return;
             }
 
+            Book book = MakeNewBook();
 
-            var book = new Book
-            {
-                name = txtName.Text,
-                description = txtDescription.Text,
-                publish_date = ConvertIntoDateTime(txtDate),
-                pages_num = TryParseInt(txtNumberPages.Text),
-                digital = GetCheckBoxValue(),
-                url_digital = txtLinkDigital.Text,
-                url_photo = txtLinkPicture.Text,
-                total_copies = (int)TryParseInt(txtNumberCopies.Text),
-                Genre = cmbGenre.SelectedItem as Genre,
-                Library_id = service.GetEmployeeLibraryId(LoggedUser.Username)
-            };
             var author = cmbAuthor.SelectedItem as Author;
-            var bookService = new BookServices();
-            var rez = bookService.AddBook(book, author);
+            bool rez;
+            using (var bookService = new BookServices())
+            {
+                rez = bookService.AddBook(book, author);
+            }
             MessageBox.Show(rez ? "Uspješno" : "Neuspješno");
             (Window.GetWindow(this) as EmployeePanel).contentPanel.Content = new UcAddNewBook();
         }
 
+        private Book MakeNewBook()
+        {
+            using (EmployeeService service = new EmployeeService())
+            {
+                var book = new Book
+                {
+                    name = txtName.Text,
+                    description = txtDescription.Text,
+                    publish_date = ConvertIntoDateTime(txtDate),
+                    pages_num = TryParseInt(txtNumberPages.Text),
+                    digital = GetCheckBoxValue(),
+                    url_digital = txtLinkDigital.Text,
+                    url_photo = txtLinkPicture.Text,
+                    total_copies = (int)TryParseInt(txtNumberCopies.Text),
+                    Genre = cmbGenre.SelectedItem as Genre,
+                    Library_id = service.GetEmployeeLibraryId(LoggedUser.Username)
+                };
+
+                return book;
+            }
+        }
+
         private DateTime? ConvertIntoDateTime(TextBox txtDate)
         {
-            if(txtDate.Text == "")
+            if (txtDate.Text == "")
             {
                 return null;
             }
-            DateTime date = DateTime.ParseExact(txtDate.Text, "dd-MM-yyyy", System.Globalization.CultureInfo.InvariantCulture);
-            return date;
+            try
+            {
+                DateTime date = DateTime.ParseExact(txtDate.Text, "dd-MM-yyyy", System.Globalization.CultureInfo.InvariantCulture);
+                return date;
+            }
+            catch (FormatException)
+            {
+                throw new BookException("Neispravan format datuma! Primjer formata je 05-09-2002");
+            }
+        }
+
+
+        private int? TryParseInt(string input)
+        {
+            if (input == "")
+            {
+                return null;
+            }
+            if (int.TryParse(input, out int result))
+            {
+                if(result < 0)
+                {
+                    throw new BookException("Broj stranica ili primjeraka mora biti pozitivan!");
+                }
+                return result;
+            }
+            else
+            {
+                throw new BookException("Polja u koja se upisuje broj moraju sadržavati samo brojeve!");
+            }
         }
 
         private int GetCheckBoxValue()
@@ -152,21 +197,6 @@ namespace PresentationLayer
             {
                 checkboxValue = radioButton.Content.ToString();
                 
-            }
-        }
-        private int? TryParseInt(string input)
-        {
-            if(input == "")
-            {
-                return null;
-            }
-            if (int.TryParse(input, out int result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new BookException("Polja u koja se upisuje broj moraju sadržavati samo brojeve!");
             }
         }
 
@@ -195,5 +225,58 @@ namespace PresentationLayer
         {
             LoadGenres();
         }
+
+        private void txtSearchGenre_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            genreSearchTimer.Stop();
+            genreSearchTimer.Start();
+        }
+
+        private void txtSearchAuthor_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            authorSearchTimer.Stop();
+            authorSearchTimer.Start();
+        }
+
+        private void GenreSearchTimer_Tick(object sender, EventArgs e)
+        {
+            genreSearchTimer.Stop();
+            FilterGenres();
+        }
+
+        private void AuthorSearchTimer_Tick(object sender, EventArgs e)
+        {
+            authorSearchTimer.Stop();
+            FilterAuthors();
+        }
+
+        private void FilterGenres()
+        {
+            string search = txtSearchGenre.Text;
+            if (string.IsNullOrEmpty(search))
+            {
+                LoadGenres();
+                return;
+            }
+            using (GenreServices genreServices = new GenreServices())
+            {
+                cmbGenre.ItemsSource = genreServices.SearchGenres(search);
+            }
+        }
+
+        private void FilterAuthors()
+        {
+            string search = txtSearchAuthor.Text;
+            if (string.IsNullOrEmpty(search))
+            {
+                LoadAuthors();
+                return;
+            }
+            using (AuthorService authorService = new AuthorService())
+            {
+                cmbAuthor.ItemsSource = authorService.SearchAuthors(search);
+            }
+        }
+
     }
 }

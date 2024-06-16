@@ -38,8 +38,10 @@ namespace PresentationLayer
 
         private void LoadDataGrid()
         {
-            BookServices services = new BookServices();
-            dgvBookNamesArchive.ItemsSource = services.GetNonArchivedBooks(false);
+            using (BookServices services = new BookServices())
+            {
+                dgvBookNamesArchive.ItemsSource = services.GetNonArchivedBooks(false);
+            }
             HideColumns();
         }
 
@@ -74,17 +76,19 @@ namespace PresentationLayer
                 return;
             }
 
-            BookServices services = new BookServices();
             int number = TryParseInt(txtNumberCopies.Text);
             var book = dgvBookNamesArchive.SelectedItem as Book;
-            if(services.InsertNewCopies(number, book))
+            using (BookServices services = new BookServices())
             {
-                MessageBox.Show("Uspješno!");
+                if (services.InsertNewCopies(number, book))
+                {
+                    MessageBox.Show("Uspješno!");
+                }
+                else
+                {
+                    MessageBox.Show("Neuspješno!");
+                }
             }
-            else
-            {
-                MessageBox.Show("Neuspješno!");
-            };
             (Window.GetWindow(this) as EmployeePanel).contentPanel.Content = new UcNewCopies();
         }
 
@@ -92,6 +96,10 @@ namespace PresentationLayer
         {
             if (int.TryParse(input, out int result))
             {
+                if (result < 0)
+                {
+                    throw new BookException("Broj stranica ili primjeraka mora biti pozitivan!");
+                }
                 return result;
             }
             else
@@ -102,14 +110,16 @@ namespace PresentationLayer
 
         private void txtBookName_TextChanged(object sender, TextChangedEventArgs e)
         {
-            BookServices bookServices = new BookServices();
             string text = txtBookName.Text;
             if (string.IsNullOrEmpty(text))
             {
                 dgvBookNamesArchive.ItemsSource = null;
                 return;
             }
-            dgvBookNamesArchive.ItemsSource = bookServices.GetNonArchivedBooksByName(text);
+            using (BookServices bookServices = new BookServices())
+            {
+                dgvBookNamesArchive.ItemsSource = bookServices.GetNonArchivedBooksByName(text);
+            }
             HideColumns();
         }
     }

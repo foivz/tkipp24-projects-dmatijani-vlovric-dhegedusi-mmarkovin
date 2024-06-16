@@ -58,5 +58,11 @@ namespace PresentationLayer.EmployeePanels
                 MessageBox.Show("Odaberite obavijest!", "Greška!", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+
+        private void UserControl_Unloaded(object sender, RoutedEventArgs e)
+        {
+            employeeService.Dispose();
+            notificationService.Dispose();
+        }
     }
 }

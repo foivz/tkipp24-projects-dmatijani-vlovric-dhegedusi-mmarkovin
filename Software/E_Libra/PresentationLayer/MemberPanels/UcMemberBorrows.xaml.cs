@@ -41,5 +41,10 @@ namespace PresentationLayer.MemberPanels {
             dgLateBorrows.ItemsSource = borrowService.GetBorrowsForMemberByStatus(memberId, libraryId, BorrowStatus.Late);
             dgDoneBorrows.ItemsSource = borrowService.GetBorrowsForMemberByStatus(memberId, libraryId, BorrowStatus.Returned);
         }
+
+        private void UserControl_Unloaded(object sender, RoutedEventArgs e) {
+            borrowService.Dispose();
+            memberService.Dispose();
+        }
     }
 }

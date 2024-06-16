@@ -1,4 +1,5 @@
-﻿using EntitiesLayer;
+﻿using DataAccessLayer.Interfaces;
+using EntitiesLayer;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 namespace DataAccessLayer.Repositories
 {
     //Viktor Lovrić
-    public class AuthorRepository: Repository<Author>
+    public class AuthorRepository: Repository<Author>, IAuthorRepository
     {
         public AuthorRepository(): base(new DatabaseModel())
         {
@@ -51,6 +52,14 @@ namespace DataAccessLayer.Repositories
             int lastId = Entities.OrderByDescending(a => a.idAuthor).Select(a => a.idAuthor).FirstOrDefault();
             return lastId + 1;
 
+        }
+
+        public List<Author> SearchAuthor(string search)
+        {
+            var sql = from a in Entities
+                      where a.name.Contains(search) || a.surname.Contains(search)
+                      select a;
+            return sql.ToList();
         }
     }
 }

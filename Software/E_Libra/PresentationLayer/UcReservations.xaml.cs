@@ -35,29 +35,33 @@ namespace PresentationLayer
                 return;
             }
             var selectedReservation = dgvReservations.SelectedItem as ReservationViewModel;
-            ReservationService reservationService = new ReservationService();
-            if (reservationService.RemoveReservation(selectedReservation.ReservationId))
+            using (ReservationService reservationService = new ReservationService())
             {
-                MessageBox.Show("Uspješno!");
-                LoadDgv();
+                if (reservationService.RemoveReservationFromList(selectedReservation.ReservationId))
+                {
+                    MessageBox.Show("Uspješno!");
+                    LoadDgv();
+                }
+                else
+                {
+                    MessageBox.Show("Neuspješno!");
+                }
             }
-            else
-            {
-                MessageBox.Show("Neuspješno!");
-            }
-            
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
             memberId = memberService.GetMemberId(LoggedUser.Username);
             LoadDgv();
+            memberService.Dispose();
         }
 
         private void LoadDgv()
         {
-            ReservationService reservationService = new ReservationService();
-            dgvReservations.ItemsSource = reservationService.GetReservationForMember(memberId);
+            using (ReservationService reservationService = new ReservationService())
+            {
+                dgvReservations.ItemsSource = reservationService.GetReservationForMember(memberId);
+            }   
             RenameHideColumns();
         }
 

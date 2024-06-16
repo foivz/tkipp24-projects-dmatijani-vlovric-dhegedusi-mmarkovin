@@ -40,7 +40,7 @@ namespace PresentationLayer
         {
             if (txtName.Text == "")
             {
-                MessageBox.Show("Morate unijeti ime knjige!");
+                MessageBox.Show("Morate unijeti ime autora!");
                 return;
             }
             if (txtSurname.Text == "")
@@ -62,8 +62,12 @@ namespace PresentationLayer
                 surname = txtSurname.Text,
                 birth_date = ConvertIntoDateTime(txtBirthDate),
             };
-            AuthorService authorService = new AuthorService();
-            var res = authorService.AddAuthor(author);
+            bool res;
+            using (AuthorService authorService = new AuthorService())
+            {
+                res = authorService.AddAuthor(author);
+            }
+                
             MessageBox.Show(res ? "Uspješno" : "Neuspješno");
 
             (Window.GetWindow(this) as EmployeePanel).contentPanel.Content = prevForm;

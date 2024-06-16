@@ -64,7 +64,7 @@ namespace PresentationLayer {
 
             bool hasUserBorrowedBook = borrowService.HasUserBorrowedBook(memberId, bookId);
 
-            if (hasUserBorrowedBook == true) {
+            if (hasUserBorrowedBook) {
                 if (services.HasUserReviewedBook(memberId, bookId)) {
                     MessageBox.Show("Već si napisao recenziju za ovu knjigu!");
                 } else {
@@ -76,6 +76,11 @@ namespace PresentationLayer {
             }
         }
 
+        private void UserControl_Unloaded(object sender, RoutedEventArgs e) {
+            services.Dispose();
+            memberService.Dispose();
+            borrowService.Dispose();
+        }
     }
 
 }

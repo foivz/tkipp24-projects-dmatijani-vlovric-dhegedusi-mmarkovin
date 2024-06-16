@@ -28,6 +28,7 @@ namespace PresentationLayer.EmployeePanels
             InitializeComponent();
             memberService = new MemberService();
             employeeService = new EmployeeService();
+            txtDate.Text = (DateTime.Now).ToString();
         }
 
         private void btnCancel_Click(object sender, RoutedEventArgs e)
@@ -37,20 +38,9 @@ namespace PresentationLayer.EmployeePanels
         private void btnSave_Click(object sender, RoutedEventArgs e)
         {
             CheckOIBIsNumber();
-            if (txtOIB.Text != "" && txtPassword.Password != "" && txtUsername.Text != "" && txtBarcode.Text != "")
+            if (txtOIB.Text != "" && txtPassword.Password != "" && txtUsername.Text != "" && txtBarcode.Text != "" && txtDate.Text != "")
             {
-                int LibraryId = employeeService.GetEmployeeLibraryId(LoggedUser.Username);
-                Member newMember = new Member()
-                {
-                    name = (txtName.Text).Length <= 45 ? txtName.Text : (txtName.Text).Substring(0, 45),
-                    surname = (txtSurname.Text).Length <= 45 ? txtSurname.Text : (txtSurname.Text).Substring(0, 45),
-                    OIB = (txtOIB.Text).Length <= 11 ? txtOIB.Text : (txtOIB.Text).Substring(0, 11),
-                    username = (txtUsername.Text).Length <= 45 ? txtUsername.Text : (txtUsername.Text).Substring(0, 45), 
-                    password = (txtPassword.Password).Length <= 45 ? txtPassword.Password : (txtPassword.Password).Substring(0, 45),
-                    membership_date = txtDate.SelectedDate,
-                    barcode_id = (txtBarcode.Text).Length <= 45 ? txtBarcode.Text : (txtBarcode.Text).Substring(0, 45),
-                    Library_id = LibraryId
-                };
+                Member newMember = MakeNewMember();
                 bool checkedConstraints = CheckUniqueConstraints(newMember);
                 if (checkedConstraints)
                 {
@@ -63,6 +53,22 @@ namespace PresentationLayer.EmployeePanels
                 MessageBox.Show("Obavezni podaci čnana nisu uneseni ili su krivo unešeni!", "Greška", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+        private Member MakeNewMember() 
+        {
+            int LibraryId = employeeService.GetEmployeeLibraryId(LoggedUser.Username);
+            Member newMember = new Member()
+            {
+                name = (txtName.Text).Length <= 45 ? txtName.Text : (txtName.Text).Substring(0, 45),
+                surname = (txtSurname.Text).Length <= 45 ? txtSurname.Text : (txtSurname.Text).Substring(0, 45),
+                OIB = (txtOIB.Text).Length <= 11 ? txtOIB.Text : (txtOIB.Text).Substring(0, 11),
+                username = (txtUsername.Text).Length <= 45 ? txtUsername.Text : (txtUsername.Text).Substring(0, 45),
+                password = (txtPassword.Password).Length <= 45 ? txtPassword.Password : (txtPassword.Password).Substring(0, 45),
+                membership_date = DateTime.Now,
+                barcode_id = (txtBarcode.Text).Length <= 45 ? txtBarcode.Text : (txtBarcode.Text).Substring(0, 45),
+                Library_id = LibraryId
+            };
+            return newMember;
+        }
         private void CheckOIBIsNumber()
         {
             if (double.TryParse(txtOIB.Text, out _))
@@ -72,27 +78,40 @@ namespace PresentationLayer.EmployeePanels
         }
         private bool CheckUniqueConstraints(Member member)
         {
-            bool memberExsists = memberService.CheckExistingUsername(member);
-            bool barcodeExists = memberService.CheckBarcodeUnoque(member);
-            bool oibExsists = memberService.CheckOibUnoque(member);
-            if (memberExsists)
+            if (!IsUnique(() => memberService.CheckExistingUsername(member), "Korisničko ime već postoji!", clearTextBox: true))
             {
-                txtUsername.Text = "";
-                MessageBox.Show("Korisničko ime već postoji!", "Greška", MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
             }
-            if (barcodeExists)
+
+            if (!IsUnique(() => memberService.CheckBarcodeUnoque(member), "Barkod već postoji!"))
             {
-                MessageBox.Show("Barkod već postoji!", "Greška", MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
             }
-            if (oibExsists)
+
+            if (!IsUnique(() => memberService.CheckOibUnoque(member), "Oib već postoji!"))
             {
-                MessageBox.Show("Oib već postoji!", "Greška", MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
             }
+
             return true;
         }
+
+        private bool IsUnique(Func<bool> checkFunc, string errorMessage, bool clearTextBox = false)
+        {
+            if (checkFunc())
+            {
+                if (clearTextBox)
+                {
+                    txtUsername.Text = "";
+                }
+
+                MessageBox.Show(errorMessage, "Greška", MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
+            }
+
+            return true;
+        }
+
         private void btnGenerateBarcode_Click(object sender, RoutedEventArgs e)
         {
             txtBarcode.Text = memberService.RandomCodeGenerator().ToString();
@@ -117,6 +136,12 @@ namespace PresentationLayer.EmployeePanels
 
                 return bitmapImage;
             }
+        }
+
+        private void UserControl_Unloaded(object sender, RoutedEventArgs e)
+        {
+            employeeService.Dispose();
+            memberService.Dispose();
         }
     }
 }

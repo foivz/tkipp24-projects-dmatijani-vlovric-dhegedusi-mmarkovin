@@ -39,12 +39,13 @@ namespace PresentationLayer.AdminPanels {
         }
 
         private void PopulateComboBox(Library selectedLibrary = null) {
-            var libraryService = new LibraryService();
-            var allLibraries = libraryService.GetAllLibraries();
-            cboLibrary.ItemsSource = allLibraries;
+            using (var libraryService = new LibraryService()) {
+                var allLibraries = libraryService.GetAllLibraries();
+                cboLibrary.ItemsSource = allLibraries;
 
-            if (selectedLibrary != null) {
-                cboLibrary.SelectedItem = allLibraries.FirstOrDefault(l => l.id == selectedLibrary.id);
+                if (selectedLibrary != null) {
+                    cboLibrary.SelectedItem = allLibraries.FirstOrDefault(l => l.id == selectedLibrary.id);
+                }
             }
         }
 
@@ -60,7 +61,15 @@ namespace PresentationLayer.AdminPanels {
             }
             string newEmployeeName = tbEmployeeName.Text;
             string newEmployeeSurname = tbEmployeeSurname.Text;
+            if (tbEmployeeUsername.Text.Trim() == "") {
+                MessageBox.Show("Korisničko ime ne smije ostati prazno!");
+                return;
+            }
             string newEmployeeUsername = tbEmployeeUsername.Text;
+            if (tbEmployeePassword.Text.Trim() == "") {
+                MessageBox.Show("Lozinka ne smije ostati prazna!");
+                return;
+            }
             string newEmployeePassword = tbEmployeePassword.Text;
             string newEmployeeOIB = tbEmployeeOIB.Text;
             if (newEmployeeOIB.Length != 11) {
@@ -78,24 +87,32 @@ namespace PresentationLayer.AdminPanels {
             };
 
             try {
-                EmployeeService service = new EmployeeService();
+                using (EmployeeService service = new EmployeeService())
+                {
+                    if (!editing)
+                    {
+                        int result = service.AddEmployee(newEmployee);
+                        if (result > 0)
+                        {
+                            AdminGuiControl.LoadNewControl(new UcAllEmployees(selectedLibrary));
+                        } else
+                        {
+                            MessageBox.Show("Zaposlenika nije moguće dodati.");
+                        }
+                    } else
+                    {
+                        int result = service.UpdateEmployee(newEmployee);
+                        if (result > 0)
+                        {
+                            AdminGuiControl.LoadNewControl(new UcAllEmployees(selectedLibrary));
+                        } else
+                        {
+                            MessageBox.Show("Nije napravljena promjena.");
+                        }
+                    }
 
-                if (!editing) {
-                    int result = service.AddEmployee(newEmployee);
-                    if (result > 0) {
-                        AdminGuiControl.LoadNewControl(new UcAllEmployees(selectedLibrary));
-                    } else {
-                        MessageBox.Show("Zaposlenika nije moguće dodati.");
-                    }
-                } else {
-                    int result = service.UpdateEmployee(newEmployee);
-                    if (result > 0) {
-                        AdminGuiControl.LoadNewControl(new UcAllEmployees(selectedLibrary));
-                    } else {
-                        MessageBox.Show("Nije napravljena promjena.");
-                    }
                 }
-                
+
             } catch (EmployeeException ex) {
                 MessageBox.Show(ex.Message);
             }

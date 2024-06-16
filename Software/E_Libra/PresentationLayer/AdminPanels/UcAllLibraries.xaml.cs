@@ -1,5 +1,6 @@
 ﻿using BussinessLogicLayer.Exceptions;
 using BussinessLogicLayer.services;
+using DataAccessLayer.Repositories;
 using EntitiesLayer;
 using System;
 using System.Collections.Generic;
@@ -23,25 +24,15 @@ namespace PresentationLayer.AdminPanels {
 
         public UcAllLibraries() {
             InitializeComponent();
-            ShowAllLibraries();
         }
 
-        private void btnRemoveLibrary_Click(object sender, RoutedEventArgs e) {
+        private async void btnRemoveLibrary_Click(object sender, RoutedEventArgs e) {
             Library selectedLibrary = GetSelectedLibrary();
             if (selectedLibrary == null) {
                 return;
             }
 
-            try {
-                int successful = service.DeleteLibrary(selectedLibrary);
-                if (successful == 0) {
-                    MessageBox.Show("Brisanje nije uspjelo!");
-                }
-
-                ShowAllLibraries();
-            } catch (LibraryException ex) {
-                MessageBox.Show(ex.Message);
-            }
+            await ShowWarningBeforeDeleting(selectedLibrary);
         }
 
         private void btnEditLibrary_Click(object sender, RoutedEventArgs e) {
@@ -69,14 +60,15 @@ namespace PresentationLayer.AdminPanels {
             AdminGuiControl.LoadNewControl(ucAllEmployees);
         }
 
-        private void ShowAllLibraries() {
-            Task.Run(() => {
-                var libraries = service.GetAllLibraries();
-
-                Application.Current.Dispatcher.Invoke(() => {
-                    dgAllLibraries.ItemsSource = libraries;
-                });
-            });
+        private async Task ShowAllLibraries() {
+            txtNoLibraries.Visibility = Visibility.Hidden;
+            var taskLibraries = service.GetAllLibrariesAsync();
+            var libraries = await taskLibraries;
+            dgAllLibraries.ItemsSource = libraries;
+            Loader.Visibility = Visibility.Hidden;
+            if (libraries.Count == 0) {
+                txtNoLibraries.Visibility = Visibility.Visible;
+            }
         }
 
         private Library GetSelectedLibrary() {
@@ -92,6 +84,40 @@ namespace PresentationLayer.AdminPanels {
             }
 
             return selectedLibrary;
+        }
+
+        private async void UserControl_Loaded(object sender, RoutedEventArgs e) {
+            await ShowAllLibraries();
+        }
+
+        private async Task ShowWarningBeforeDeleting(Library selectedLibrary) {
+            MessageBoxResult result = MessageBox.Show("Sigurni ste da želite obrisati odabranu knjižnicu?", "Upozorenje", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+
+            switch (result) {
+                case MessageBoxResult.Yes:
+                    await DeleteSelectedLibrary(selectedLibrary);
+                    break;
+                case MessageBoxResult.No:
+                    break;
+            }
+        }
+
+        private async Task DeleteSelectedLibrary(Library selectedLibrary) {
+            try {
+                int successful = service.DeleteLibrary(selectedLibrary);
+                if (successful == 0) {
+                    MessageBox.Show("Brisanje nije uspjelo!");
+                }
+
+                Loader.Visibility = Visibility.Visible;
+                await ShowAllLibraries();
+            } catch (LibraryException ex) {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void UserControl_Unloaded(object sender, RoutedEventArgs e) {
+            service.Dispose();
         }
     }
 }

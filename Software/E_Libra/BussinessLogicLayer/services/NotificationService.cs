@@ -1,9 +1,11 @@
 ﻿using BussinessLogicLayer.Exceptions;
+using DataAccessLayer.Interfaces;
 using DataAccessLayer.Repositories;
 using EntitiesLayer;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -12,54 +14,63 @@ namespace BussinessLogicLayer.services
     //Magdalena Markovinocić
     public class NotificationService
     {
-        MemberService memberService = new MemberService();
+        private INotificationsRepository notificationsRepository;
+
+        public NotificationService(INotificationsRepository notificationsRepo)
+        {
+            this.notificationsRepository = notificationsRepo;
+        }
+        public NotificationService() : this(new NotificationsRepository())
+        {
+        }
+
         public List<Notification> GetAllNotificationByLibrary(int id)
         {
-            using (var notificationsRepo = new NotificationsRepository())
-            {
-                return notificationsRepo.GetAllNotificationsForLibrary(id).ToList();
-            }
+            return notificationsRepository.GetAllNotificationsForLibrary(id).ToList();
         }
         public bool AddNewNotification(Notification notification)
         {
-            using (var notificationsRepo = new NotificationsRepository())
-            {
-                var added = notificationsRepo.Add(notification);
-                if (added != 0) return true;
-            }
+            var added = notificationsRepository.Add(notification);
+            if (added != 0) return true;
             return false;
         }
-        public bool AddNotificationRead(Notification notification)
+        public bool AddNotificationRead(Notification notification, Member loggedMember)
         {
-            Member member = memberService.GetMemberByUsername(LoggedUser.Username);
-            using (var notificationsRepo = new NotificationsRepository())
-            {
-                notificationsRepo.AddReadNotification(notification, member);
-                return true;
-
-            }
+            var added = notificationsRepository.AddReadNotification(notification, loggedMember);
+            if (added != 0) return true;
+            return false;
         }
         public bool EditNotification(Notification notification)
         {
-            using (var notificationsRepo = new NotificationsRepository())
-            {
-                notificationsRepo.Update(notification);
-                return true;
-            }
+            var updated = notificationsRepository.Update(notification);
+            if (updated != 0) return true;
+            else return false;
         }
 
         public List<Notification> GetReadNotificationsForMember(Member member)
         {
-            using (var notificationsRepo = new NotificationsRepository())
-            {
-                return notificationsRepo.GetReadNotificationsForMember(member).ToList();
-            }
+            return notificationsRepository.GetReadNotificationsForMember(member).ToList();
         }
 
         public int Remove(Notification notification, bool saveChanges = true) {
-            using (var context = new NotificationsRepository()) {
-                return context.Remove(notification, saveChanges);
+            return notificationsRepository.Remove(notification, saveChanges);
+        }
+        ~NotificationService()
+        {
+            Dispose(false);
+        }
+        private void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                notificationsRepository?.Dispose();
             }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
     }
 }

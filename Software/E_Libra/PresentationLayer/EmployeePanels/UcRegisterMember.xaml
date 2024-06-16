@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:PresentationLayer.EmployeePanels"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="450" d:DesignWidth="800" Unloaded="UserControl_Unloaded">
     <DockPanel Background="#FFEFE8">
         <TextBlock Text="Registriraj člana" Style="{StaticResource titleText}" Background="#637E60" Foreground="#FFEFE8" DockPanel.Dock="Top"/>
         <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" DockPanel.Dock="Bottom">
@@ -66,12 +66,12 @@
                 </Border>
 
                 <Label 
-            Content="Datum učlanjenja:"
+            Content="Datum učlanjenja:*"
             FontSize="16" HorizontalAlignment="Left"
             VerticalAlignment="Center" x:Name="lblDate"
              Margin="20 0 0 10"/>
                 <Border BorderThickness="1" BorderBrush="#acb0af" CornerRadius="5" Padding="5" HorizontalAlignment="Stretch" Margin="20 0 20 0">
-                    <DatePicker x:Name="txtDate" Style="{StaticResource textBox}"/>
+                    <DatePicker x:Name="txtDate" Style="{StaticResource textBox}" IsEnabled="False"/>
                 </Border>
 
                 <Label 

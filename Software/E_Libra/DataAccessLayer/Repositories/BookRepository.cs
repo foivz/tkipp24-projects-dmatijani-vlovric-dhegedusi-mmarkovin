@@ -1,4 +1,5 @@
-﻿using EntitiesLayer;
+﻿using DataAccessLayer.Interfaces;
+using EntitiesLayer;
 using EntitiesLayer.Entities;
 using System;
 using System.Collections.Generic;
@@ -12,10 +13,10 @@ namespace DataAccessLayer.Repositories
     /*Viktor Lovrić, metode: Add, GenerateBarcodeId, BarcodeExists, GetAll, GetNonArchivedBooks, InsertNewCopies, ArhiveBook, GetNonArchivedBooksByName,
      * SearchBooks, TransformDigital, GetBooksByGenre, GetBooksByAuthor, GetBooksByYear, GetWishlistBooksForMember, AddBookToWishlist, RemoveBookFromWishlist
      */
-    // Domagoj Hegedušić, metode: GetMostPopularBookss
+    // Domagoj Hegedušić, metode: GetMostPopularBooks, GetTopBooks
     // David Matijanić: GetBookByBarcodeId, Update, GetBookBarcode, GetBooksByLibrary
 
-    public class BookRepository : Repository<Book>
+    public class BookRepository : Repository<Book>, IBookRepository
     {
         public BookRepository(): base(new DatabaseModel())
         {
@@ -104,29 +105,11 @@ namespace DataAccessLayer.Repositories
             return sql;
         }
 
-
-
-        public int InsertNewCopies(int number, Book passedBook, bool saveChanges = true)
+        public int InsertOneCopy(Book passedBook, bool saveChanges = true)
         {
-            ReservationRepository reservationRepository = new ReservationRepository();
-            string name = passedBook.name;
-            var book = (from b in Entities where b.name == name select b).FirstOrDefault();
-            if(number == -1)
-            {
-                book.current_copies += number;
-            }
-            else if(book.current_copies < 0)
-            {
-                book.total_copies += number;
-                reservationRepository.SetReservationEndDateAndAddCopies(book, (int)book.current_copies, number);
-            }
-            else
-            {
-                book.total_copies += number;
-                book.current_copies += number;
-            }
-
-            
+            int id = passedBook.id;
+            var book = (from b in Entities where b.id == id select b).FirstOrDefault();
+            book.current_copies++;
             if (saveChanges)
             {
                 return SaveChanges();
@@ -136,10 +119,44 @@ namespace DataAccessLayer.Repositories
                 return 0;
             }
         }
+        public int RemoveOneCopy(Book passedBook, bool saveChanges = true)
+        {
+            int id = passedBook.id;
+            var book = (from b in Entities where b.id == id select b).FirstOrDefault();
+            book.current_copies--;
+            if (saveChanges)
+            {
+                return SaveChanges();
+            }
+            else
+            {
+                return 0;
+            }
+        }
+        public int InsertNewCopies(int number, Book passedBook, bool saveChanges = true)
+        {
+            int id = passedBook.id;
+            var book = (from b in Entities where b.id == id select b).FirstOrDefault();
+            book.current_copies += number;
+            book.total_copies += number;
+            if (saveChanges)
+            {
+                return SaveChanges();
+            }
+            else
+            {
+                return 0;
+            }
+        }
+        public int GetBookCurrentCopies(int id)
+        {
+            var book = (from b in Entities where b.id == id select b).FirstOrDefault();
+            return (int)book.current_copies;
+        }
         public int ArhiveBook(Book passedBook, Archive archive)
         {
-            string name = passedBook.name;
-            var book = (from b in Entities where b.name == name select b).FirstOrDefault();
+            int id = passedBook.id;
+            var book = (from b in Entities where b.id == id select b).FirstOrDefault();
             book.Archives.Add(archive);
             return SaveChanges();
         }
@@ -361,11 +378,11 @@ namespace DataAccessLayer.Repositories
             public string Digital { get; set; }
         }
 
-        public IEnumerable<MostPopularBooks> GetMostPopularBooks(int Library_id) {
+        public IEnumerable<MostPopularBooksViewModel> GetMostPopularBooks(int Library_id) {
             var query = from book in Entities
                         where book.Library_id == Library_id
                         let bookBorrows = book.Borrows
-                        select new MostPopularBooks {
+                        select new MostPopularBooksViewModel {
                             Book_Name = book.name,
                             Author_Name = book.Authors.Select(author => author.name + " " + author.surname).FirstOrDefault(),
                             Times_Borrowed = bookBorrows.Count()
@@ -389,5 +406,20 @@ namespace DataAccessLayer.Repositories
 
             return query;
         }
+
+        public IEnumerable<MostPopularBooksViewModel> GetTopBooks(int libraryId) {
+            var query = from book in Entities
+                        where book.Library_id == libraryId
+                        let bookBorrows = book.Borrows
+                        select new MostPopularBooksViewModel {
+                            Book_Name = book.name,
+                            Author_Name = book.Authors.Select(author => author.name + " " + author.surname).FirstOrDefault(),
+                            Times_Borrowed = bookBorrows.Count(),
+                            Url_Photo = book.url_photo
+                        };
+
+            return query.OrderByDescending(book => book.Times_Borrowed).Take(10);
+        }
+
     }
 }

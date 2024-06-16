@@ -32,31 +32,34 @@ namespace PresentationLayer {
         }
 
         private void btnAddReview_Click(object sender, RoutedEventArgs e) {
-            MemberService memberService = new MemberService();
-            ReviewService reviewService = new ReviewService();
+            using (MemberService memberService = new MemberService())
+            {
+                using (ReviewService reviewService = new ReviewService()) {
+                
+                    int newRating = cboRating.SelectedIndex;
+                    string newComment = txtComment.Text;
+                    int rwMember_id = memberService.GetMemberId(LoggedUser.Username);
+                    int rwBook_id = bookId;
 
-            int newRating = cboRating.SelectedIndex;
-            string newComment = txtComment.Text;
-            int rwMember_id = memberService.GetMemberId(LoggedUser.Username);
-            int rwBook_id = bookId;
 
+                    if (cboRating.SelectedItem != null) {
 
-            if (cboRating.SelectedItem != null) {
+                        Review newReview = new Review {
+                            Member_id = rwMember_id,
+                            Book_id = rwBook_id,
+                            comment = newComment,
+                            rating = newRating,
+                            date = DateTime.Today
+                        };
 
-                Review newReview = new Review {
-                    Member_id = rwMember_id,
-                    Book_id = rwBook_id,
-                    comment = newComment,
-                    rating = newRating,
-                    date = DateTime.Today
-                };
+                        reviewService.AddReview(newReview);
 
-                int result = reviewService.AddReview(newReview);
-
-                ucReviewsList ucReviews = new ucReviewsList(bookId);
-                (Window.GetWindow(this) as MemberPanel).contentPanel.Content = ucReviews;
-            } else {
-                MessageBox.Show("Niste odabrali ocjenu!");
+                        ucReviewsList ucReviews = new ucReviewsList(bookId);
+                        (Window.GetWindow(this) as MemberPanel).contentPanel.Content = ucReviews;
+                    } else {
+                        MessageBox.Show("Niste odabrali ocjenu!");
+                    }
+                }
             }
         }
     }

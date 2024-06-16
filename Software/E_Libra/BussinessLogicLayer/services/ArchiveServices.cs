@@ -1,4 +1,5 @@
-﻿using DataAccessLayer.Repositories;
+﻿using DataAccessLayer.Interfaces;
+using DataAccessLayer.Repositories;
 using EntitiesLayer;
 using System;
 using System.Collections.Generic;
@@ -9,20 +10,42 @@ using System.Threading.Tasks;
 namespace BussinessLogicLayer.services
 {
     //Viktor Lovrić
-    public class ArchiveServices
+    public class ArchiveServices : IDisposable
     {
-        public List<ArchivedBookInfo> GetArchive()
+        public IArchiveRepository archiveRepository { get; set; }
+        public ArchiveServices(IArchiveRepository archiveRepository)
         {
-            using (var repo = new ArchiveRepository())
+            this.archiveRepository = archiveRepository;
+        }
+        public ArchiveServices() : this(new ArchiveRepository()){}
+
+        ~ArchiveServices()
+        {
+            Dispose(false);
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        public void Dispose(bool disposing)
+        {
+            if (disposing && archiveRepository != null)
             {
-                return repo.GetArchive().ToList();
+                archiveRepository.Dispose();
             }
         }
 
+        public List<ArchivedBookInfo> GetArchive()
+        {
+            return archiveRepository.GetArchive().ToList();
+        }
+
         public List<Archive> GetArchivesForEmployee(int employeeId) {
-            using (var repo = new ArchiveRepository()) {
-                return repo.GetArchivesForEmployee(employeeId).ToList();
-            }
+
+            return archiveRepository.GetArchivesForEmployee(employeeId).ToList();
         }
     }
 }
