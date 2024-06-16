@@ -210,11 +210,19 @@ namespace BussinessLogicLayer.services {
             {
                 return false;
             }
-            DateTime membershipEndDate = libraryRepository.GetLibraryMembershipDuration(LoggedUser.LibraryId);
-            decimal daysUntilExpiration = (decimal)(membershipEndDate - DateTime.Today).TotalDays;
+
+            decimal daysUntilExpiration = CalculateDaysUntilMembershipExpiration();
 
             return daysUntilExpiration >= 0 && (daysUntilExpiration <= 5 || daysUntilExpiration == 1);
         }
+
+        private decimal CalculateDaysUntilMembershipExpiration()
+        {
+            DateTime membershipEndDate = libraryRepository.GetLibraryMembershipDuration(LoggedUser.LibraryId);
+            decimal daysUntilExpiration = (decimal)(membershipEndDate - DateTime.Today).TotalDays;
+            return daysUntilExpiration;
+        }
+
 
         public decimal CalculateDaysUntilExpiration()
         {
@@ -223,8 +231,7 @@ namespace BussinessLogicLayer.services {
                 return 0;
             }
 
-            DateTime membershipEndDate = libraryRepository.GetLibraryMembershipDuration(LoggedUser.LibraryId);
-            decimal daysUntilExpiration = (decimal)(membershipEndDate - DateTime.Today).TotalDays;
+            decimal daysUntilExpiration = CalculateDaysUntilMembershipExpiration();
 
             return daysUntilExpiration;
         }
