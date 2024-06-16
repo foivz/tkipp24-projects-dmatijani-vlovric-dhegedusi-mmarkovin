@@ -23,6 +23,8 @@ namespace PresentationLayer {
     //David Matijanić, metode: btnClickableImage_Click, OpenLibrAIPanel
     public partial class MemberPanel : Window
     {
+        private LibrAI_Panel librAIPanel { get; set; }
+
         public MemberPanel()
         {
             InitializeComponent();
