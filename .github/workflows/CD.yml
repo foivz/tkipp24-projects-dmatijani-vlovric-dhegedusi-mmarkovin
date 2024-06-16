@@ -28,16 +28,12 @@ jobs:
       - name: Create a setup
         run: msbuild Software\E_Libra\E_Libra.sln /t:Publish /p:Configuration=Debug /p:PublishDir=Publish/
       
-      - name: Print current working directory
-        run: echo $PWD
-        shell: powershell
-      
       - name: Create zip archive
         uses: TheDoctor0/zip-release@0.7.1
         with:
           type: 'zip'
           filename: 'setup.zip'
-          path: Software\E_Libra\Publish/
+          path: Software\E_Libra\PresentationLayer\Publish\
       
       - name: Create a release
         uses: marvinpinto/action-automatic-releases@v1.2.1
