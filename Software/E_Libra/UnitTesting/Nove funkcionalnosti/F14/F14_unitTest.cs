@@ -30,12 +30,17 @@ namespace UnitTesting.Nove_funkcionalnosti.F14
             LoggedUser.LibraryId = 0;
         }
 
+        private void SetLoggedUser()
+        {
+            LoggedUser.Username = "username";
+            LoggedUser.LibraryId = 1;
+        }
+
         [Fact]
         public void CalculateDaysUntilExpiration_GivenMembershipExpiresIn5days_ReturnDaysUntilexpiration()
         {
             // Arrange
-            LoggedUser.Username = "username";
-            LoggedUser.LibraryId = 1;
+            SetLoggedUser();
             DateTime? expirationDate = DateTime.Today.AddDays(5);
             A.CallTo(() => membersRepository.GetMembershipDate(LoggedUser.Username)).Returns(expirationDate);
             A.CallTo(() => libraryRepository.GetLibraryMembershipDuration(LoggedUser.LibraryId)).Returns(DateTime.Today.AddDays(5));
@@ -71,8 +76,7 @@ namespace UnitTesting.Nove_funkcionalnosti.F14
         public void CalculateDaysUntilExpiration_GivenMembershipExpiresInLessThan5days_ReturnDaysUntilexpiration(int daysUntilExpiration)
         {
             // Arrange
-            LoggedUser.Username = "username";
-            LoggedUser.LibraryId = 1;
+            SetLoggedUser();
             DateTime? expirationDate = DateTime.Today.AddDays(daysUntilExpiration);
             A.CallTo(() => libraryRepository.GetLibraryMembershipDuration(1)).Returns(DateTime.Today.AddDays(daysUntilExpiration));
             A.CallTo(() => membersRepository.GetMembershipDate(LoggedUser.Username)).Returns(expirationDate);
@@ -88,11 +92,9 @@ namespace UnitTesting.Nove_funkcionalnosti.F14
         public void CalculateDaysUntilExpiration_GivenMembershipExpiresIn6days_ReturnsIncorrectDaysUntilExpiration()
         {
             // Arrange
-            string username = "username";
-            LoggedUser.Username = username;
-            LoggedUser.LibraryId = 1;
+            SetLoggedUser();
             DateTime? expirationDate = DateTime.Today.AddDays(6);
-            A.CallTo(() => membersRepository.GetMembershipDate(username)).Returns(expirationDate);
+            A.CallTo(() => membersRepository.GetMembershipDate(LoggedUser.Username)).Returns(expirationDate);
             A.CallTo(() => libraryRepository.GetLibraryMembershipDuration(LoggedUser.LibraryId)).Returns(DateTime.Today.AddDays(6));
 
             // Act
