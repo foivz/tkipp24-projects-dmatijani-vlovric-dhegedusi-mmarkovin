@@ -26,7 +26,7 @@ jobs:
         run: msbuild Software\E_Libra\E_Libra.sln /p:platform="Any CPU" /p:configuration="Debug"
         
       - name: Create a setup
-        run: msbuild /t:Publish /p:Configuration=Debug /p:PublishDir=Publish/
+        run: msbuild Software\E_Libra\E_Libra.sln /t:Publish /p:Configuration=Debug /p:PublishDir=Publish/
         
       - name: Create zip archive
         uses: TheDoctor0/zip-release@0.7.1
