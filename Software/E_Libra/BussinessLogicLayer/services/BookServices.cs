@@ -189,8 +189,15 @@ namespace BussinessLogicLayer.services
             return bookRepository.GetBooksByLibrary(libraryId).ToList();
         }
 
-        public List<MostPopularBooks> GetTopBorrowedBooks(int libraryId) {
-            return bookRepository.GetTopBooks(libraryId).ToList();
+
+        public List<MostPopularBooksViewModel> GetTopBorrowedBooks(int libraryId) {
+            var books = bookRepository.GetTopBooks(libraryId).ToList();
+
+            for (int i = 0; i < books.Count; i++) {
+                books[i].Order_Number = i + 1;
+            }
+
+            return books;
         }
     }
 }

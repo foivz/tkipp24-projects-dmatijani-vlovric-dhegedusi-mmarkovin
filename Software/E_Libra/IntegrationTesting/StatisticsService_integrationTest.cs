@@ -240,10 +240,10 @@ namespace IntegrationTesting {
             // Arrange
             int libraryId = 1;
 
-            var expectedBooks = new List<MostPopularBooks>
+            var expectedBooks = new List<MostPopularBooksViewModel>
             {
-                 new MostPopularBooks { Book_Name = "Hamlet", Author_Name = "William Shakespare", Times_Borrowed = 2 },
-                 new MostPopularBooks { Book_Name = "Romeo i Julija", Author_Name = "Cecilije Borovski", Times_Borrowed = 1 }
+                 new MostPopularBooksViewModel { Book_Name = "Hamlet", Author_Name = "William Shakespare", Times_Borrowed = 2 },
+                 new MostPopularBooksViewModel { Book_Name = "Romeo i Julija", Author_Name = "Cecilije Borovski", Times_Borrowed = 1 }
             };
 
             // Act
@@ -266,10 +266,10 @@ namespace IntegrationTesting {
             string sqlDeleteBorrows = "DELETE FROM [dbo].[Borrow]";
             Helper.ExecuteCustomSql(sqlDeleteBorrows);
 
-            var expectedBooks = new List<MostPopularBooks>
+            var expectedBooks = new List<MostPopularBooksViewModel>
             {
-                new MostPopularBooks { Book_Name = "Hamlet", Author_Name = null, Times_Borrowed = 0 },
-                new MostPopularBooks { Book_Name = "Romeo i Julija", Author_Name = null, Times_Borrowed = 0 }
+                new MostPopularBooksViewModel { Book_Name = "Hamlet", Author_Name = null, Times_Borrowed = 0 },
+                new MostPopularBooksViewModel { Book_Name = "Romeo i Julija", Author_Name = null, Times_Borrowed = 0 }
             };
 
             // Act

@@ -23,10 +23,10 @@ namespace IntegrationTesting.Nove_funkcionalnosti.F15 {
             // Arrange
             InsertData();
 
-            var expectedBooks = new List<MostPopularBooks>
+            var expectedBooks = new List<MostPopularBooksViewModel>
             {
-                new MostPopularBooks { Book_Name = "Hamlet", Author_Name = "William Shakespare", Times_Borrowed = 2, Url_Photo = "slika1", Order_Number = 1 },
-                new MostPopularBooks { Book_Name = "Ilijada", Author_Name = "Homer Borovski", Times_Borrowed = 1, Url_Photo = "slika2", Order_Number = 2 }
+                new MostPopularBooksViewModel { Book_Name = "Hamlet", Author_Name = "William Shakespare", Times_Borrowed = 2, Url_Photo = "slika1", Order_Number = 1 },
+                new MostPopularBooksViewModel { Book_Name = "Ilijada", Author_Name = "Homer Borovski", Times_Borrowed = 1, Url_Photo = "slika2", Order_Number = 2 }
             };
 
             // Act

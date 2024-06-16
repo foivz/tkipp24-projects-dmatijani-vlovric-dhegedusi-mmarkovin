@@ -378,11 +378,11 @@ namespace DataAccessLayer.Repositories
             public string Digital { get; set; }
         }
 
-        public IEnumerable<MostPopularBooks> GetMostPopularBooks(int Library_id) {
+        public IEnumerable<MostPopularBooksViewModel> GetMostPopularBooks(int Library_id) {
             var query = from book in Entities
                         where book.Library_id == Library_id
                         let bookBorrows = book.Borrows
-                        select new MostPopularBooks {
+                        select new MostPopularBooksViewModel {
                             Book_Name = book.name,
                             Author_Name = book.Authors.Select(author => author.name + " " + author.surname).FirstOrDefault(),
                             Times_Borrowed = bookBorrows.Count()
@@ -407,25 +407,18 @@ namespace DataAccessLayer.Repositories
             return query;
         }
 
-        public IEnumerable<MostPopularBooks> GetTopBooks(int Library_id) {
+        public IEnumerable<MostPopularBooksViewModel> GetTopBooks(int libraryId) {
             var query = from book in Entities
-                        where book.Library_id == Library_id
+                        where book.Library_id == libraryId
                         let bookBorrows = book.Borrows
-                        select new MostPopularBooks {
+                        select new MostPopularBooksViewModel {
                             Book_Name = book.name,
                             Author_Name = book.Authors.Select(author => author.name + " " + author.surname).FirstOrDefault(),
                             Times_Borrowed = bookBorrows.Count(),
                             Url_Photo = book.url_photo
                         };
 
-            var books = query.OrderByDescending(book => book.Times_Borrowed).Take(10).ToList();
-
-            for (int i = 0; i < books.Count; i++) {
-                books[i].Order_Number = i + 1;
-            }
-
-            return books;
-
+            return query.OrderByDescending(book => book.Times_Borrowed).Take(10);
         }
 
     }

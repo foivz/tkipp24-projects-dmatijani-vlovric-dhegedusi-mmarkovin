@@ -24,10 +24,10 @@ namespace UnitTesting.Nove_funkcionalnosti.F15 {
         public void GetTopBorrowedBooks_GivenLibraryId_ReturnsTopBorrowedBooks() {
             // Arrange
             int libraryId = 1;
-            var expectedBooks = new List<MostPopularBooks>
+            var expectedBooks = new List<MostPopularBooksViewModel>
             {
-                new MostPopularBooks { Book_Name = "Hamlet", Author_Name = "William Shakespeare", Times_Borrowed = 10, Url_Photo = "probniurl.com", Order_Number = 1 },
-                new MostPopularBooks { Book_Name = "Odiseja", Author_Name = "Homer", Times_Borrowed = 8, Url_Photo = "probniurl.com", Order_Number = 2 }
+                new MostPopularBooksViewModel { Book_Name = "Hamlet", Author_Name = "William Shakespeare", Times_Borrowed = 10, Url_Photo = "probniurl.com", Order_Number = 1 },
+                new MostPopularBooksViewModel { Book_Name = "Odiseja", Author_Name = "Homer", Times_Borrowed = 8, Url_Photo = "probniurl.com", Order_Number = 2 }
             };
 
             A.CallTo(() => _bookRepo.GetTopBooks(libraryId)).Returns(expectedBooks);
